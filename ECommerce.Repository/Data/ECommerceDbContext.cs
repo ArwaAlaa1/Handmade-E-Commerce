@@ -9,8 +9,7 @@ namespace ECommerce.DashBoard.Data
     {
         public ECommerceDbContext(DbContextOptions<ECommerceDbContext> options)
             : base(options)
-        {
+        { }
 
-        }
     }
 }

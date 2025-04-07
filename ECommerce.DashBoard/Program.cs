@@ -1,3 +1,8 @@
+using ECommerce.DashBoard.Data;
+using ECommerce.Repository.DbInitializer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
+
 namespace ECommerce.DashBoard
 {
     public class Program
@@ -8,6 +13,20 @@ namespace ECommerce.DashBoard
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ECommerceDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
+            builder.Services.AddRazorPages();
 
             var app = builder.Build();
 
@@ -20,17 +39,39 @@ namespace ECommerce.DashBoard
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+            
             app.UseRouting();
+            
+            app.UseAuthentication();
 
             app.UseAuthorization();
-
+            
+            app.UseSession();
+            
+            SeedData();
+            
             app.MapStaticAssets();
+
+            app.MapRazorPages();
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")
                 .WithStaticAssets();
 
             app.Run();
+
+            void SeedData()
+            {
+                using (var scope = app.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                    services.Initializer();
+                }
+            }
+        
         }
     }
 }

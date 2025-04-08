@@ -1,5 +1,7 @@
+using ECommerce.Core.Models;
 using ECommerce.DashBoard.Data;
 using ECommerce.Repository.DbInitializer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 
@@ -16,6 +18,10 @@ namespace ECommerce.DashBoard
 
             builder.Services.AddDbContext<ECommerceDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<ECommerceDbContext>()
+                .AddDefaultTokenProviders();
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options => {

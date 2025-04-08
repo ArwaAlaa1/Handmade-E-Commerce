@@ -1,9 +1,10 @@
+using ECommerce.Core;
 using ECommerce.Core.Models;
 using ECommerce.DashBoard.Data;
+using ECommerce.Repository;
 using ECommerce.Repository.DbInitializer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ECommerce.DashBoard
 {
@@ -23,6 +24,17 @@ namespace ECommerce.DashBoard
                 .AddEntityFrameworkStores<ECommerceDbContext>()
                 .AddDefaultTokenProviders();
 
+            builder.Services.ConfigureApplicationCookie(options => {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+
+            builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddAreaPageRoute("Identity", "/Account/StartUpPage", "");
+            });
+
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options => {
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -31,8 +43,16 @@ namespace ECommerce.DashBoard
             });
 
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            builder.Services.AddRazorPages();
+
+            builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
+            });
+
+            builder.Services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
 
             var app = builder.Build();
 

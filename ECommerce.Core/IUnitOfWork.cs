@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Core
 {
-    internal interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
+        IGenericRepository<T> Repository<T>() where T : class;
+        void Save();
     }
 }

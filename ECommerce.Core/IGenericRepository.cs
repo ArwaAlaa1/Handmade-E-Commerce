@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Core
 {
-    internal interface IGenericRepository
+    public interface IGenericRepository<T> where T : class
     {
+        void Add(T obj);
+
+        void Update(T obj);
     }
 }

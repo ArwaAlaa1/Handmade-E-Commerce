@@ -1,4 +1,4 @@
-@* ! Brand demo (display only for navbar-full and hide on below xl) *@
+﻿@* ! Brand demo (display only for navbar-full and hide on below xl) *@
 @if (ViewData["navbarFull"] != null)
 {
 <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
@@ -89,10 +89,10 @@
           <div class="dropdown-divider my-1"></div>
         </li>
         <li>
-          <a class="dropdown-item" href="javascript:void(0);">
+          <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">
             <i class="bx bx-power-off bx-md me-2"></i>
-            <span>Log Out</span>
-          </a>
+            <button type="submit" style="border:none; text-decoration:none;">Log Out</button>
+          </form>
         </li>
       </ul>
     </li>

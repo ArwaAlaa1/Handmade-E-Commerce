@@ -1,0 +1,31 @@
+﻿@model ECommerce.DashBoard.ViewModels.TraderVM
+
+@{
+    ViewData["Title"] = "Add Trader";
+}
+
+
+
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-6">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Basic with Icons</h5>
+                <small class="text-muted float-end">Merged input group</small>
+            </div>
+            <div class="card-body">
+                <form asp-action="AddTrader"  method="post" enctype="multipart/form-data">
+                    <partial name="~/Views/Trader/PartialViews/CreateEditPartial.cshtml" model="Model" />
+                    <div class="mb-6 ">
+                        <label for="formFile" class="form-label">Password</label>
+                        <input class="form-control" asp-for="Password" type="password" value="password" id="html5-password-input" />
+
+                    </div>
+                    
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

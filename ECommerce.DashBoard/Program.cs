@@ -1,8 +1,11 @@
 using ECommerce.Core;
 using ECommerce.Core.Models;
+using ECommerce.Core.Services.Contract.SendEmail;
 using ECommerce.DashBoard.Data;
+using ECommerce.DashBoard.Helper;
 using ECommerce.Repository;
 using ECommerce.Repository.DbInitializer;
+using ECommerce.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +27,8 @@ namespace ECommerce.DashBoard
                 .AddEntityFrameworkStores<ECommerceDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.ConfigureApplicationCookie(options => {
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
                 options.LoginPath = $"/Identity/Account/Login";
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
@@ -44,6 +48,7 @@ namespace ECommerce.DashBoard
 
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IEmailProvider, EmailProvider>();
 
 
             builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
@@ -55,7 +60,7 @@ namespace ECommerce.DashBoard
                 .AddRazorRuntimeCompilation();
 
             var app = builder.Build();
-
+            HandlerPhotos.Initialize(app.Environment);
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -73,7 +78,7 @@ namespace ECommerce.DashBoard
             app.UseAuthentication();
 
             app.UseAuthorization();
-            
+
             app.UseSession();
             
             SeedData();

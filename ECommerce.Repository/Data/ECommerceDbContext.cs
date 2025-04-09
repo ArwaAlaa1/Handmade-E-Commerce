@@ -11,9 +11,13 @@ namespace ECommerce.DashBoard.Data
             : base(options)
         { }
 
+<<<<<<< HEAD
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
 
 
+=======
+        public DbSet<Category> Categories { get; set; }
+>>>>>>> 0804e9add3b9992e97b915c34bf6f24661df96d5
     }
 }

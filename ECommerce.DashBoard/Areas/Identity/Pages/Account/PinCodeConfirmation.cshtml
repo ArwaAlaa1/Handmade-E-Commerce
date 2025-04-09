@@ -1,0 +1,56 @@
+﻿@page
+@model ECommerce.DashBoard.Areas.Identity.Pages.Account.PinCodeConfirmationModel
+
+@{
+    Layout = "_BlankLayout";
+    ViewData["Title"] = "Pin Code Confirm Basic - Pages";
+}
+
+@section PageStyles {
+    <link rel="stylesheet" href="~/vendor/css/pages/page-auth.css">
+}
+
+@* ************** Content ************** *@
+
+<div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+
+            <!-- Forgot Password -->
+            <div class="card px-sm-6 px-0">
+                <div class="card-body">
+                    <!-- Logo -->
+                    <div class="app-brand justify-content-center mb-6">
+                        <a href="/" class="app-brand-link gap-2">
+                            <span class="app-brand-logo demo">@await Html.PartialAsync("../_Partials/_Macros")</span>
+                            <span class="app-brand-text demo text-heading fw-bold">@TempData.Peek("HandmadeE-Commerce")</span>
+                        </a>
+                    </div>
+                    <!-- /Logo -->
+                    <h4 class="mb-1">Verify Pin Code</h4>
+                    <p class="mb-6">Check your Email And Enter Pin Code ,This code will expire in 15 minutes.</p>
+                    <form id="formAuthentication" class="mb-6" method="POST">
+                        @if (TempData["Message"] != null)
+                        {
+                            <div class="alert alert-danger">@TempData["Message"]</div>
+                        }
+
+                        <input type="hidden" asp-for="Email" />
+                        <div class="mb-6">
+                            <label asp-for="Input.PIN" class="form-label">Pin Code</label>
+                            <input type="number" maxlength="6" pattern="\d{6}" autofocus inputmode="numeric" title="Enter exactly 6 digits" class="form-control" asp-for="Input.PIN" placeholder="Enter your Pin Code" autofocus>
+                        </div>
+                        <button class="btn btn-primary d-grid w-100" type="submit">Send Pin Code</button>
+                    </form>
+                    <div class="text-center">
+                        <a asp-area="Identity" asp-page="Account/Login" class="d-flex justify-content-center">
+                            <i class="bx bx-chevron-left me-1"></i>
+                            Back to login
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Forgot Password -->
+        </div>
+    </div>
+</div>

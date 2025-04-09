@@ -22,16 +22,31 @@ namespace ECommerce.Repository.DbInitializer
         {
             try
             {
-                if(!_dbcontext.Users.Any())
+                if (!_dbcontext.Roles.Any())
                 {
                     _roleManager.CreateAsync(new IdentityRole(SD.AdminRole)).GetAwaiter().GetResult();
                     _roleManager.CreateAsync(new IdentityRole(SD.SuplierRole)).GetAwaiter().GetResult();
                     _roleManager.CreateAsync(new IdentityRole(SD.CustomerRole)).GetAwaiter().GetResult();
+                }
 
+                //_userManager.CreateAsync(new AppUser
+                //{
+                //    Email = "qassemshaban7@gmail.com",
+                //    UserName = "Qassem",
+                //    EmailConfirmed = true,
+                //}, "P@ssw0rd").GetAwaiter().GetResult();
+                //var qassem = _dbcontext.Users.FirstOrDefault(x => x.Email == "qassemshaban7@gmail.com");
+                //if (qassem != null)
+                //    _userManager.AddToRoleAsync(qassem, SD.AdminRole).GetAwaiter().GetResult();
+
+
+                if (!_dbcontext.Users.Any())
+                {
                     _userManager.CreateAsync(new AppUser 
                     {
-                        Email = "Admin",
-                        UserName = "admin@gmail.com",
+                        Email = "admin@gmail.com",
+                        UserName = "Admin",
+                        EmailConfirmed = true,
                     }, "P@ssw0rd").GetAwaiter().GetResult();
 
                     var admin = _dbcontext.Users.FirstOrDefault(x => x.Email == "admin@gmail.com");

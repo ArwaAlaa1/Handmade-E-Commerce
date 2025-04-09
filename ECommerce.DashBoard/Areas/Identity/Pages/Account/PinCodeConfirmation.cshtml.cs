@@ -10,12 +10,10 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
     public class PinCodeConfirmationModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly IEmailProvider _emailProvider;
 
-        public PinCodeConfirmationModel(UserManager<AppUser> userManager, IEmailProvider emailProvider)
+        public PinCodeConfirmationModel(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
-            _emailProvider = emailProvider;
         }
 
 
@@ -28,7 +26,7 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [Range(100000, 999999, ErrorMessage = "PIN must be 6 digits.")]
+            [RegularExpression(@"^\d{6}$", ErrorMessage = "PIN must be exactly 6 digits.")]
             public int PIN { get; set; }
 
         }
@@ -45,27 +43,25 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
                     return RedirectToPage("./ForgotPassword");
                 }
 
-
                 if (user.ResetExpires < DateTime.Now || user.ResetExpires is null)
                 {
                     TempData["Message"] = "Time Expired try to send new Pin Code.";
-                    return RedirectToPage("./PinCodeConfirmation");
+                    return RedirectToPage("./PinCodeConfirmation", new { email = Email });
                 }
 
                 if (user.PasswordResetPin != Input.PIN)
                 {
                     TempData["Message"] = "Invalid Pin Code.";
-                    return RedirectToPage("./PinCodeConfirmation");
+                    return RedirectToPage("./PinCodeConfirmation", new { email = Email });
                 }
 
                 user.ResetExpires = null;
-                user.PasswordResetPin = null;
                 await _userManager.UpdateAsync(user);
 
-                return RedirectToPage("Identity/Account/ResetPassword", new { email = Email });
+                return RedirectToPage("/Account/ResetPassword", new { area = "Identity", email = Email, pin = Input.PIN });
             }
 
-            return Page();
+            return RedirectToPage("./ForgotPassword");
         }
     }
 }

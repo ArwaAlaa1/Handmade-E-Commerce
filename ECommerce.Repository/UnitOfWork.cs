@@ -1,34 +1,35 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerce.Core;
+using ECommerce.Core.Models;
 using ECommerce.DashBoard.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ECommerceDbContext _db;
-        private Dictionary<Type, object> _repositories;
-
+        private Hashtable _repositories;
         public UnitOfWork(ECommerceDbContext db)
         {
             _db = db;
-            _repositories = new Dictionary<Type, object>();
+            _repositories = new Hashtable();
         }
 
-        public IGenericRepository<T> Repository<T>() where T : class
+        public IGenericRepository<T> Repository<T>() where T : BaseEntity
         {
-            if (_repositories.ContainsKey(typeof(T)))
+            var key = typeof(T).Name;
+            if (!_repositories.ContainsKey(key))
             {
-                return (IGenericRepository<T>)_repositories[typeof(T)];
+                var repository = new GenericRepository<T>(_db);
+                _repositories.Add(key, repository);
             }
-
-            var repository = new GenericRepository<T>(_db);
-            _repositories.Add(typeof(T), repository);
-            return repository;
+            return _repositories[key] as IGenericRepository<T>;
         }
 
         public void Save()

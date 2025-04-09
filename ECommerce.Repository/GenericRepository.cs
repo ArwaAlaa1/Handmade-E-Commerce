@@ -1,4 +1,5 @@
 ﻿using ECommerce.Core;
+using ECommerce.Core.Models;
 using ECommerce.DashBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Repository
 {
-    internal class GenericRepository<T> : IGenericRepository<T> where T : class
+    internal class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly ECommerceDbContext _db;
         private readonly DbSet<T> _dbSet;

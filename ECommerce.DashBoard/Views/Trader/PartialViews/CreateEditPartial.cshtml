@@ -1,0 +1,36 @@
+﻿@model ECommerce.DashBoard.ViewModels.TraderVM
+
+<div class="mb-6">
+    <label class="form-label" for="basic-icon-default-fullname" asp-for="DisplayName"></label>
+    <div class="input-group input-group-merge">
+        <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-user"></i></span>
+        <input asp-for="DisplayName" type="text" class="form-control" id="basic-icon-default-fullname" placeholder="John Doe" aria-label="John Doe" aria-describedby="basic-icon-default-fullname2" />
+    </div>
+</div>
+<div class="mb-6">
+    <label class="form-label" for="basic-icon-default-company" asp-for="UserName"></label>
+    <div class="input-group input-group-merge">
+        <span id="basic-icon-default-company2" class="input-group-text"><i class="bx bx-buildings"></i></span>
+        <input type="text" id="basic-icon-default-company" asp-for="UserName" class="form-control" placeholder="ACME Inc." aria-label="ACME Inc." aria-describedby="basic-icon-default-company2" />
+    </div>
+</div>
+<div class="mb-6">
+    <label class="form-label" for="basic-icon-default-email" asp-for="Email"></label>
+    <div class="input-group input-group-merge">
+        <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+        <input type="text" id="basic-icon-default-email" asp-for="Email" class="form-control" placeholder="john.doe" aria-label="john.doe" aria-describedby="basic-icon-default-email2" />
+        <span id="basic-icon-default-email2" class="input-group-text">&#64;example.com</span>
+    </div>
+    <div class="form-text"> You can use letters, numbers & periods </div>
+</div>
+<div class="mb-6">
+    <label class="form-label" for="basic-icon-default-phone" asp-for="PhoneNumber">Phone No</label>
+    <div class="input-group input-group-merge">
+        <span id="basic-icon-default-phone2" class="input-group-text"><i class="bx bx-phone"></i></span>
+        <input type="text" id="basic-icon-default-phone" asp-for="PhoneNumber" class="form-control phone-mask" placeholder="658 799 8941" aria-label="658 799 8941" aria-describedby="basic-icon-default-phone2" />
+    </div>
+</div>
+<div class="mb-6">
+    <label for="formFile" class="form-label">Brand Photo</label>
+    <input class="form-control" type="file" id="formFile" asp-for="Photo">
+</div>

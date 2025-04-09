@@ -38,13 +38,13 @@ namespace ECommerce.DashBoard.Helper
             }
             return fileName;
         }
-        //public static void DeletePhoto(string folderName, string fileName)
-        //{
-        //    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", folderName, fileName);
-        //    if (System.IO.File.Exists(path))
-        //    {
-        //        System.IO.File.Delete(path);
-        //    }
-        //}
+        public static void DeletePhoto(string folderName, string fileName)
+        {
+            var path = Path.Combine(_imagePath, "Images", folderName, fileName);
+            if (System.IO.File.Exists(path))
+            {
+                System.IO.File.Delete(path);
+            }
+        }
     }
 }

@@ -1,10 +1,8 @@
 ﻿@model ECommerce.DashBoard.ViewModels.TraderVM
 
 @{
-    ViewData["Title"] = "Add Trader";
+    ViewData["Title"] = "Edit Trader";
 }
-
-
 
 <div class="row">
     <div class="col-xl">
@@ -14,14 +12,13 @@
                 <small class="text-muted float-end">Merged input group</small>
             </div>
             <div class="card-body">
-                <form asp-action="AddTrader"  method="post" enctype="multipart/form-data">
+                <div class="w-50 m-auto">
+                    <img src="~/Images/Users/@Model.PhotoName" alt="Brand Image" class="rounded-circle w-25 h-25" />
+                </div>
+                <form asp-action="EditTrader" method="post" enctype="multipart/form-data">
                     <partial name="~/Views/Trader/PartialViews/CreateEditPartial.cshtml" model="Model" />
-                    <div class="mb-6 ">
-                        <label for="formFile" class="form-label">Password</label>
-                        <input class="form-control" asp-for="Password" type="password" value="password" id="html5-password-input" />
 
-                    </div>
-                    
+                    <input asp-for="@Model.PhotoName" hidden />
                     <div asp-validation-summary="ModelOnly"></div>
                     <button type="submit" class="btn btn-primary">Send</button>
                 </form>

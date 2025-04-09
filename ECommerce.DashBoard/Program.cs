@@ -25,17 +25,16 @@ namespace ECommerce.DashBoard
                 .AddEntityFrameworkStores<ECommerceDbContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = $"/Identity/Account/Login";
-                options.LogoutPath = $"/Identity/Account/Logout";
-                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
-            });
+            //builder.Services.ConfigureApplicationCookie(options => {
+            //    options.LoginPath = $"/Identity/Account/Login";
+            //    options.LogoutPath = $"/Identity/Account/Logout";
+            //    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            //});
 
-            builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AddAreaPageRoute("Identity", "/Account/StartUpPage", "");
-            });
+            //builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
+            //{
+            //    options.Conventions.AddAreaPageRoute("Identity", "/Account/StartUpPage", "");
+            //});
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options => {
@@ -48,13 +47,13 @@ namespace ECommerce.DashBoard
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-            builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
-            {
-                options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
-            });
+            //builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
+            //{
+            //    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
+            //});
 
-            builder.Services.AddRazorPages()
-                .AddRazorRuntimeCompilation();
+            //builder.Services.AddRazorPages()
+            //    .AddRazorRuntimeCompilation();
 
             var app = builder.Build();
             HandlerPhotos.Initialize(app.Environment);
@@ -74,7 +73,7 @@ namespace ECommerce.DashBoard
             
             app.UseAuthentication();
 
-           app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseSession();
             
@@ -82,7 +81,7 @@ namespace ECommerce.DashBoard
             
             app.MapStaticAssets();
 
-            app.MapRazorPages();
+            //app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",

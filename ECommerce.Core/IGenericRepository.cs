@@ -9,8 +9,11 @@ namespace ECommerce.Core
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
-        void Add(T obj);
-
-        void Update(T obj);
+        Task<IEnumerable<T>> GetAll();
+        Task<T?> GetById(int id);
+        void Add(T entity);
+        void Update(T entity);
+        void Remove(T entity);
+      
     }
 }

@@ -20,15 +20,35 @@ namespace ECommerce.Repository
             _db = db;
             _dbSet = _db.Set<T>();
         }
-
-        public void Add(T obj)
+      
+        public void Add(T entity)
         {
-            _dbSet.Add(obj);
+            _dbSet.Add(entity);
+
         }
 
-        public void Update(T obj)
+        public void Update(T entity)
         {
-            _dbSet.Update(obj);
+            _dbSet.Update(entity);
         }
+
+        public async Task<IEnumerable<T>> GetAll()
+        {
+            var result = await _dbSet.Where(t => t.IsDeleted == false).ToListAsync();
+            return result;
+        }
+
+        public async Task<T?> GetById(int id)
+        {
+            var result = await _dbSet.FindAsync(id);
+            return result;
+        }
+
+        public void Remove(T entity)
+        {
+            _dbSet.Remove(entity);
+        }
+      
+        
     }
 }

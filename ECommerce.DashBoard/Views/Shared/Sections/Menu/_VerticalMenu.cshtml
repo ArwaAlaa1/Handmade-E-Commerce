@@ -72,8 +72,13 @@
             <ul class="menu-sub">
 
                 <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
-                    <a asp-controller="User" asp-action="AddTrader" class="menu-link">
+                    <a asp-controller="Trader" asp-action="AddTrader" class="menu-link">
                         <div>Add Trader</div>
+                    </a>
+                </li>
+                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <a asp-controller="Trader" asp-action="Index" class="menu-link">
+                        <div>All Traders</div>
                     </a>
                 </li>
             

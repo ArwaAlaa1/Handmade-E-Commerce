@@ -17,14 +17,25 @@ namespace ECommerce.DashBoard.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(bool showActiveOnly = false)
+        public async Task<IActionResult> Index(string Active ="all")
         {
-            var users = await _userManager.GetUsersInRoleAsync(SD.SuplierRole);
-            var traders = showActiveOnly ? users.Where(u => u.IsActive).ToList() : users.ToList();
+            var traders = await _userManager.GetUsersInRoleAsync(SD.SuplierRole);
+            if (Active !="all")
+            {
+                traders = Active == "active" ? traders.Where(u => u.IsActive == true).ToList() : traders.Where(u => u.IsActive == false).ToList();
+            }
+             
             return View(traders);
         }
 
-       
+
+        public async Task<IActionResult> Details(string id)
+        {
+
+            var trader = await _userManager.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+            return View(trader);
+        }
+
         public IActionResult AddTrader()
         {
             return View();
@@ -35,7 +46,7 @@ namespace ECommerce.DashBoard.Controllers
         {
             if (ModelState.IsValid)
             {
-                var imageName=HandlerPhotos.UploadPhoto(traderVM.Photo, "Users");
+                var imageName = HandlerPhotos.UploadPhoto(traderVM.Photo, "Users");
                 var trader = new AppUser
                 {
                     DisplayName = traderVM.DisplayName,
@@ -45,7 +56,7 @@ namespace ECommerce.DashBoard.Controllers
                     Photo = imageName,
                     IsActive = traderVM.IsActive
                 };
-                var result= await _userManager.CreateAsync(trader, traderVM.Password);
+                var result = await _userManager.CreateAsync(trader, traderVM.Password);
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(trader, SD.SuplierRole);
@@ -62,7 +73,7 @@ namespace ECommerce.DashBoard.Controllers
 
                 return RedirectToAction("Index");
             }
-           
+
 
             return View(traderVM);
         }
@@ -78,13 +89,13 @@ namespace ECommerce.DashBoard.Controllers
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive,
                 PhotoName = user.Photo,
-              
+
             };
             return View(trader);
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditTrader(string id,TraderVM traderVM)
+        public async Task<IActionResult> EditTrader(string id, TraderVM traderVM)
         {
             if (ModelState.IsValid)
             {
@@ -102,8 +113,8 @@ namespace ECommerce.DashBoard.Controllers
                     user.PhoneNumber = traderVM.PhoneNumber;
                     user.Photo = imageName;
                     user.IsActive = traderVM.IsActive;
-                    
-                   
+
+
                 }
                 else
                 {
@@ -115,10 +126,19 @@ namespace ECommerce.DashBoard.Controllers
                     user.IsActive = traderVM.IsActive;
                 }
 
-                 var result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user);
                 return RedirectToAction("Index");
             }
             return View(traderVM);
+        }
+
+        public async Task<IActionResult> DeleteTrader(string id)
+        {
+
+            var trader = await _userManager.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+            trader.IsActive = false;
+            await _userManager.UpdateAsync(trader);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

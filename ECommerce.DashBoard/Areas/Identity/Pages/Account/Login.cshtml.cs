@@ -129,6 +129,7 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
                 }
                 else
                 {
+                    TempData["Error"] = "Invalid Email or Password.";
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();
                 }

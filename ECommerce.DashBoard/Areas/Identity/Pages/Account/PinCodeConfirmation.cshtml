@@ -1,9 +1,9 @@
 ﻿@page
-@model ForgotPasswordModel
+@model ECommerce.DashBoard.Areas.Identity.Pages.Account.PinCodeConfirmationModel
 
 @{
     Layout = "_BlankLayout";
-    ViewData["Title"] = "Forgot Password Basic - Pages";
+    ViewData["Title"] = "Pin Code Confirm Basic - Pages";
 }
 
 @section PageStyles {
@@ -27,18 +27,20 @@
                         </a>
                     </div>
                     <!-- /Logo -->
-                    <h4 class="mb-1">Forgot Password? 🔒</h4>
-                    <p class="mb-6">Enter your email and we'll send you Pin Code to reset your password</p>
+                    <h4 class="mb-1">Verify Pin Code</h4>
+                    <p class="mb-6">Check your Email And Enter Pin Code ,This code will expire in 15 minutes.</p>
                     <form id="formAuthentication" class="mb-6" method="POST">
                         @if (TempData["Message"] != null)
                         {
                             <div class="alert alert-danger">@TempData["Message"]</div>
                         }
+
+                        <input type="hidden" asp-for="Email" />
                         <div class="mb-6">
-                            <label asp-for="Input.Email" class="form-label">Email</label>
-                            <input type="text" class="form-control" asp-for="Input.Email" placeholder="Enter your email" autofocus>
+                            <label asp-for="Input.PIN" class="form-label">Pin Code</label>
+                            <input type="number" maxlength="6" pattern="\d{6}" autofocus inputmode="numeric" title="Enter exactly 6 digits" class="form-control" asp-for="Input.PIN" placeholder="Enter your Pin Code" autofocus>
                         </div>
-                        <button class="btn btn-primary d-grid w-100">Send Pin Code</button>
+                        <button class="btn btn-primary d-grid w-100" type="submit">Send Pin Code</button>
                     </form>
                     <div class="text-center">
                         <a asp-area="Identity" asp-page="Account/Login" class="d-flex justify-content-center">

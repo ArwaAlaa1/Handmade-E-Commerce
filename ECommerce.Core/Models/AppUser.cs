@@ -12,7 +12,14 @@ namespace ECommerce.Core.Models
     {
         public string DisplayName { get; set; }
         public string? Photo { get; set; }
+
         public List<Address>? Address { get; set; }
         public bool IsActive { get; set; } = true;
+
+
+        public int? PasswordResetPin { get; set; } = null;
+
+        public DateTime? ResetExpires { get; set; } = null;
+
     }
 }

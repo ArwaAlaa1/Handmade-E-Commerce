@@ -1,9 +1,11 @@
 using ECommerce.Core;
 using ECommerce.Core.Models;
+using ECommerce.Core.Services.Contract.SendEmail;
 using ECommerce.DashBoard.Data;
 using ECommerce.DashBoard.Helper;
 using ECommerce.Repository;
 using ECommerce.Repository.DbInitializer;
+using ECommerce.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,16 +27,17 @@ namespace ECommerce.DashBoard
                 .AddEntityFrameworkStores<ECommerceDbContext>()
                 .AddDefaultTokenProviders();
 
-            //builder.Services.ConfigureApplicationCookie(options => {
-            //    options.LoginPath = $"/Identity/Account/Login";
-            //    options.LogoutPath = $"/Identity/Account/Logout";
-            //    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
-            //});
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
 
-            //builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
-            //{
-            //    options.Conventions.AddAreaPageRoute("Identity", "/Account/StartUpPage", "");
-            //});
+            builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddAreaPageRoute("Identity", "/Account/StartUpPage", "");
+            });
 
             builder.Services.AddDistributedMemoryCache();
             builder.Services.AddSession(options => {
@@ -45,15 +48,16 @@ namespace ECommerce.DashBoard
 
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IEmailProvider, EmailProvider>();
 
 
-            //builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
-            //{
-            //    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
-            //});
+            builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "");
+            });
 
-            //builder.Services.AddRazorPages()
-            //    .AddRazorRuntimeCompilation();
+            builder.Services.AddRazorPages()
+                .AddRazorRuntimeCompilation();
 
             var app = builder.Build();
             HandlerPhotos.Initialize(app.Environment);
@@ -73,7 +77,7 @@ namespace ECommerce.DashBoard
             
             app.UseAuthentication();
 
-            //app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseSession();
             
@@ -81,7 +85,7 @@ namespace ECommerce.DashBoard
             
             app.MapStaticAssets();
 
-            //app.MapRazorPages();
+            app.MapRazorPages();
 
             app.MapControllerRoute(
                 name: "default",

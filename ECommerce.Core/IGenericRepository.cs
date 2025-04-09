@@ -10,7 +10,6 @@ namespace ECommerce.Core
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
-<<<<<<< HEAD
 
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int id);
@@ -20,13 +19,12 @@ namespace ECommerce.Core
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
         void Add(T obj);
 
-=======
         Task<IEnumerable<T>> GetAll();
         Task<T?> GetById(int id);
         void Add(T entity);
         void Update(T entity);
         void Remove(T entity);
       
->>>>>>> 0804e9add3b9992e97b915c34bf6f24661df96d5
+
     }
 }

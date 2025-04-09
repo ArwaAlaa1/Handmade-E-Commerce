@@ -10,6 +10,6 @@ namespace ECommerce.Core
     public interface IUnitOfWork : IDisposable
     {
         IGenericRepository<T> Repository<T>() where T : BaseEntity;
-        void Save();
+        Task<int> SaveAsync();
     }
 }

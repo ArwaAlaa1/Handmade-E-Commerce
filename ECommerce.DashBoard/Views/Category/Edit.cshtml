@@ -1,0 +1,28 @@
+﻿@model ECommerce.DashBoard.ViewModels.CategoryVM
+
+@{
+    ViewData["Title"] = "Edit Category";
+}
+
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-6">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Basic with Icons</h5>
+                
+            </div>
+            <div class="card-body">
+                <div class="w-50 m-auto">
+                    <img src="~/Images/Categories/@Model.PhotoName" alt="Brand Image" class="rounded-circle w-25 h-25" />
+                </div>
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    <partial name="~/Views/Category/PartialViews/CreateEditPartial.cshtml" model="Model" />
+
+                    <input asp-for="@Model.PhotoName" hidden />
+                    <div asp-validation-summary="ModelOnly"></div>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

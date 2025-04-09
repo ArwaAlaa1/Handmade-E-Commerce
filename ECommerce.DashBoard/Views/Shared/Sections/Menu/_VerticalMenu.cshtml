@@ -62,7 +62,7 @@
       </ul>
     </li>
 
-        <!-- Layouts -->
+        <!-- Traders -->
         <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
@@ -82,6 +82,28 @@
                     </a>
                 </li>
             
+            </ul>
+        </li>
+        <!-- Categories -->
+        <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div>Manage Category Data</div>
+            </a>
+
+            <ul class="menu-sub">
+
+                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <a asp-controller="Category" asp-action="Create" class="menu-link">
+                        <div>Add Category</div>
+                    </a>
+                </li>
+                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <a asp-controller="Category" asp-action="Index" class="menu-link">
+                        <div>All Categories</div>
+                    </a>
+                </li>
+
             </ul>
         </li>
 

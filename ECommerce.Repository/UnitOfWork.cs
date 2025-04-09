@@ -32,11 +32,11 @@ namespace ECommerce.Repository
             return _repositories[key] as IGenericRepository<T>;
         }
 
-        public void Save()
+        public async Task<int> SaveAsync()
         {
-            _db.SaveChanges();
-        }
+            return await _db.SaveChangesAsync();
 
+        }
         public void Dispose()
         {
             _db.Dispose();

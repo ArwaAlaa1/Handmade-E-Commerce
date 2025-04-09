@@ -99,34 +99,34 @@ namespace ECommerce.DashBoard.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
+                var traderToUpdate = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
                 if (traderVM.Photo != null)
                 {
-                    if (user.Photo != null)
+                    if (traderToUpdate.Photo != null)
                     {
-                        HandlerPhotos.DeletePhoto("Users", user.Photo);
+                        HandlerPhotos.DeletePhoto("Users", traderToUpdate.Photo);
                     }
                     var imageName = HandlerPhotos.UploadPhoto(traderVM.Photo, "Users");
-                    user.DisplayName = traderVM.DisplayName;
-                    user.DisplayName = traderVM.UserName;
-                    user.Email = traderVM.Email;
-                    user.PhoneNumber = traderVM.PhoneNumber;
-                    user.Photo = imageName;
-                    user.IsActive = traderVM.IsActive;
+                    traderToUpdate.DisplayName = traderVM.DisplayName;
+                    traderToUpdate.DisplayName = traderVM.UserName;
+                    traderToUpdate.Email = traderVM.Email;
+                    traderToUpdate.PhoneNumber = traderVM.PhoneNumber;
+                    traderToUpdate.Photo = imageName;
+                    traderToUpdate.IsActive = traderVM.IsActive;
 
 
                 }
                 else
                 {
-                    user.DisplayName = traderVM.DisplayName;
-                    user.DisplayName = traderVM.UserName;
-                    user.Email = traderVM.Email;
-                    user.PhoneNumber = traderVM.PhoneNumber;
-                    user.Photo = traderVM.PhotoName;
-                    user.IsActive = traderVM.IsActive;
+                    traderToUpdate.DisplayName = traderVM.DisplayName;
+                    traderToUpdate.DisplayName = traderVM.UserName;
+                    traderToUpdate.Email = traderVM.Email;
+                    traderToUpdate.PhoneNumber = traderVM.PhoneNumber;
+                    traderToUpdate.Photo = traderVM.PhotoName;
+                    traderToUpdate.IsActive = traderVM.IsActive;
                 }
 
-                var result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(traderToUpdate);
                 return RedirectToAction("Index");
             }
             return View(traderVM);

@@ -1,0 +1,56 @@
+﻿@model ECommerce.Core.Models.Category
+
+@{
+    ViewData["Title"] = "Details Category";
+}
+
+
+
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-6">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Basic with Icons</h5>
+                <small class="text-muted float-end">Merged input group</small>
+            </div>
+            <div class="card-body">
+                <form asp-action="Index">
+                    <div class="w-50 m-auto">
+                        <img src="~/Images/Categories/@Model.Photo" alt="Brand Image" class="rounded-circle w-25 h-25" />
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label" for="basic-icon-default-fullname" asp-for="Name"></label>
+                        <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-fullname2" class="input-group-text"><i class="bx bx-user"></i></span>
+                            <input readonly asp-for="Name" type="text" class="form-control" id="basic-icon-default-fullname" placeholder="John Doe" aria-label="John Doe" aria-describedby="basic-icon-default-fullname2" />
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label class="form-label" for="basic-icon-default-company" asp-for="Description"></label>
+                        <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2" class="input-group-text"><i class="bx bx-buildings"></i></span>
+                            <input readonly type="text" id="basic-icon-default-company" asp-for="Description" class="form-control" placeholder="ACME Inc." aria-label="ACME Inc." aria-describedby="basic-icon-default-company2" />
+                        </div>
+                    </div>
+                    
+                    <div class="">
+                        <label class="form-label" for="basic-icon-default-company" asp-for="IsActive"></label>
+                        
+                           @if (Model.IsActive ==true)
+                            {
+                            <input checked disabled readonly type="checkbox" asp-for="IsActive" class="form-control" />
+                            }
+                            else{
+                            <input readonly disabled type="checkbox" asp-for="IsActive" class="form-control" />
+                            }
+                        
+                    </div>
+
+
+                    <button type="submit" class="btn btn-danger">Back</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

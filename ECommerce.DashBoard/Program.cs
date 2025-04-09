@@ -1,8 +1,10 @@
 using ECommerce.Core;
 using ECommerce.Core.Models;
+using ECommerce.Core.Services.Contract.SendEmail;
 using ECommerce.DashBoard.Data;
 using ECommerce.Repository;
 using ECommerce.Repository.DbInitializer;
+using ECommerce.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,6 +46,7 @@ namespace ECommerce.DashBoard
 
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IEmailProvider, EmailProvider>();
 
 
             builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>

@@ -10,5 +10,9 @@ namespace ECommerce.Core.Models
     public class AppUser:IdentityUser
     {
         public string? Photo { get; set; }
+
+        public int? PasswordResetPin { get; set; } = null;
+
+        public DateTime? ResetExpires { get; set; } = null;
     }
 }

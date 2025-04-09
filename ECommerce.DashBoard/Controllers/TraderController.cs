@@ -54,7 +54,8 @@ namespace ECommerce.DashBoard.Controllers
                     Email = traderVM.Email,
                     PhoneNumber = traderVM.PhoneNumber,
                     Photo = imageName,
-                    IsActive = traderVM.IsActive
+                    IsActive = traderVM.IsActive,
+                    EmailConfirmed = true,
                 };
                 var result = await _userManager.CreateAsync(trader, traderVM.Password);
                 if (result.Succeeded)

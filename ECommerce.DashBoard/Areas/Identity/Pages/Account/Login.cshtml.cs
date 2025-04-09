@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ECommerce.Core.Models;
+using ECommerce.DashBoard.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
 {
@@ -22,11 +24,13 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly ECommerceDbContext _db;
 
-        public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<AppUser> signInManager, ILogger<LoginModel> logger, ECommerceDbContext _db )
         {
             _signInManager = signInManager;
             _logger = logger;
+            this._db = _db;
         }
 
         /// <summary>
@@ -112,7 +116,8 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == Input.Email);
+                var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

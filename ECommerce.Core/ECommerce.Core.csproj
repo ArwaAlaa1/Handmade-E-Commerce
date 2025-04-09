@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Services.Contract\" />
-    <Folder Include="Repository.Contract\" />
   </ItemGroup>
 
   <ItemGroup>

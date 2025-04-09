@@ -16,10 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\ECommerce.Core\ECommerce.Core.csproj" />
     <ProjectReference Include="..\ECommerce.Repository\ECommerce.Repository.csproj" />
   </ItemGroup>
 

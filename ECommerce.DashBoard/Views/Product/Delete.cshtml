@@ -1,0 +1,18 @@
+﻿@using ECommerce.Core.Models
+@model Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+}
+
+<h2>Delete Product</h2>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete <strong>@Model.Name</strong>?
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

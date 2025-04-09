@@ -1,8 +1,12 @@
 
+using ECommerce.Core;
 using ECommerce.DashBoard.Data;
+using ECommerce.Repository.DbInitializer;
+using ECommerce.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-
+using ECommerce.Core.Repository.Contract;
+using ECommerce.Repository.Repositories;
 namespace ECommerce
 {
     public class Program
@@ -21,6 +25,12 @@ namespace ECommerce
             builder.Services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ECommerceDbContext>()
                 .AddDefaultTokenProviders();
+
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             //builder.Services.AddOpenApi();
             builder.Services.AddEndpointsApiExplorer(); // Required for Swagger

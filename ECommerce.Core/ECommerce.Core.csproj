@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< HEAD
-=======
     <Folder Include="Repository.Contract\" />
->>>>>>> 0804e9add3b9992e97b915c34bf6f24661df96d5
     <Folder Include="Services.Contract\" />
   </ItemGroup>
 

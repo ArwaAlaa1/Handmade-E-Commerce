@@ -60,7 +60,7 @@ namespace ECommerce.Controllers
                 };
 
                 await _unitOfWork.Repository<Category>().AddAsync(category);
-                _unitOfWork.Save();
+                await _unitOfWork.SaveAsync();
 
                 return CreatedAtAction(nameof(Get), new { id = category.Id }, dto);
             }
@@ -78,7 +78,7 @@ namespace ECommerce.Controllers
                 existing.Name = dto.Name;
 
                 _unitOfWork.Repository<Category>().Update(existing);
-                _unitOfWork.Save();
+                await _unitOfWork.SaveAsync();
 
                 return NoContent();
             }
@@ -91,7 +91,7 @@ namespace ECommerce.Controllers
                 if (category == null) return NotFound();
 
                 _unitOfWork.Repository<Category>().Delete(category);
-                _unitOfWork.Save();
+                await _unitOfWork.SaveAsync();
 
                 return NoContent();
             }

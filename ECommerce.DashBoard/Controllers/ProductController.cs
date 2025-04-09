@@ -59,7 +59,7 @@ namespace ECommerce.DashBoard.Controllers
             };
 
             await _unitOfWork.Repository<Product>().AddAsync(product);
-            _unitOfWork.Save();
+            _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -86,13 +86,15 @@ namespace ECommerce.DashBoard.Controllers
             return View(vm);
         }
 
+        // ... other code ...
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ProductVM vm)
+        public async Task<IActionResult> Edit(ProductVM vm)
         {
             if (!ModelState.IsValid)
             {
-                var categories = _unitOfWork.Repository<Category>().GetAllAsync().Select(c => new SelectListItem
+                var categories = (await _unitOfWork.Repository<Category>().GetAllAsync()).Select(c => new SelectListItem
                 {
                     Value = c.Id.ToString(),
                     Text = c.Name
@@ -111,7 +113,7 @@ namespace ECommerce.DashBoard.Controllers
             };
 
             _unitOfWork.Repository<Product>().Update(product);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -125,13 +127,14 @@ namespace ECommerce.DashBoard.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var product =await  _unitOfWork.Repository<Product>().GetByIdAsync(id);
             if (product == null) return NotFound();
-
+          
             _unitOfWork.Repository<Product>().Delete(product);
-            _unitOfWork.Save();
+            
+            await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
     }

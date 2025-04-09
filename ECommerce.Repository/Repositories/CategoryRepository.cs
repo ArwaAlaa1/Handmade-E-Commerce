@@ -25,5 +25,6 @@ namespace ECommerce.Repository.Repositories
                                  .Include(c => c.Products)
                                  .FirstOrDefaultAsync(c => c.Id == id);
         }
+
     }
 }

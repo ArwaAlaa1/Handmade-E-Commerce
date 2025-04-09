@@ -15,16 +15,7 @@ namespace ECommerce.Core
         Task<T?> GetByIdAsync(int id);
         Task AddAsync(T entity);
         void Update(T entity);
-        void Delete(T entity);
-        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
-        void Add(T obj);
-
-        Task<IEnumerable<T>> GetAll();
-        Task<T?> GetById(int id);
-        void Add(T entity);
-        void Update(T entity);
-        void Remove(T entity);
-      
+       void Delete(T entity);
 
     }
 }

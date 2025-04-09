@@ -18,7 +18,6 @@ namespace ECommerce.Controllers
             _logger = logger;
         }
 
-<<<<<<< HEAD
         [HttpGet(Name = "GetWeatherForecast")]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -30,19 +29,7 @@ namespace ECommerce.Controllers
             })
             .ToArray();
         }
-=======
-        //[HttpGet(Name = "GetWeatherForecast")]
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //    {
-        //        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //        TemperatureC = Random.Shared.Next(-20, 55),
-        //        Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        //    })
-        //    .ToArray();
-        //}
->>>>>>> 0804e9add3b9992e97b915c34bf6f24661df96d5
+
     }
 
     

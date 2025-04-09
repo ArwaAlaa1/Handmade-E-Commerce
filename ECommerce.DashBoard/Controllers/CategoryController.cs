@@ -16,13 +16,13 @@ namespace ECommerce.DashBoard.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var categories =await _unitOfWork.Repository<Category>().GetAll();
+            var categories =await _unitOfWork.Repository<Category>().GetAllAsync();
             return View(categories);
         }
 
         public async Task<IActionResult> Details(int id)
         { 
-           var category= await _unitOfWork.Repository<Category>().GetById(id);
+           var category= await _unitOfWork.Repository<Category>().GetByIdAsync(id);
             return View(category);
         }
 
@@ -47,7 +47,7 @@ namespace ECommerce.DashBoard.Controllers
                     Description = category.Description,
                     Photo = imageName
                 };
-                _unitOfWork.Repository<Category>().Add(newCategory);
+                await _unitOfWork.Repository<Category>().AddAsync(newCategory);
                 await _unitOfWork.SaveAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -56,7 +56,7 @@ namespace ECommerce.DashBoard.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var category = await _unitOfWork.Repository<Category>().GetById(id);
+            var category = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
             if (category == null) return NotFound();
             var categoryVM = new CategoryVM
             {
@@ -74,7 +74,7 @@ namespace ECommerce.DashBoard.Controllers
 
             if (ModelState.IsValid)
             {
-                var categoryToUpdate = await _unitOfWork.Repository<Category>().GetById(id);
+                var categoryToUpdate = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
                 if (categoryToUpdate == null) return NotFound();
                 if (categoryVM.Photo != null)
                 {
@@ -102,9 +102,9 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> Delete(int id)
         {
 
-            var category = await _unitOfWork.Repository<Category>().GetById(id);
-            category.IsDeleted = true;
-            _unitOfWork.Repository<Category>().Update(category);
+            var category = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
+        
+            _unitOfWork.Repository<Category>().Delete(category);
             await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }

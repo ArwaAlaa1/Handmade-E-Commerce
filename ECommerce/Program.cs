@@ -11,6 +11,7 @@ using ECommerce.Core.Services.Contract;
 using ECommerce.Services;
 using ECommerce.Extentions;
 using Microsoft.OpenApi.Models;
+using ECommerce.Core.Services.Contract.SendEmail;
 namespace ECommerce
 {
     public class Program
@@ -31,7 +32,8 @@ namespace ECommerce
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            
+            builder.Services.AddScoped<IEmailProvider, EmailProvider>();
+
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddCors(options =>
             {

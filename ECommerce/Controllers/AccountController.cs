@@ -1,5 +1,6 @@
 ﻿using ECommerce.Core.Models;
 using ECommerce.Core.Services.Contract;
+using ECommerce.Core.Services.Contract.SendEmail;
 using ECommerce.DTOs.IdentityDtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -83,6 +84,138 @@ namespace ECommerce.Controllers
                 Message = "Logout Successfully"
             });
         }
+
+
+        [HttpPost("send_reset_code")]
+        public async Task<IActionResult> SendResetCode(SendPINDto model, [FromServices] IEmailProvider _emailProvider)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    status = 400,
+                    errorMessage = "Invalid ModelState"
+                });
+            }
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user is null)
+            {
+                return NotFound(new
+                {
+                    status = 404,
+                    errorMessage = "Email Not Found!"
+                });
+            }
+
+            int pin = await _emailProvider.SendResetCode(model.Email);
+            user.PasswordResetPin = pin;
+            user.ResetExpires = DateTime.Now.AddMinutes(15);
+            var expireTime = user.ResetExpires.Value.ToString("hh:mm tt");
+            await _userManager.UpdateAsync(user);
+            return Ok(new
+            {
+                status = 200,
+                ExpireAt = "expired at " + expireTime,
+                email = model.Email,
+            });
+        }
+        
+        [HttpPost("verify_pin/{email}")]
+        public async Task<IActionResult> VerifyPin([FromBody] VerfiyPINDto model, [FromRoute] string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    status = 400,
+                    errorMessage = "Invalid ModelState"
+                });
+            }
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return NotFound(new
+                {
+                    status = 404,
+                    errorMessage = "Email Not Found!"
+                });
+            }
+            if (user.ResetExpires < DateTime.Now || user.ResetExpires is null)
+            {
+                return BadRequest(new
+                {
+                    status = 400,
+                    errorMessage = "Time Expired try to send new pin"
+                });
+            }
+            if (user.PasswordResetPin != model.pin)
+            {
+                return BadRequest(new
+                {
+                    status = 400,
+                    errorMessage = "Invalid pin"
+                });
+            }
+            user.ResetExpires = null;
+            user.PasswordResetPin = null;
+            await _userManager.UpdateAsync(user);
+            return Ok(new
+            {
+                status = 200,
+                message = "PIN verified successfully",
+                email = user.Email,
+            });
+        }
+
+        [HttpPost("forget_password/{email}")]
+        public async Task<IActionResult> ResetPassword([FromBody] ForgetPassDto model, [FromRoute] string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    status = 400,
+                    errorMessage = "Invalid model state."
+                });
+            }
+
+            if (model.NewPassword != model.ConfirmNewPassword)
+            {
+                return BadRequest(new
+                {
+                    status = 400,
+                    errorMessage = "New password and confirm new password do not match."
+                });
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return BadRequest(new
+                {
+                    status = 400,
+                    errorMessage = "Email Not Found!"
+                });
+            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+
+            if (result.Succeeded)
+            {
+                await _userManager.UpdateAsync(user);
+                return Ok(new
+                {
+                    status = 200,
+                    message = "Password changed successfully"
+                });
+            }
+            return BadRequest(new
+            {
+                status = 400,
+                errorMessage = "Invalid model state."
+            });
+        }
+
     }
-    
+
 }

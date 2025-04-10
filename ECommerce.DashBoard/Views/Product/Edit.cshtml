@@ -41,17 +41,23 @@
         <span asp-validation-for="Photos" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label>Current Images:</label>
-        <div class="row">
-            @foreach (var photo in Model.ExistingPhotoLinks)
-            {
-                <div class="col-md-2 mb-2">
-                    <img src="@photo" class="img-thumbnail" alt="Photo" />
-                </div>
-            }
-        </div>
+   <div class="form-group">
+    <label>Current Images:</label>
+    <div class="row">
+        @foreach (var photo in Model.ExistingPhotoLinksWithIds)
+        {
+            <div class="col-md-2 mb-2">
+                <img src="@photo.PhotoLink" class="img-thumbnail" style="max-width:100%;" />
+                <form asp-action="DeletePhoto" method="post" style="margin-top: 5px;">
+                    <input type="hidden" name="photoId" value="@photo.Id" />
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </div>
+        }
     </div>
+</div>
+
     <button type="submit" class="btn btn-warning">Update</button>
     <a asp-action="Index" class="btn btn-secondary">Back</a>
 </form>

@@ -114,7 +114,11 @@ namespace ECommerce.DashBoard.Controllers
                     Value = c.Id.ToString(),
                     Text = c.Name
                 }),
-                ExistingPhotoLinks = photos.Select(p => p.PhotoLink).ToList()
+                ExistingPhotoLinksWithIds = photos.Select(p => new ProductPhotoVM
+                {
+                    Id = p.Id,
+                    PhotoLink = p.PhotoLink
+                }).ToList()
             };
 
             return View(vm);
@@ -154,15 +158,12 @@ namespace ECommerce.DashBoard.Controllers
             {
                 foreach (var photo in vm.Photos)
                 {
-                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
-                    Directory.CreateDirectory(uploadsFolder);
-
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
-                    var filePath = Path.Combine(uploadsFolder, fileName);
+                    var photoPath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products", fileName);
 
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    using (var stream = new FileStream(photoPath, FileMode.Create))
                     {
-                        await photo.CopyToAsync(fileStream);
+                        await photo.CopyToAsync(stream);
                     }
 
                     var photoEntity = new ProductPhoto

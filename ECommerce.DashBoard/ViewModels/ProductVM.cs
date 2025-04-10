@@ -27,6 +27,8 @@ namespace ECommerce.DashBoard.ViewModels
 
         // Display existing photos in edit view
         public List<string> ExistingPhotoLinks { get; set; } = new List<string>();
+        public List<ProductPhotoVM> ExistingPhotoLinksWithIds { get; set; } = new();
+
     }
 
 }

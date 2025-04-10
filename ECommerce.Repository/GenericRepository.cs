@@ -63,8 +63,5 @@ namespace ECommerce.Repository
             var result = await _dbSet.FindAsync(id);
             return result;
         }
-
-     
-
     }
 }

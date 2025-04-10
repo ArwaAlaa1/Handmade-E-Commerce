@@ -19,5 +19,7 @@ namespace ECommerce.Core.Models
         // Foreign key
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
+        public ICollection<ProductPhoto> ProductPhotos { get; set; } = new List<ProductPhoto>();
     }
 }

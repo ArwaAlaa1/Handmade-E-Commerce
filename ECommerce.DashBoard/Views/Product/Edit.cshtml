@@ -35,6 +35,23 @@
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
 
+    <div class="form-group">
+        <label asp-for="Photos">Add New Images</label>
+        <input asp-for="Photos" class="form-control" type="file" multiple />
+        <span asp-validation-for="Photos" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Current Images:</label>
+        <div class="row">
+            @foreach (var photo in Model.ExistingPhotoLinks)
+            {
+                <div class="col-md-2 mb-2">
+                    <img src="@photo" class="img-thumbnail" alt="Photo" />
+                </div>
+            }
+        </div>
+    </div>
     <button type="submit" class="btn btn-warning">Update</button>
     <a asp-action="Index" class="btn btn-secondary">Back</a>
 </form>

@@ -9,10 +9,12 @@ namespace ECommerce.DashBoard.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IUnitOfWork unitOfWork)
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -60,6 +62,34 @@ namespace ECommerce.DashBoard.Controllers
 
             await _unitOfWork.Repository<Product>().AddAsync(product);
             _unitOfWork.SaveAsync();
+
+            // Save uploaded photos
+            if (vm.Photos != null && vm.Photos.Any())
+            {
+                foreach (var photo in vm.Photos)
+                {
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(fileStream);
+                    }
+
+                    var photoEntity = new ProductPhoto
+                    {
+                        PhotoLink = "/images/products/" + fileName,
+                        ProductId = product.Id
+                    };
+
+                    await _unitOfWork.Repository<ProductPhoto>().AddAsync(photoEntity);
+                }
+                _unitOfWork.SaveAsync();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -67,6 +97,9 @@ namespace ECommerce.DashBoard.Controllers
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
             if (product == null) return NotFound();
+
+            var photos = await _unitOfWork.Repository<ProductPhoto>()
+        .GetAllAsync(p => p.ProductId == product.Id);
 
             var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
             var vm = new ProductVM
@@ -80,7 +113,8 @@ namespace ECommerce.DashBoard.Controllers
                 {
                     Value = c.Id.ToString(),
                     Text = c.Name
-                })
+                }),
+                ExistingPhotoLinks = photos.Select(p => p.PhotoLink).ToList()
             };
 
             return View(vm);
@@ -114,6 +148,34 @@ namespace ECommerce.DashBoard.Controllers
 
             _unitOfWork.Repository<Product>().Update(product);
             await _unitOfWork.SaveAsync();
+
+            // Save uploaded photos
+            if (vm.Photos != null && vm.Photos.Any())
+            {
+                foreach (var photo in vm.Photos)
+                {
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(fileStream);
+                    }
+
+                    var photoEntity = new ProductPhoto
+                    {
+                        PhotoLink = "/images/products/" + fileName,
+                        ProductId = product.Id
+                    };
+
+                    await _unitOfWork.Repository<ProductPhoto>().AddAsync(photoEntity);
+                }
+                _unitOfWork.SaveAsync();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

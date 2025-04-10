@@ -53,6 +53,11 @@ namespace ECommerce.Repository
             return result;
         }
 
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter)
+        {
+            return await _dbSet.Where(filter).ToListAsync();
+        }
+
         public async Task<T?> GetByIdAsync(int id)
         {
             var result = await _dbSet.FindAsync(id);

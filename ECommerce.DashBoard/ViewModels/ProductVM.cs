@@ -21,6 +21,12 @@ namespace ECommerce.DashBoard.ViewModels
         public int CategoryId { get; set; }
 
         public IEnumerable<SelectListItem> Categories { get; set; }
+
+        //  Handle new uploaded photos
+        public List<IFormFile> Photos { get; set; } = new List<IFormFile>();
+
+        // Display existing photos in edit view
+        public List<string> ExistingPhotoLinks { get; set; } = new List<string>();
     }
 
 }

@@ -33,6 +33,12 @@
         <span asp-validation-for="CategoryId" class="text-danger"></span>
     </div>
 
+    <div class="form-group">
+        <label asp-for="Photos">Upload Product Images</label>
+        <input asp-for="Photos" class="form-control" type="file" multiple />
+        <span asp-validation-for="Photos" class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-success">Create</button>
     <a asp-action="Index" class="btn btn-secondary">Back</a>
 </form>

@@ -180,6 +180,31 @@ namespace ECommerce.DashBoard.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePhoto(int photoId, int productId)
+        {
+            var photo = await _unitOfWork.Repository<ProductPhoto>().GetByIdAsync(photoId);
+            if (photo == null)
+                return NotFound();
+
+            // Remove from file system
+            var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, photo.PhotoLink.TrimStart('/'));
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+
+            // Remove from database
+            _unitOfWork.Repository<ProductPhoto>().Delete(photo);
+            _unitOfWork.SaveAsync();
+
+            return RedirectToAction("Edit", new { id = productId });
+        }
+
+
+
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);

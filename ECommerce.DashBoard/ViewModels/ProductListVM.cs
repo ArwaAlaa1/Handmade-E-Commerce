@@ -13,5 +13,6 @@
         public string CategoryName { get; set; }
 
         public bool IsOnSale { get; set; }
+        public int? SaleId { get; set; }
     }
 }

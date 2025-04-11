@@ -1,15 +1,13 @@
-﻿@model ECommerce.Core.Models.Product
-
+﻿@model ECommerce.Core.Models.Sale
 @{
-    ViewData["Title"] = "Delete Product";
+    ViewData["Title"] = "Delete Sale";
 }
-
 <div class="row">
     <div class="col-xl">
         <div class="card mb-4 border-danger">
             <!-- Header -->
             <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Delete Product</h5>
+                <h5 class="mb-0">Delete Sale</h5>
                 <a asp-action="Index" class="btn btn-sm btn-outline-light">
                     <i class="bx bx-arrow-back me-1"></i> Back to List
                 </a>
@@ -17,7 +15,9 @@
 
             <div class="card-body text-center">
                 <div class="alert alert-danger">
-                    Are you sure you want to delete <strong>@Model.Name</strong>?
+                    Are you sure you want to delete the discount for
+                    <strong>@Model.Product?.Name</strong>
+                    with <strong>@Model.Percent%</strong>?
                 </div>
 
                 <form asp-action="DeleteConfirmed" method="post" class="d-inline">

@@ -85,7 +85,7 @@ namespace ECommerce.DashBoard.Controllers
             };
 
             await _unitOfWork.Repository<Product>().AddAsync(product);
-            _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveAsync();
 
             // Save uploaded photos
             if (vm.Photos != null && vm.Photos.Any())
@@ -111,7 +111,7 @@ namespace ECommerce.DashBoard.Controllers
 
                     await _unitOfWork.Repository<ProductPhoto>().AddAsync(photoEntity);
                 }
-                _unitOfWork.SaveAsync();
+                await _unitOfWork.SaveAsync();
             }
 
             return RedirectToAction(nameof(Index));

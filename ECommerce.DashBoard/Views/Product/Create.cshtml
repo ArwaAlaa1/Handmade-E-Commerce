@@ -5,44 +5,114 @@
     ViewData["Title"] = "Create Product";
 }
 
-<h2>Create Product</h2>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-6">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Create Product</h5>
+                <small class="text-muted float-end">Add new product</small>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="Name"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-user"></i></span>
+                            <input asp-for="Name" type="text" class="form-control" placeholder="Product name" />
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
 
-<form asp-action="Create" method="post">
-    <div class="mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="Description"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-detail"></i></span>
+                            <textarea asp-for="Description" class="form-control" placeholder="Product description"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="Cost"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-dollar"></i></span>
+                            <input asp-for="Cost" type="text" class="form-control" placeholder="Cost" />
+                        </div>
+                        <span asp-validation-for="Cost" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="CategoryId"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-category"></i></span>
+                            <select asp-for="CategoryId" class="form-select" asp-items="Model.Categories">
+                                <option value="">-- Select Category --</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="Photos">Upload Product Images</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-upload"></i></span>
+                            <input asp-for="Photos" type="file" class="form-control" multiple />
+                        </div>
+                        <span asp-validation-for="Photos" class="text-danger"></span>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a asp-action="Index" asp-controller="Product" class="btn btn-danger">Back To List</a>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Cost" class="form-label"></label>
-        <input asp-for="Cost" class="form-control" />
-        <span asp-validation-for="Cost" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="CategoryId" class="form-label"></label>
-        <select asp-for="CategoryId" class="form-select" asp-items="Model.Categories">
-            <option value="">-- Select Category --</option>
-        </select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Photos">Upload Product Images</label>
-        <input asp-for="Photos" class="form-control" type="file" multiple />
-        <span asp-validation-for="Photos" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-success">Create</button>
-    <a asp-action="Index" class="btn btn-secondary">Back</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+@* <h2>Create Product</h2> *@
+
+@* <form asp-action="Create" method="post"> *@
+@*     <div class="mb-3"> *@
+@*         <label asp-for="Name" class="form-label"></label> *@
+@*         <input asp-for="Name" class="form-control" /> *@
+@*         <span asp-validation-for="Name" class="text-danger"></span> *@
+@*     </div> *@
+
+@*     <div class="mb-3"> *@
+@*         <label asp-for="Description" class="form-label"></label> *@
+@*         <textarea asp-for="Description" class="form-control"></textarea> *@
+@*     </div> *@
+
+@*     <div class="mb-3"> *@
+@*         <label asp-for="Cost" class="form-label"></label> *@
+@*         <input asp-for="Cost" class="form-control" /> *@
+@*         <span asp-validation-for="Cost" class="text-danger"></span> *@
+@*     </div> *@
+
+@*     <div class="mb-3"> *@
+@*         <label asp-for="CategoryId" class="form-label"></label> *@
+@*         <select asp-for="CategoryId" class="form-select" asp-items="Model.Categories"> *@
+@*             <option value="">-- Select Category --</option> *@
+@*         </select> *@
+@*         <span asp-validation-for="CategoryId" class="text-danger"></span> *@
+@*     </div> *@
+
+@*     <div class="form-group"> *@
+@*         <label asp-for="Photos">Upload Product Images</label> *@
+@*         <input asp-for="Photos" class="form-control" type="file" multiple /> *@
+@*         <span asp-validation-for="Photos" class="text-danger"></span> *@
+@*     </div> *@
+
+@*     <button type="submit" class="btn btn-success">Create</button> *@
+@*     <a asp-action="Index" class="btn btn-secondary">Back</a> *@
+@* </form> *@
+
+@* @section Scripts { *@
+@*     <partial name="_ValidationScriptsPartial" /> *@
+@* } *@

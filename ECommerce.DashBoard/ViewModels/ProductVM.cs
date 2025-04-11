@@ -1,4 +1,5 @@
 ﻿using ECommerce.Core.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,12 +18,14 @@ namespace ECommerce.DashBoard.ViewModels
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public decimal Cost { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Please select a category.")]
         public int CategoryId { get; set; }
 
+        [ValidateNever]
         public IEnumerable<SelectListItem> Categories { get; set; }
 
         //  Handle new uploaded photos
+        [ValidateNever]
         public List<IFormFile> Photos { get; set; } = new List<IFormFile>();
 
         // Display existing photos in edit view

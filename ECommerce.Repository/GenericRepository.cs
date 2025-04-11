@@ -58,6 +58,25 @@ namespace ECommerce.Repository
             return await _dbSet.Where(filter).ToListAsync();
         }
 
+
+        public async Task<IEnumerable<T>> GetAllAsync(
+    Expression<Func<T, bool>> filter = null,
+    string includeProperties = "")
+        {
+            IQueryable<T> query = _dbSet.Where(t => !t.IsDeleted);
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            foreach (var includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return await query.ToListAsync();
+        }
+
+
         public async Task<T?> GetByIdAsync(int id)
         {
             var result = await _dbSet.FindAsync(id);

@@ -16,7 +16,6 @@ namespace ECommerce.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        // GET: api/products
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

@@ -25,7 +25,8 @@ namespace ECommerce
             builder.Services.AddControllers();
             
             builder.Services.AddDbContext<ECommerceDbContext>(options =>
-               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+               options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
+               ServiceLifetime.Transient);
 
            
 
@@ -102,7 +103,7 @@ namespace ECommerce
             }
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hand-made E-Commerce v1"));
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();

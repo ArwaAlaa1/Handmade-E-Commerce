@@ -5,6 +5,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ECommerce.DTOs.AddressDtos;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
+
+using ECommerce.DTOs.IdentityDtos;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ECommerce.Controllers
 {
@@ -12,14 +18,16 @@ namespace ECommerce.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-
+       
         private readonly UserManager<AppUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserController(UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
+        public UserController(UserManager<AppUser> userManager, IUnitOfWork unitOfWork ,IWebHostEnvironment webHostEnvironment)
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet("GetUser/{email}")]
@@ -105,6 +113,48 @@ namespace ECommerce.Controllers
 
             return Ok(address);
         }
+
+        [HttpPost("UpdateUserData")]
+        public async Task<IActionResult> UpdateUserData(string email,UpdateUserData userdata )
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return NotFound();
+            user.UserName = userdata.UserName;
+            user.PhoneNumber = userdata.Phone;
+            _userManager.UpdateAsync(user);
+            await _unitOfWork.SaveAsync();
+            return Ok();
+        }
+
+
+        [HttpPost("AddUserImage")]
+        public async Task<IActionResult> AddUserImage(AddPhotoDTO addPhoto)
+        {
+
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == addPhoto.Email);
+            if (user == null) return NotFound();
+            if (addPhoto.Photo == null || addPhoto.Photo.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+            string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + addPhoto.Photo.FileName;
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            await using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await addPhoto.Photo.CopyToAsync(fileStream);
+            }
+            user.Photo = uniqueFileName;
+            return Ok(uniqueFileName);
+        }
+       
 
     }
 }

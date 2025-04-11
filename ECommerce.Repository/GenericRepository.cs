@@ -82,5 +82,18 @@ namespace ECommerce.Repository
             var result = await _dbSet.FindAsync(id);
             return result;
         }
+
+        public async Task<T?> GetByIdWithIncludeAsync(int id, string includeProperties)
+        {
+            IQueryable<T> query = _dbSet;
+
+            foreach (var includeProperty in includeProperties.Split(',', StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty.Trim());
+            }
+
+            return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+        }
+
     }
 }

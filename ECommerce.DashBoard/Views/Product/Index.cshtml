@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ECommerce.Core.Models.Product>
+﻿@model IEnumerable<ECommerce.DashBoard.ViewModels.ProductListVM>
 
 
 @{
@@ -32,8 +32,9 @@
             <thead>
                 <tr>
                     <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().Name)</th>
+                        <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().CategoryName)</th>
                     <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().Cost)</th>
-                    <th style="width: 20%;">Category</th>
+                    <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().DiscountedPrice)</th>
                    
                     <th style="width: 10%;"></th> <!-- For actions -->
                 </tr>
@@ -44,8 +45,17 @@
                 {
                     <tr>
                             <td>@item.Name</td>
-                            <td>@item.Cost.ToString("C")</td>
-                            <td>@item.Category?.Name</td>
+                            <td>@item.CategoryName</td>
+                            @if (item.IsOnSale)
+                            {
+                                <td class="text-danger"><s>@item.Cost.ToString("C")</s></td>
+                                <td class="text-success fw-bold">@item.DiscountedPrice.ToString("C")</td>
+                            }
+                            else
+                            {
+                                <td>@item.Cost.ToString("C")</td>
+                            }
+                            
                         <td>
                             <div class="dropdown">
                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

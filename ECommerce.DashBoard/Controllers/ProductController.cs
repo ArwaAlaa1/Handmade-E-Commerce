@@ -21,8 +21,29 @@ namespace ECommerce.DashBoard.Controllers
         {
 
             var products = await _unitOfWork.Repository<Product>()
-     .GetAllAsync(includeProperties: "Category");
-            return View(products);
+         .GetAllAsync(includeProperties: "Category,Sales");
+
+            var productVMs = products.Select(p =>
+            {
+                var activeSale = p.Sales?.FirstOrDefault(s =>
+                    s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
+
+                decimal discountedPrice = activeSale != null
+                    ? p.Cost * (1 - activeSale.Percent / 100m)
+                    : p.Cost;
+
+                return new ProductListVM
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Cost = p.Cost,
+                    DiscountedPrice = discountedPrice,
+                    CategoryName = p.Category?.Name,
+                    IsOnSale = activeSale != null
+                };
+            });
+
+            return View(productVMs);
         }
 
         public async Task<IActionResult> Create()

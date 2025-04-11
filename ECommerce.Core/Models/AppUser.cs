@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Core.Models
 {
-    public class appuserbaseentity : BaseEntity
-    {
-    }
+  
     public class AppUser:IdentityUser
     {
         public string DisplayName { get; set; }

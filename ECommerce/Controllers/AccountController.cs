@@ -2,7 +2,9 @@
 using ECommerce.Core.Services.Contract;
 using ECommerce.Core.Services.Contract.SendEmail;
 using ECommerce.DTOs.IdentityDtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -85,7 +87,7 @@ namespace ECommerce.Controllers
             });
         }
 
-
+        
         [HttpPost("send_reset_code")]
         public async Task<IActionResult> SendResetCode(SendPINDto model, [FromServices] IEmailProvider _emailProvider)
         {
@@ -216,6 +218,51 @@ namespace ECommerce.Controllers
             });
         }
 
+        [Authorize]
+        [HttpPost("change_password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto model)
+        {
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user is null)
+            {
+                return BadRequest(new
+                {
+                    message = "User Not Authorized !"
+                });
+            }
+
+            var checkoldpass = _userManager.CheckPasswordAsync(user, model.OldPassword);
+            if (!checkoldpass.Result)
+            {
+                return BadRequest(new
+                {
+                    message = "Old Password is not correct !"
+                });
+            }
+
+            var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            if (!result.Succeeded)
+            {
+                return BadRequest(new
+                {
+                    Message = "Failure in Change Password!"
+                });
+                
+            }
+            else
+            {
+                await _signInManager.RefreshSignInAsync(user);
+
+                return Ok(new
+                {
+
+                    Message = "Password Change Sucessfully !"
+                });
+
+            }
+        }
+    
     }
 
 }

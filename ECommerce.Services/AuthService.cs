@@ -28,6 +28,7 @@ namespace ECommerce.Services
             var authClaims = new List<Claim>
             {
                 new Claim(ClaimTypes.GivenName, user.DisplayName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
             };

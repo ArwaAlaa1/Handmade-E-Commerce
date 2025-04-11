@@ -5,31 +5,101 @@
     ViewData["Title"] = "Product List";
 }
 
-<h2>Product List</h2>
+<div class="card">
+    <!-- Header: Title + Buttons -->
+    <div class="d-flex justify-content-between align-items-center px-3 pt-3">
+        <h5 class="card-header mb-0">Product List</h5>
 
-<a class="btn btn-primary mb-3" asp-action="Create">Create New Product</a>
+        <div class="d-flex flex-wrap gap-2">
+            <form asp-action="Create" method="get" class="mb-0">
+                <button type="submit" class="btn btn-lg btn-primary">
+                    <i class="icon-base bx bx-plus icon-sm me-1"></i> New Product
+                </button>
+            </form>
 
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(m => m.First().Name)</th>
-            <th>@Html.DisplayNameFor(m => m.First().Cost)</th>
-            <th>@Html.DisplayNameFor(m => m.First().Category.Name)</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Cost.ToString("C")</td>
-                <td>@item.Category?.Name</td>
-                <td>
-                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+            <form asp-action="Index" method="get" class="d-flex gap-2 mb-0">
+                <button type="submit" name="Active" value="all" class="btn btn-outline-primary">All Products</button>
+                @* <button type="submit" name="Active" value="active" class="btn btn-outline-success">Active</button> *@
+                @* <button type="submit" name="Active" value="nonactive" class="btn btn-outline-danger">Non-Active</button> *@
+            </form>
+        </div>
+    </div>
+
+    <!-- Table -->
+        @if(Model.Count()>0){
+    <div class="table-responsive text-nowrap">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().Name)</th>
+                    <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().Cost)</th>
+                    <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().Category.Name)</th>
+                   
+                    <th style="width: 10%;"></th> <!-- For actions -->
+                </tr>
+            </thead>
+            <tbody class="table-border-bottom-0">
+            
+                @foreach (var item in Model)
+                {
+                    <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Cost.ToString("C")</td>
+                            <td>@item.Category?.Name</td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    @* <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id"><i class="bx bx-info-circle me-1"></i> Details</a> *@
+                                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id"><i class="bx bx-edit-alt me-1"></i> Edit</a>
+                                        <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id"><i class="bx bx-trash me-1"></i> Delete</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+	}
+	else
+	{
+		<div class="alert alert-info" role="alert">
+			No products available.
+		</div>
+	}
+</div>
+
+<hr class="my-4">
+
+
+@* <h2>Product List</h2> *@
+
+@* <a class="btn btn-primary mb-3" asp-action="Create">Create New Product</a> *@
+
+@* <table class="table table-bordered table-striped"> *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th>@Html.DisplayNameFor(m => m.First().Name)</th> *@
+@*             <th>@Html.DisplayNameFor(m => m.First().Cost)</th> *@
+@*             <th>@Html.DisplayNameFor(m => m.First().Category.Name)</th> *@
+@*             <th>Actions</th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@*         @foreach (var item in Model) *@
+@*         { *@
+@*             <tr> *@
+@*                 <td>@item.Name</td> *@
+@*                 <td>@item.Cost.ToString("C")</td> *@
+@*                 <td>@item.Category?.Name</td> *@
+@*                 <td> *@
+@*                     <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a> *@
+@*                     <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a> *@
+@*                 </td> *@
+@*             </tr> *@
+@*         } *@
+@*     </tbody> *@
+@* </table> *@

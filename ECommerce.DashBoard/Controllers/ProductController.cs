@@ -216,7 +216,7 @@ namespace ECommerce.DashBoard.Controllers
             return View(product);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

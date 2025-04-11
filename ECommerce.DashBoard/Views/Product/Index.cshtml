@@ -46,18 +46,7 @@
                     <tr>
                             <td>@item.Name</td>
                             <td>@item.CategoryName</td>
-                           @*  @if (item.IsOnSale)
-                            {
-                                <td class="text-danger"><s>@item.Cost.ToString("C")</s></td>
-                                <td class="text-success fw-bold">@item.DiscountedPrice.ToString("C")</td>
-                            }
-                            else
-                            {
-                                <td>@item.Cost.ToString("C")</td>
-                                <td>@item.Cost.ToString("C")</td>
-                                <td>No Discount</td>
-
-                            } *@
+                          
                             @if (item.IsOnSale)
                             {
                                 <td class="text-danger"><s>@item.Cost.ToString("C")</s></td>

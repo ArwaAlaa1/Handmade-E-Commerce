@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace ECommerce.DashBoard.ViewModels
@@ -19,7 +20,7 @@ namespace ECommerce.DashBoard.ViewModels
 
         [Required]
         public int ProductId { get; set; }
-
+        [ValidateNever]
         public IEnumerable<SelectListItem> Products { get; set; }
     }
 

@@ -1,5 +1,69 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
+@model ECommerce.DashBoard.ViewModels.SaleVM
 @{
+    ViewData["Title"] = "Create Sale";
 }
+
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-6">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Create Sale</h5>
+                <small class="text-muted float-end">Add new sale</small>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="Percent"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-percent"></i></span>
+                            <input asp-for="Percent" type="number" class="form-control" placeholder="Discount percent" />
+                        </div>
+                        <span asp-validation-for="Percent" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="StartDate"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-calendar"></i></span>
+                            <input asp-for="StartDate" type="date" class="form-control" />
+                        </div>
+                        <span asp-validation-for="StartDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="EndDate"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-calendar"></i></span>
+                            <input asp-for="EndDate" type="date" class="form-control" />
+                        </div>
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="ProductId"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-package"></i></span>
+                            <select asp-for="ProductId" class="form-select" asp-items="Model.Products">
+                                <option value="">-- Select Product --</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="ProductId" class="text-danger"></span>
+                    </div>
+
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <a asp-action="Index" asp-controller="Sale" class="btn btn-danger">Back To List</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

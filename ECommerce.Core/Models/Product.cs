@@ -13,13 +13,13 @@ namespace ECommerce.Core.Models
 
         public string Description { get; set; }
         public decimal Cost { get; set; }
-        public string Photo { get; set;}
-        public int SallerId { get; set;}
+        //public string Photo { get; set;}
+        public int? SallerId { get; set;}
 
         // Foreign key
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
 
-        public ICollection<ProductPhoto> ProductPhotos { get; set; } = new List<ProductPhoto>();
+        public virtual ICollection<ProductPhoto> ProductPhotos { get; set; } = new List<ProductPhoto>();
     }
 }

@@ -20,6 +20,7 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> Index()
         {
             var products = await _unitOfWork.Repository<Product>().GetAllAsync();
+
             return View(products);
         }
 
@@ -41,8 +42,20 @@ namespace ECommerce.DashBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductVM vm)
         {
+            ModelState.Remove("Categories");
+
             if (!ModelState.IsValid)
             {
+                foreach (var key in ModelState.Keys)
+                {
+                    var errors = ModelState[key].Errors;
+                    if (errors.Count > 0)
+                    {
+                        Console.WriteLine($"Key: {key} | Errors: {string.Join(",", errors.Select(e => e.ErrorMessage))}");
+                    }
+                }
+
+
                 var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
                 vm.Categories = categories.Select(c => new SelectListItem
                 {
@@ -61,7 +74,7 @@ namespace ECommerce.DashBoard.Controllers
             };
 
             await _unitOfWork.Repository<Product>().AddAsync(product);
-            _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveAsync();
 
             // Save uploaded photos
             if (vm.Photos != null && vm.Photos.Any())

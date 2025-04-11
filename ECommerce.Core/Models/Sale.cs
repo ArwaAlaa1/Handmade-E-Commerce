@@ -9,7 +9,6 @@ namespace ECommerce.Core.Models
 {
     public class Sale : BaseEntity
     {
-        public int Id { get; set; }
 
         [Range(1, 100)]
         public int Percent { get; set; }

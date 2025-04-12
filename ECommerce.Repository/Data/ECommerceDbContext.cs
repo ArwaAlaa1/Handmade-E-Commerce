@@ -18,6 +18,16 @@ namespace ECommerce.DashBoard.Data
 
         public DbSet<Sale> Sales { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Sale>()
+                  .HasOne(s => s.Product)
+                  .WithMany(p => p.Sales)
+                  .HasForeignKey(s => s.ProductId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+        }
     }
 }

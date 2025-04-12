@@ -241,11 +241,24 @@ namespace ECommerce.DashBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product =await  _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            // Load product with related Sales
+            var product = await _unitOfWork.Repository<Product>()
+                .GetByIdWithIncludeAsync(id, "Sales");
+
             if (product == null) return NotFound();
-          
+
+            // delete related sales
+            if (product.Sales != null && product.Sales.Any())
+            {
+                foreach (var sale in product.Sales.ToList())
+                {
+                    _unitOfWork.Repository<Sale>().Delete(sale);
+                }
+            }
+
+            // Delete product
             _unitOfWork.Repository<Product>().Delete(product);
-            
+
             await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }

@@ -144,8 +144,16 @@ namespace ECommerce.DashBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sale = await _unitOfWork.Repository<Sale>().GetByIdAsync(id);
+            var sale = await _unitOfWork.Repository<Sale>()
+                .GetByIdWithIncludeAsync(id, "Product");
+
             if (sale == null) return NotFound();
+
+            // Optionally remove the sale from product manually (if tracked)
+            if (sale.Product != null)
+            {
+                sale.Product.Sales.Remove(sale); // Only if needed
+            }
 
             _unitOfWork.Repository<Sale>().Delete(sale);
             await _unitOfWork.SaveAsync();

@@ -21,5 +21,8 @@ namespace ECommerce.Core.Models
         public virtual Category Category { get; set; }
 
         public virtual ICollection<ProductPhoto> ProductPhotos { get; set; } = new List<ProductPhoto>();
+
+        public ICollection<Sale> Sales { get; set; }
+
     }
 }

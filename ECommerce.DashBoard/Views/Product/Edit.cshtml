@@ -5,62 +5,84 @@
     ViewData["Title"] = "Edit Product";
 }
 
-<h2>Edit Product</h2>
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <!-- Header -->
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Edit Product</h5>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="bx bx-arrow-back me-1"></i> Back to List
+                </a>
+            </div>
 
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+            <div class="card-body">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="Id" />
 
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
 
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                    </div>
 
-    <div class="form-group">
-        <label asp-for="Cost"></label>
-        <input asp-for="Cost" class="form-control" />
-        <span asp-validation-for="Cost" class="text-danger"></span>
-    </div>
+                    <div class="mb-3">
+                        <label asp-for="Cost" class="form-label"></label>
+                        <input asp-for="Cost" class="form-control" />
+                        <span asp-validation-for="Cost" class="text-danger"></span>
+                    </div>
 
-    <div class="form-group">
-        <label asp-for="CategoryId">Category</label>
-        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
-        <span asp-validation-for="CategoryId" class="text-danger"></span>
-    </div>
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label">Category</label>
+                        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
 
-    <div class="form-group">
-        <label>Current Photos</label>
-        <div class="row">
-            @foreach (var photo in Model.ExistingPhotoLinksWithIds)
-            {
-                <div class="col-md-2 mb-3">
-                    <img src="@photo.PhotoLink" class="img-thumbnail" style="max-width: 100%;" />
-                    <form asp-action="DeletePhoto" method="post" style="margin-top: 5px;">
-                        <input type="hidden" name="photoId" value="@photo.Id" />
-                        <input type="hidden" name="productId" value="@Model.Id" />
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
-                </div>
-            }
+                    @* Display Current Image *@
+                    <div class="mb-4">
+                        <label class="form-label">Current Photos</label>
+                        <div class="row">
+                            @foreach (var photo in Model.ExistingPhotoLinksWithIds)
+                            {
+                                <div class="col-md-2 mb-3 text-center">
+                                    <img src="@photo.PhotoLink" class="img-thumbnail mb-2" style="max-width: 100%;" />
+                                    <form asp-action="DeletePhoto" method="post">
+                                        <input type="hidden" name="photoId" value="@photo.Id" />
+                                        <input type="hidden" name="productId" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger w-100">Delete</button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="Photos" class="form-label">Upload New Photos</label>
+                        <input asp-for="Photos" type="file" name="Photos" multiple class="form-control" />
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bx bx-save me-1"></i> Save Changes
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bx bx-x me-1"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
-    <div class="form-group">
-        <label for="Photos">Upload New Photos</label>
-        <input asp-for="Photos" type="file" name="Photos" multiple class="form-control" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Save Changes</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-</form>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+

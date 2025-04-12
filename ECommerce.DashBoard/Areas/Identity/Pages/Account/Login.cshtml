@@ -46,10 +46,10 @@
                             <label class="form-label" asp-for="Input.Password">Password</label>
                             <div class="input-group input-group-merge">
                                 <input type="password" asp-for="Input.Password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
-                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span> 
 
-                                <span asp-validation-for="Input.Password" class="text-danger"></span>
                             </div>
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
                         <div class="mb-8">
                             <div class="d-flex justify-content-between mt-8">
@@ -86,5 +86,7 @@
 
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @* <partial name="_ValidationScriptsPartial" /> *@
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 }

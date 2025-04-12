@@ -11,6 +11,8 @@ namespace ECommerce.DashBoard.ViewModels
         [MaxLength(80)]
         [Required(ErrorMessage = "Description is required")]
         public string Description { get; set; }
+
+       
         public IFormFile? Photo { get; set; }
         public string? PhotoName { get; set; }
 

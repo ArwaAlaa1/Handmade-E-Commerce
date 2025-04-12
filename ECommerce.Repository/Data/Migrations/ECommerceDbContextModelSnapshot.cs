@@ -73,7 +73,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Address");
+                    b.ToTable("Address", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.AppUser", b =>
@@ -191,7 +191,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.Product", b =>
@@ -235,7 +235,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.ProductPhoto", b =>
@@ -269,7 +269,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductPhotos");
+                    b.ToTable("ProductPhotos", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.Sale", b =>
@@ -308,7 +308,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Sales");
+                    b.ToTable("Sales", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

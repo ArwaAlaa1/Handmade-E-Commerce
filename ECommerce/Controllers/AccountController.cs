@@ -17,13 +17,15 @@ namespace ECommerce.Controllers
         private readonly IAuthService _authService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IEmailProvider _emailProvider;
 
         public AccountController(IAuthService authService, UserManager<AppUser> userManager
-            , SignInManager<AppUser> signInManager)
+            , SignInManager<AppUser> signInManager,IEmailProvider emailProvider)
         {
             _authService = authService;
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailProvider = emailProvider;
         }
 
         [HttpPost("register")]
@@ -40,6 +42,16 @@ namespace ECommerce.Controllers
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded) return BadRequest(result.Errors);
             var token = await _authService.CreateTokenAsync(user);
+            var tokene = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var confirmationLink = Url.Action(
+                "ConfirmEmail", // Action method name
+                "Account",      // Controller name
+                new { userId = user.Id, token = tokene },
+                protocol: HttpContext.Request.Scheme); // Generate full URL
+
+            // Send the confirmation link to the user's email
+            await _emailProvider.SendConfirmAccount(user.Email, confirmationLink);
             return Ok(new UserDto()
             {
                 Token = token,
@@ -56,6 +68,10 @@ namespace ECommerce.Controllers
             var user = await _userManager.FindByEmailAsync(loginDto.EmailOrUserName) ??
                  await _userManager.FindByNameAsync(loginDto.EmailOrUserName);
 
+          if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
+            {
+                return BadRequest(new {Message= "Please confirm your email before signing in." });
+            }
             if (user == null) return Unauthorized(new
             {
                 Message = "UserName or Email is InValid"
@@ -68,7 +84,7 @@ namespace ECommerce.Controllers
 
                     Message = "Invalid Password !"
                 });
-
+         
             return Ok(new UserDto()
             {
                 DisplayName = user.DisplayName,
@@ -76,6 +92,22 @@ namespace ECommerce.Controllers
                 Token = await _authService.CreateTokenAsync(user)
             });
         }
+
+        
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return NotFound("User not found");
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+                return Ok("Email confirmed successfully");
+
+            return BadRequest("Email confirmation failed");
+        }
+
+
 
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()

@@ -33,9 +33,14 @@ namespace ECommerce.Extentions
                        ValidateIssuerSigningKey = true,
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JWT:SecretKey"])),
                        ValidateLifetime = true,
+                     
                    };
 
                });
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+            });
             return services;
         }
     }

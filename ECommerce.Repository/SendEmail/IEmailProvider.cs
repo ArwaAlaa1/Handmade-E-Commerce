@@ -9,5 +9,6 @@ namespace ECommerce.Core.Services.Contract.SendEmail
     public interface IEmailProvider
     {
         Task<int> SendResetCode(string Email);
+        Task<string> SendConfirmAccount(string Email,string UrlConfirmation);
     }
 }

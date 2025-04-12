@@ -1,0 +1,115 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Confoirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+            color: #000;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: auto;
+            border: 1px solid #ddd;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+
+            .header h2 {
+                color: #333;
+            }
+
+        .content {
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .verification-code {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            letter-spacing: 3px;
+        }
+
+        .instructions {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #777;
+            text-align: center;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Handmade E-Commerce</h2>
+        </div>
+
+        <div class="content">
+            <h3>Email Confirmation</h3>
+            
+            <p>
+                Hi {user.DisplayName},Thank you for registering with Handmade E-Commerce!To complete your registration and verify your email address, please click the link below: 
+                
+            </p>
+
+            <div class="verification-code">
+
+                <a href="{UrlConfirmation}" style="
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  font-family: Arial, sans-serif;
+">
+                    Confirm Email
+                </a>
+
+            </div>
+
+           
+        </div>
+
+        <div class="footer">
+            <p>Best regards,<br>Handmade E-Commerce Team</p>
+        </div>
+    </div>
+</body>
+</html>

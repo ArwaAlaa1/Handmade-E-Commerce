@@ -24,8 +24,6 @@ namespace ECommerce.Repository.Repositories
             return await _context.Products.Include(p => p.Category).ToListAsync();
         }
 
-<<<<<<< HEAD
-=======
         public async Task<IEnumerable<Product>> GetProductsWithFilters(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)
         {
             var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category).Include(i => i.ProductPhotos).AsQueryable();
@@ -73,6 +71,5 @@ namespace ECommerce.Repository.Repositories
             return product;
         }
 
->>>>>>> 76ed4f69d026774e9a8b4474a2c7d44910577f32
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,33 @@ namespace ECommerce.Core.Models
         public virtual ICollection<ProductPhoto> ProductPhotos { get; set; } = new List<ProductPhoto>();
 
         public ICollection<Sale> Sales { get; set; }
+
+
+        [NotMapped]
+        public bool IsOnSale => Sales?.Any(s =>
+            s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today) == true;
+
+        [NotMapped]
+        public decimal DiscountedPrice
+        {
+            get
+            {
+                var currentSale = Sales?.FirstOrDefault(s =>
+                    s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+
+                if (currentSale != null)
+                {
+                    var discount = Cost * currentSale.Percent / 100;
+                    return Cost - discount;
+                }
+
+                return Cost;
+            }
+        }
+
+        [NotMapped]
+        public int? SaleId => Sales?.FirstOrDefault(s =>
+            s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today)?.Id;
 
     }
 }

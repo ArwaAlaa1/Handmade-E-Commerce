@@ -45,6 +45,40 @@ namespace ECommerce.DashBoard.Controllers
 
             return View(productVMs);
         }
+        public async Task<IActionResult> Details(int id)
+        {
+            var product = await _unitOfWork.Repository<Product>()
+               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales");
+
+
+            if (product == null) return NotFound();
+            var currentSale = product.Sales?.FirstOrDefault(s =>
+               s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+
+            var productVM = new ProductVM
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Cost = product.Cost,
+                CategoryName = product.Category?.Name,
+                CategoryId = product.CategoryId,
+                ExistingPhotoLinks = product.ProductPhotos?.Select(p => p.PhotoLink).ToList() ?? new List<string>(),
+                ExistingPhotoLinksWithIds = product.ProductPhotos?
+                    .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink }).ToList()
+                    ?? new List<ProductPhotoVM>(),
+                IsOnSale = currentSale != null,
+                SaleId = currentSale?.Id,
+                SalePercent = currentSale?.Percent,
+                SaleStartDate = currentSale?.StartDate,
+                SaleEndDate = currentSale?.EndDate,
+                DiscountedPrice = currentSale != null
+                ? product.Cost - (product.Cost * currentSale.Percent / 100)
+                : null
+            };
+
+            return View(productVM);
+        }
 
         public async Task<IActionResult> Create()
         {

@@ -17,6 +17,7 @@ namespace ECommerce.DashBoard.ViewModels
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public decimal Cost { get; set; }
+        public string? CategoryName { get; set; }
 
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryId { get; set; }
@@ -31,6 +32,13 @@ namespace ECommerce.DashBoard.ViewModels
         // Display existing photos in edit view
         public List<string> ExistingPhotoLinks { get; set; } = new List<string>();
         public List<ProductPhotoVM> ExistingPhotoLinksWithIds { get; set; } = new();
+
+        public bool IsOnSale { get; set; }
+        public int? SaleId { get; set; }
+        public int? SalePercent { get; set; }
+        public DateTime? SaleStartDate { get; set; }
+        public DateTime? SaleEndDate { get; set; }
+        public decimal? DiscountedPrice { get; set; }
 
     }
 

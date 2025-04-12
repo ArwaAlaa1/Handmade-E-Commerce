@@ -24,5 +24,55 @@ namespace ECommerce.Repository.Repositories
             return await _context.Products.Include(p => p.Category).ToListAsync();
         }
 
+<<<<<<< HEAD
+=======
+        public async Task<IEnumerable<Product>> GetProductsWithFilters(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)
+        {
+            var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category).Include(i => i.ProductPhotos).AsQueryable();
+
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Cost >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Cost <= maxPrice.Value);
+
+            return await query.OrderBy(Product => Product.Id)
+                .Where(p => p.Category.IsDeleted == false)
+                .Skip(pageSize * (pageIndex - 1))
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetProductsWithOffer(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)
+        {
+            var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category).Include(d => d.Sales).Include(i => i.ProductPhotos).AsQueryable();
+
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Cost >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Cost <= maxPrice.Value);
+
+            return await query.OrderBy(Product => Product.Id)
+                .Where(p => p.Category.IsDeleted == false)
+                .Skip(pageSize * (pageIndex - 1))
+                .Take(pageSize)
+                .ToListAsync();
+        }
+
+        public async Task<Product> GetProductByIDWithOffer(int id)
+        {
+            var product = await _context.Products.Include(c => c.Category).Include(s => s.Sales).Include(i => i.ProductPhotos).FirstOrDefaultAsync( p => p.Id == id);
+
+            return product;
+        }
+
+>>>>>>> 76ed4f69d026774e9a8b4474a2c7d44910577f32
     }
 }

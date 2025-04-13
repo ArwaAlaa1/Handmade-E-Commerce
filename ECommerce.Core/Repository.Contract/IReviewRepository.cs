@@ -1,0 +1,22 @@
+﻿using ECommerce.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ECommerce.Core.Repository.Contract
+{
+    public interface IReviewRepository : IGenericRepository<Review>
+    {
+        
+        Task<IEnumerable<Review>> GetReviewsWithProductAsync(int productId);
+        Task<int> CountReviewsOnProductWithId(int productId);
+        Task<Review> GetReviewWithProductAsync(int reviewId,int productId);
+
+        Task<Review> GetReviewWithUserAsync(string userid);
+
+        
+
+    }
+}

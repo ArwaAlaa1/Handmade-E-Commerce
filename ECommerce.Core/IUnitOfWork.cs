@@ -12,7 +12,7 @@ namespace ECommerce.Core
     public interface IUnitOfWork : IDisposable
     {
 
-   
+        IReviewRepository Reviews { get; }
         
         IGenericRepository<T> Repository<T>() where T : BaseEntity;
         Task<int> SaveAsync();

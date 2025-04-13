@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ECommerce.Core;
 using ECommerce.Core.Models;
+using ECommerce.Core.Repository.Contract;
 using ECommerce.DashBoard.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +16,9 @@ namespace ECommerce.Repository
     {
         private readonly ECommerceDbContext _db;
         private Hashtable _repositories;
+
+        public IReviewRepository Reviews { get; private set; }
+      
         public UnitOfWork(ECommerceDbContext db)
         {
             _db = db;

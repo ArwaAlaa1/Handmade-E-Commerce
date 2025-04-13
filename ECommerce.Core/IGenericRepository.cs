@@ -22,7 +22,7 @@ namespace ECommerce.Core
         public  Task<T?> GetByIdWithIncludeAsync(int id, string includeProperties);
         Task AddAsync(T entity);
         void Update(T entity);
-       void Delete(T entity);
-
+        void Delete(T entity);
+        
     }
 }

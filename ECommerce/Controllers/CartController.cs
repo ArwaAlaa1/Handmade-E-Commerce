@@ -36,25 +36,34 @@ namespace ECommerce.Controllers
                 ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                 : null;
 
-            var existingCart = await _cartRepository.GetCartAsync($"cart:{cart.Id}");
-
-
-            if (existingCart == null)
+            if (userId != null)
             {
-                if (userId != null)
+                
+                var userCart = await _cartRepository.GetCartAsync($"cart:{userId}");
+                if (userCart != null)
                 {
-                  
-
+                    userCart.CartItems.AddRange(cart.CartItems);
+                    await _cartRepository.AddCartAsync(userCart);
+                    await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
+                    return Ok(userCart);
+                }
+                else
+                {
                     var newCart = new Cart
                     {
                         Id = $"cart:{userId}",
                         CartItems = cart.CartItems
                     };
                     await _cartRepository.AddCartAsync(newCart);
+                    await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
                     return Ok(newCart);
-
                 }
-                else
+                
+            }
+            else
+            {
+                var existingCart = await _cartRepository.GetCartAsync($"cart:{cart.Id}");
+                if (existingCart == null)
                 {
                     var newCart = new Cart
                     {
@@ -63,33 +72,19 @@ namespace ECommerce.Controllers
                     };
                     await _cartRepository.AddCartAsync(newCart);
                     return Ok(newCart);
-                }
-
-            }
-            else
-            {
-                if (userId != null)
-                {
-                    existingCart.Id = $"cart:{userId}";
-                    existingCart.CartItems = cart.CartItems;
-                    await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
-                    
-
-                    await _cartRepository.AddCartAsync(existingCart);
-                    return Ok(existingCart);
 
                 }
                 else
                 {
-                   
                     existingCart.CartItems = cart.CartItems;
 
                     await _cartRepository.AddCartAsync(existingCart);
                     return Ok(existingCart);
 
                 }
-             
             }
+
+            
 
 
         }

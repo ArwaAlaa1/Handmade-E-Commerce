@@ -13,7 +13,7 @@ namespace ECommerce.Core.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public int? AppUserId { get; set; }
+        public string? AppUserId { get; set; }
 
         [ForeignKey("AppUserId")]
         public AppUser? AppUser { get; set; }

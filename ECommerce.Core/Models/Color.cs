@@ -13,7 +13,7 @@ namespace ECommerce.Core.Models
         public string Name { get; set; }
 
         // Optional: Who added this color (for future Trader use)
-        public int? AppUserId { get; set; }
+        public string? AppUserId { get; set; }
 
         [ForeignKey("AppUserId")]
         public AppUser? Trader { get; set; }

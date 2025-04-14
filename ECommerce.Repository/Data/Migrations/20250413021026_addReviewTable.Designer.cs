@@ -4,6 +4,7 @@ using ECommerce.DashBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Repository.Data.Migrations
 {
     [DbContext(typeof(ECommerceDbContext))]
-    partial class ECommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413021026_addReviewTable")]
+    partial class addReviewTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,40 +197,6 @@ namespace ECommerce.Repository.Data.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("ECommerce.Core.Models.Color", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("Colors");
-                });
-
             modelBuilder.Entity("ECommerce.Core.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -272,36 +241,6 @@ namespace ECommerce.Repository.Data.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ECommerce.Core.Models.ProductColor", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ColorId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ProductId", "ColorId");
-
-                    b.HasIndex("ColorId");
-
-                    b.ToTable("ProductColors");
-                });
-
             modelBuilder.Entity("ECommerce.Core.Models.ProductPhoto", b =>
                 {
                     b.Property<int>("Id")
@@ -334,39 +273,6 @@ namespace ECommerce.Repository.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductPhotos");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Models.ProductSize", b =>
-                {
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SizeId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ProductId", "SizeId");
-
-                    b.HasIndex("SizeId");
-
-                    b.ToTable("ProductSizes");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.Review", b =>
@@ -450,40 +356,6 @@ namespace ECommerce.Repository.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Sales");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Models.Size", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -630,15 +502,6 @@ namespace ECommerce.Repository.Data.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("ECommerce.Core.Models.Color", b =>
-                {
-                    b.HasOne("ECommerce.Core.Models.AppUser", "Trader")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.Navigation("Trader");
-                });
-
             modelBuilder.Entity("ECommerce.Core.Models.Product", b =>
                 {
                     b.HasOne("ECommerce.Core.Models.Category", "Category")
@@ -650,25 +513,6 @@ namespace ECommerce.Repository.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ECommerce.Core.Models.ProductColor", b =>
-                {
-                    b.HasOne("ECommerce.Core.Models.Color", "Color")
-                        .WithMany("ProductColors")
-                        .HasForeignKey("ColorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ECommerce.Core.Models.Product", "Product")
-                        .WithMany("ProductColors")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Color");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("ECommerce.Core.Models.ProductPhoto", b =>
                 {
                     b.HasOne("ECommerce.Core.Models.Product", "Product")
@@ -678,25 +522,6 @@ namespace ECommerce.Repository.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Models.ProductSize", b =>
-                {
-                    b.HasOne("ECommerce.Core.Models.Product", "Product")
-                        .WithMany("ProductSizes")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ECommerce.Core.Models.Size", "Size")
-                        .WithMany("ProductSizes")
-                        .HasForeignKey("SizeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Size");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.Review", b =>
@@ -727,15 +552,6 @@ namespace ECommerce.Repository.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Models.Size", b =>
-                {
-                    b.HasOne("ECommerce.Core.Models.AppUser", "AppUser")
-                        .WithMany()
-                        .HasForeignKey("AppUserId");
-
-                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -799,25 +615,11 @@ namespace ECommerce.Repository.Data.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("ECommerce.Core.Models.Color", b =>
-                {
-                    b.Navigation("ProductColors");
-                });
-
             modelBuilder.Entity("ECommerce.Core.Models.Product", b =>
                 {
-                    b.Navigation("ProductColors");
-
                     b.Navigation("ProductPhotos");
 
-                    b.Navigation("ProductSizes");
-
                     b.Navigation("Sales");
-                });
-
-            modelBuilder.Entity("ECommerce.Core.Models.Size", b =>
-                {
-                    b.Navigation("ProductSizes");
                 });
 #pragma warning restore 612, 618
         }

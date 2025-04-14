@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace ECommerce.DashBoard.Data
 {
@@ -11,12 +12,18 @@ namespace ECommerce.DashBoard.Data
             : base(options)
         { }
 
-
+      
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductPhoto> ProductPhotos { get; set; }
 
         public DbSet<Sale> Sales { get; set; }
+
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Size> Sizes { get; set; }
+
+        public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<ProductSize> ProductSizes { get; set; }
 
         public DbSet<Review> Reviews { get; set; }
 

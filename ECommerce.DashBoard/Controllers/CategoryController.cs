@@ -2,6 +2,7 @@
 using ECommerce.Core.Models;
 using ECommerce.DashBoard.Helper;
 using ECommerce.DashBoard.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.DashBoard.Controllers
@@ -9,13 +10,16 @@ namespace ECommerce.DashBoard.Controllers
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<AppUser> _userManager;
 
-        public CategoryController(IUnitOfWork unitOfWork)
+        public CategoryController(IUnitOfWork unitOfWork ,UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
         public async Task<IActionResult> Index()
         {
+            //var user =await _userManager.GetUserAsync(User);
             var categories =await _unitOfWork.Repository<Category>().GetAllAsync();
             return View(categories);
         }

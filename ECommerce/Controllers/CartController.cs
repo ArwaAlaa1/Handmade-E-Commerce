@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ECommerce.Core.Services.Contract;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.Controllers
@@ -7,5 +8,6 @@ namespace ECommerce.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
+        
     }
 }

@@ -12,6 +12,8 @@ using ECommerce.Services;
 using ECommerce.Extentions;
 using Microsoft.OpenApi.Models;
 using ECommerce.Core.Services.Contract.SendEmail;
+using StackExchange.Redis;
+using ECommerce.Controllers;
 namespace ECommerce
 {
     public class Program
@@ -24,17 +26,23 @@ namespace ECommerce
 
             builder.Services.AddControllers();
             
+            //Sql Server Connection
             builder.Services.AddDbContext<ECommerceDbContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")),
                ServiceLifetime.Transient);
 
-           
+            //Redis Connection
+            builder.Services.AddSingleton<IConnectionMultiplexer>((provider) =>
+            {
+                var connection=builder.Configuration.GetConnectionString("Redis");
+                return ConnectionMultiplexer.Connect(connection);
+            });
 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IEmailProvider, EmailProvider>();
-
+            builder.Services.AddScoped<ICartRepository, CartRepository>();
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddCors(options =>
             {

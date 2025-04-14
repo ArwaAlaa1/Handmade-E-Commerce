@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Size\" />
     <Folder Include="wwwroot\Images\products\" />
   </ItemGroup>
 

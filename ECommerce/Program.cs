@@ -42,7 +42,13 @@ namespace ECommerce
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IEmailProvider, EmailProvider>();
+
             builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+
+            builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
+
+
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddCors(options =>
             {

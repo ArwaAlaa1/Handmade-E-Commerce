@@ -19,10 +19,10 @@ namespace ECommerce.Core
 
         Task<T?> GetByIdAsync(int id);
 
-        public  Task<T?> GetByIdWithIncludeAsync(int id, string includeProperties);
+        public Task<T?> GetByIdWithIncludeAsync(int id, string includeProperties);
         Task AddAsync(T entity);
         void Update(T entity);
-       void Delete(T entity);
+        void Delete(T entity);
 
     }
 }

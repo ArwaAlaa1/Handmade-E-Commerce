@@ -4,6 +4,7 @@ using ECommerce.DashBoard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Repository.Data.Migrations
 {
     [DbContext(typeof(ECommerceDbContext))]
-    partial class ECommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413021026_addReviewTable")]
+    partial class addReviewTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,7 +76,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.AppUser", b =>
@@ -191,7 +194,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.Product", b =>
@@ -235,7 +238,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.ProductPhoto", b =>
@@ -269,7 +272,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductPhotos", (string)null);
+                    b.ToTable("ProductPhotos");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.Review", b =>
@@ -352,7 +355,7 @@ namespace ECommerce.Repository.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Sales", (string)null);
+                    b.ToTable("Sales");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

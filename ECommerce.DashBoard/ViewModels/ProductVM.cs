@@ -25,6 +25,12 @@ namespace ECommerce.DashBoard.ViewModels
         [ValidateNever]
         public IEnumerable<SelectListItem> Categories { get; set; }
 
+        public List<int> SelectedColorIds { get; set; } = new();
+        public List<int> SelectedSizeIds { get; set; } = new();
+        public IEnumerable<SelectListItem> AvailableColors { get; set; } = new List<SelectListItem>();
+        public IEnumerable<SelectListItem> AvailableSizes { get; set; } = new List<SelectListItem>();
+
+
         //  Handle new uploaded photos
         [ValidateNever]
         public List<IFormFile> Photos { get; set; } = new List<IFormFile>();

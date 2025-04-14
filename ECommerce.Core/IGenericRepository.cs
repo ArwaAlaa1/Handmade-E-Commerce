@@ -20,6 +20,8 @@ namespace ECommerce.Core
         Task<T?> GetByIdAsync(int id);
 
         public Task<T?> GetByIdWithIncludeAsync(int id, string includeProperties);
+        Task<T> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter, string? includeProperties = null);
+
         Task AddAsync(T entity);
         void Update(T entity);
         void Delete(T entity);

@@ -25,6 +25,9 @@ namespace ECommerce.Core.Models
 
         public ICollection<Sale> Sales { get; set; }
 
+        public ICollection<ProductSize> ProductSizes { get; set; }
+        public ICollection<ProductColor> ProductColors { get; set; }
+
 
         [NotMapped]
         public bool IsOnSale => Sales?.Any(s =>

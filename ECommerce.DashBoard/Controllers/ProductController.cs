@@ -83,13 +83,14 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> Create()
         {
             var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
+            var colors = await _unitOfWork.Repository<Color>().GetAllAsync();
+            var sizes = await _unitOfWork.Repository<Size>().GetAllAsync();
+
             var vm = new ProductVM
             {
-                Categories = categories.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                })
+                Categories = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
+                AvailableColors = colors.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
+                AvailableSizes = sizes.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name })
             };
             return View(vm);
         }
@@ -148,6 +149,31 @@ namespace ECommerce.DashBoard.Controllers
                 await _unitOfWork.SaveAsync();
             }
 
+            if (vm.SelectedColorIds?.Any() == true)
+            {
+                foreach (var colorId in vm.SelectedColorIds)
+                {
+                    await _unitOfWork.Repository<ProductColor>().AddAsync(new ProductColor
+                    {
+                        ProductId = product.Id,
+                        ColorId = colorId
+                    });
+                }
+            }
+
+            if (vm.SelectedSizeIds?.Any() == true)
+            {
+                foreach (var sizeId in vm.SelectedSizeIds)
+                {
+                    await _unitOfWork.Repository<ProductSize>().AddAsync(new ProductSize
+                    {
+                        ProductId = product.Id,
+                        SizeId = sizeId
+                    });
+                }
+            }
+            await _unitOfWork.SaveAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -157,7 +183,16 @@ namespace ECommerce.DashBoard.Controllers
             if (product == null) return NotFound();
 
             var photos = await _unitOfWork.Repository<ProductPhoto>()
-        .GetAllAsync(p => p.ProductId == product.Id);
+                .GetAllAsync(p => p.ProductId == product.Id);
+
+            var productColorIds = (await _unitOfWork.Repository<ProductColor>()
+                .GetAllAsync(pc => pc.ProductId == product.Id)).Select(pc => pc.ColorId).ToList();
+
+            var productSizeIds = (await _unitOfWork.Repository<ProductSize>()
+                .GetAllAsync(ps => ps.ProductId == product.Id)).Select(ps => ps.SizeId).ToList();
+
+            var colors = await _unitOfWork.Repository<Color>().GetAllAsync();
+            var sizes = await _unitOfWork.Repository<Size>().GetAllAsync();
 
             var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
             var vm = new ProductVM
@@ -176,13 +211,16 @@ namespace ECommerce.DashBoard.Controllers
                 {
                     Id = p.Id,
                     PhotoLink = p.PhotoLink
-                }).ToList()
+                }).ToList(),
+                SelectedColorIds = productColorIds,
+                SelectedSizeIds = productSizeIds,
+                AvailableColors = colors.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
+                AvailableSizes = sizes.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name })
             };
 
             return View(vm);
         }
 
-        // ... other code ...
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -195,7 +233,23 @@ namespace ECommerce.DashBoard.Controllers
                     Value = c.Id.ToString(),
                     Text = c.Name
                 });
+
+                var colors = (await _unitOfWork.Repository<Color>().GetAllAsync()).Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                });
+
+                var sizes = (await _unitOfWork.Repository<Size>().GetAllAsync()).Select(s => new SelectListItem
+                {
+                    Value = s.Id.ToString(),
+                    Text = s.Name
+                });
+
                 vm.Categories = categories;
+                vm.AvailableColors = colors;
+                vm.AvailableSizes = sizes;
+
                 return View(vm);
             }
 
@@ -232,8 +286,51 @@ namespace ECommerce.DashBoard.Controllers
 
                     await _unitOfWork.Repository<ProductPhoto>().AddAsync(photoEntity);
                 }
-                _unitOfWork.SaveAsync();
             }
+
+            var existingProductColors = await _unitOfWork.Repository<ProductColor>()
+                .GetAllAsync(pc => pc.ProductId == product.Id);
+
+            foreach (var existing in existingProductColors)
+            {
+                if (!vm.SelectedColorIds.Contains(existing.ColorId))
+                    _unitOfWork.Repository<ProductColor>().Delete(existing);
+            }
+
+            foreach (var colorId in vm.SelectedColorIds ?? new List<int>())
+            {
+                if (!existingProductColors.Any(pc => pc.ColorId == colorId))
+                {
+                    await _unitOfWork.Repository<ProductColor>().AddAsync(new ProductColor
+                    {
+                        ProductId = product.Id,
+                        ColorId = colorId
+                    });
+                }
+            }
+
+            var existingProductSizes = await _unitOfWork.Repository<ProductSize>()
+                .GetAllAsync(ps => ps.ProductId == product.Id);
+
+            foreach (var existing in existingProductSizes)
+            {
+                if (!vm.SelectedSizeIds.Contains(existing.SizeId))
+                    _unitOfWork.Repository<ProductSize>().Delete(existing);
+            }
+
+            foreach (var sizeId in vm.SelectedSizeIds ?? new List<int>())
+            {
+                if (!existingProductSizes.Any(ps => ps.SizeId == sizeId))
+                {
+                    await _unitOfWork.Repository<ProductSize>().AddAsync(new ProductSize
+                    {
+                        ProductId = product.Id,
+                        SizeId = sizeId
+                    });
+                }
+            }
+
+            await _unitOfWork.SaveAsync();
 
             return RedirectToAction(nameof(Index));
         }

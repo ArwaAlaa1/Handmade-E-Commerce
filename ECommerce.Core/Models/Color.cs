@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
 
 namespace ECommerce.Core.Models
 {
@@ -12,12 +14,12 @@ namespace ECommerce.Core.Models
         public int Id { get; set; }
         public string Name { get; set; }
 
-        // Optional: Who added this color (for future Trader use)
         public string? AppUserId { get; set; }
 
         [ForeignKey("AppUserId")]
-        public AppUser? Trader { get; set; }
+        public AppUser? AppUser { get; set; }
 
+        [ValidateNever]
         public ICollection<ProductColor> ProductColors { get; set; }
 
     }

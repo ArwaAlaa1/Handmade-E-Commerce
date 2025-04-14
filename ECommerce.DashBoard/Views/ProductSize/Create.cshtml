@@ -1,13 +1,11 @@
-﻿@using ECommerce.Core.Models
-@model Size
+﻿@model ECommerce.Core.Models.Size
 
-<h2>Add Size</h2>
-
+<h2>Add New Size</h2>
 <form asp-action="Create">
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    <input type="submit" value="Save" class="btn btn-success mt-2" />
+    <button type="submit" class="btn btn-success mt-2">Save</button>
 </form>

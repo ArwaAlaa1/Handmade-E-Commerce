@@ -1,11 +1,17 @@
 ﻿@model ECommerce.Core.Models.Color
 
-<h2>Add New Color</h2>
-<form asp-action="Create">
+@{
+    ViewData["Title"] = "Edit Color";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-success mt-2">Save</button>
+    <input type="submit" value="Update" class="btn btn-warning mt-2" />
 </form>

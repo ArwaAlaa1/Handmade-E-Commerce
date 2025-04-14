@@ -1,33 +1,17 @@
-﻿@using ECommerce.Core.Models
-@model IEnumerable<Size>
-
+﻿@model IEnumerable<ECommerce.Core.Models.Size>
 @{
-    ViewData["Title"] = "Sizes";
+    ViewBag.Title = "My Sizes";
 }
-
-<h2>Sizes</h2>
-
-<a asp-action="Create" class="btn btn-primary mb-3">Add New Size</a>
-
+<h2>My Sizes</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">Add Size</a>
 <table class="table table-bordered">
-    <thead>
+    <tr>
+        <th>Name</th>
+    </tr>
+    @foreach (var size in Model)
+    {
         <tr>
-            <th>Name</th>
-            <th>Trader</th>
-            <th>Actions</th>
+            <td>@size.Name</td>
         </tr>
-    </thead>
-    <tbody>
-        @foreach (var size in Model)
-        {
-            <tr>
-                <td>@size.Name</td>
-                <td>@size.AppUser?.UserName</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@size.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@size.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
+    }
 </table>

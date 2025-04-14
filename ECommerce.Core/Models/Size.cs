@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
@@ -18,6 +19,7 @@ namespace ECommerce.Core.Models
         [ForeignKey("AppUserId")]
         public AppUser? AppUser { get; set; }
 
+        [ValidateNever]
         public ICollection<ProductSize> ProductSizes { get; set; }
     }
 }

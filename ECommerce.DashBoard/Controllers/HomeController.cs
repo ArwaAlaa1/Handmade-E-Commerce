@@ -29,21 +29,21 @@ namespace ECommerce.DashBoard.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var user01 = await _context.Users.FindAsync(userId);
+            //string userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            //var user01 = await _context.Users.FindAsync(userId);
 
-            var role01 = await (from role in _context.Roles
-                              join userRole in _context.UserRoles
-                              on role.Id equals userRole.RoleId
-                              join user in _context.Users
-                              on userRole.UserId equals user.Id
-                              where user.Id == userId
-                              select role)
-                  .FirstOrDefaultAsync();
+            //var role01 = await (from role in _context.Roles
+            //                  join userRole in _context.UserRoles
+            //                  on role.Id equals userRole.RoleId
+            //                  join user in _context.Users
+            //                  on userRole.UserId equals user.Id
+            //                  where user.Id == userId
+            //                  select role)
+            //      .FirstOrDefaultAsync();
 
 
-            ViewBag.userData = user01;
-            ViewBag.roleData = role01;
+            //ViewBag.userData = user01;
+            //ViewBag.roleData = role01;
 
             return View();
         }

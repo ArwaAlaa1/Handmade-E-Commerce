@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Repository.Data.Migrations
 {
     [DbContext(typeof(ECommerceDbContext))]
-    [Migration("20250415151120_AddModels")]
+    [Migration("20250415154156_AddModels")]
     partial class AddModels
     {
         /// <inheritdoc />
@@ -467,11 +467,11 @@ namespace ECommerce.Repository.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("ExtraCost")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");

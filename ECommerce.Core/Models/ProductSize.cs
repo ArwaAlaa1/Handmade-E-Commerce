@@ -14,6 +14,6 @@ namespace ECommerce.Core.Models
         public string Size { get; set; }
         //public Size Size { get; set; }
 
-        public decimal Cost { get; set; } // Custom price for this size
+        public decimal ExtraCost { get; set; } // Custom price for this size
     }
 }

@@ -1,33 +1,17 @@
-﻿@using ECommerce.Core.Models
-@model IEnumerable<Color>
-
+﻿@model IEnumerable<ECommerce.Core.Models.Color>
 @{
-    ViewData["Title"] = "Colors";
+    ViewBag.Title = "My Colors";
 }
-
-<h2>Colors</h2>
-
-<a asp-action="Create" class="btn btn-primary mb-3">Add New Color</a>
-
+<h2>My Colors</h2>
+<a class="btn btn-primary mb-3" asp-action="Create">Add Color</a>
 <table class="table table-bordered">
-    <thead>
+    <tr>
+        <th>Name</th>
+    </tr>
+    @foreach (var color in Model)
+    {
         <tr>
-            <th>Name</th>
-            <th>Trader</th>
-            <th>Actions</th>
+            <td>@color.Name</td>
         </tr>
-    </thead>
-    <tbody>
-        @foreach (var color in Model)
-        {
-            <tr>
-                <td>@color.Name</td>
-                <td>@color.Trader?.UserName</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@color.Id" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@color.Id" class="btn btn-sm btn-danger">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
+    }
 </table>

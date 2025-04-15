@@ -464,11 +464,11 @@ namespace ECommerce.Repository.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("ExtraCost")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");

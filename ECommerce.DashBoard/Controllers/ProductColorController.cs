@@ -2,48 +2,48 @@
 using ECommerce.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
 
 namespace ECommerce.DashBoard.Controllers
 {
     public class ProductColorController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ProductColorController(IUnitOfWork unitOfWork)
+        public ProductColorController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int productId)
+        public async Task<IActionResult> Index()
         {
-            var productColors = await _unitOfWork.Repository<ProductColor>()
-                .GetAllAsync(pc => pc.ProductId == productId, includeProperties: "Color");
-
-            ViewBag.ProductId = productId;
-            return View(productColors);
+            var user = await _userManager.GetUserAsync(User);
+            var colors = await _unitOfWork.Repository<Color>()
+                .GetAllAsync(c => c.AppUserId == user.Id);
+            return View(colors);
         }
 
-        public async Task<IActionResult> Create(int productId)
+        public IActionResult Create()
         {
-            ViewBag.ProductId = productId;
-            ViewBag.Colors = new SelectList(await _unitOfWork.Repository<Color>().GetAllAsync(), "Id", "Name");
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(ProductColor pc)
-        {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.ProductId = pc.ProductId;
-                ViewBag.Colors = new SelectList(await _unitOfWork.Repository<Color>().GetAllAsync(), "Id", "Name");
-                return View(pc);
-            }
+        //[HttpPost]
+        //public async Task<IActionResult> Create(Color color)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+        //    color.AppUserId = user.Id;
 
-            await _unitOfWork.Repository<ProductColor>().AddAsync(pc);
-            await _unitOfWork.SaveAsync();
-            return RedirectToAction("Index", new { productId = pc.ProductId });
-        }
+        //    if (!ModelState.IsValid)
+        //        return View(color);
+
+        //    await _unitOfWork.Repository<Color>().AddAsync(color);
+        //    await _unitOfWork.SaveAsync();
+
+        //    return RedirectToAction("Index", new { productId = pc.ProductId });
+        //}
 
         //[HttpPost]
         //public async Task<IActionResult> Delete(int productId, int colorId)
@@ -60,6 +60,7 @@ namespace ECommerce.DashBoard.Controllers
         //    return RedirectToAction("Index", new { productId });
         //}
     
+
     }
 
 }

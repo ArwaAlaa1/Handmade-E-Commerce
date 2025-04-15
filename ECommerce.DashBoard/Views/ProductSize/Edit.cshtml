@@ -1,7 +1,6 @@
-﻿@using ECommerce.Core.Models
-@model Size
+﻿@model ECommerce.Core.Models.Color
 
-<h2>Edit Size</h2>
+<h2>Edit Color</h2>
 
 <form asp-action="Edit">
     <input type="hidden" asp-for="Id" />
@@ -10,5 +9,5 @@
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    <input type="submit" value="Save" class="btn btn-primary mt-2" />
+    <button type="submit" class="btn btn-primary mt-2">Update</button>
 </form>

@@ -17,6 +17,7 @@ namespace ECommerce.DashBoard.Controllers
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
+
         public async Task<IActionResult> Index()
         {
             //var user =await _userManager.GetUserAsync(User);

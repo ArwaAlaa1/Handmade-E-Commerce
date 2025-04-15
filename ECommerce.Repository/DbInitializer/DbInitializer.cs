@@ -22,14 +22,14 @@ namespace ECommerce.Repository.DbInitializer
         {
             try
             {
-                //if (_dbcontext.Roles.Any())
+                if (_dbcontext.Roles.Any())
                 {
                     _roleManager.CreateAsync(new IdentityRole(SD.AdminRole)).GetAwaiter().GetResult();
                     _roleManager.CreateAsync(new IdentityRole(SD.SuplierRole)).GetAwaiter().GetResult();
                     _roleManager.CreateAsync(new IdentityRole(SD.CustomerRole)).GetAwaiter().GetResult();
                 }
 
-                //if (_dbcontext.Users.Any())
+                if (_dbcontext.Users.Any())
                 {
                     _userManager.CreateAsync(new AppUser
                     {

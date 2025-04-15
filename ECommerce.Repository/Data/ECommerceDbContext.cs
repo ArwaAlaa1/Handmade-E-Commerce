@@ -3,6 +3,7 @@ using ECommerce.Core.Models.Order;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace ECommerce.DashBoard.Data
@@ -69,7 +70,7 @@ namespace ECommerce.DashBoard.Data
             //    .WithMany(c => c.ProductColors)
             //    .HasForeignKey(pc => pc.ColorId);
 
-
+           
         }
     }
 }

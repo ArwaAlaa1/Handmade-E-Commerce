@@ -14,6 +14,8 @@ using Microsoft.OpenApi.Models;
 using ECommerce.Core.Services.Contract.SendEmail;
 using StackExchange.Redis;
 using ECommerce.Controllers;
+using ECommerce.Helper;
+using Microsoft.Extensions.DependencyInjection;
 namespace ECommerce
 {
     public class Program
@@ -45,9 +47,12 @@ namespace ECommerce
 
             builder.Services.AddScoped<ICartRepository, CartRepository>();
 
-
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IOrderService,OrderService>();
+            builder.Services.AddScoped<IAddressRepository, AddressRepository>();
             builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
 
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
             builder.Services.AddIdentityServices(builder.Configuration);
             builder.Services.AddCors(options =>

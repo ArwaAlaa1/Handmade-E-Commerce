@@ -46,9 +46,11 @@ namespace ECommerce.Controllers
             });
         }
 
+        [Authorize]
         [HttpPost("AddAddress")]
         public async Task<IActionResult> AddAddress( [FromBody] AddAddressDto dto)
         {
+            var user = await _userManager.GetUserAsync(User);
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var address = new Address
@@ -59,7 +61,7 @@ namespace ECommerce.Controllers
                 City = dto.City,
                 Country = dto.Country,
                 AddressDetails = dto.AddressDetails,
-                AppUserId = dto.AppUserId
+                AppUserId = user.Id
             };
 
             await _unitOfWork.Repository<Address>().AddAsync(address);

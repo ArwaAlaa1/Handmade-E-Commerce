@@ -16,7 +16,7 @@ namespace ECommerce.Repository
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
 
     {
-        private readonly ECommerceDbContext _db;
+        protected readonly ECommerceDbContext _db;
         private readonly DbSet<T> _dbSet;
 
         public GenericRepository(ECommerceDbContext db)

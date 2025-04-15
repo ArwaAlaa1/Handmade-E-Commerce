@@ -116,9 +116,24 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == Input.Email);
-                var result = await _signInManager.PasswordSignInAsync(user, Input.Password, Input.RememberMe,false);
-                if (result.Succeeded)
+                var user01 = await _db.Users.FirstOrDefaultAsync(u => u.Email == Input.Email);
+                if(user01 == null)
+                {
+                    TempData["Error"] = "Invalid Email or Password.";
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Page();
+                }
+                var role01 = await (from role in _db.Roles
+                                    join userRole in _db.UserRoles
+                                    on role.Id equals userRole.RoleId
+                                    join user in _db.Users
+                                    on userRole.UserId equals user.Id
+                                    where user.Id == user01.Id
+                                    select role)
+                  .FirstOrDefaultAsync();
+
+                var result = await _signInManager.PasswordSignInAsync(user01, Input.Password, Input.RememberMe,false);
+                if (result.Succeeded && role01.Name == "Admin" || role01.Name == "Supplier")
                 {
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);

@@ -22,40 +22,28 @@ namespace ECommerce.Repository.DbInitializer
         {
             try
             {
-                if (_dbcontext.Roles.Any())
+                //if (_dbcontext.Roles.Any())
                 {
                     _roleManager.CreateAsync(new IdentityRole(SD.AdminRole)).GetAwaiter().GetResult();
                     _roleManager.CreateAsync(new IdentityRole(SD.SuplierRole)).GetAwaiter().GetResult();
                     _roleManager.CreateAsync(new IdentityRole(SD.CustomerRole)).GetAwaiter().GetResult();
                 }
 
-                //_userManager.CreateAsync(new AppUser
-                //{
-                //    Email = "qassemshaban7@gmail.com",
-                //    UserName = "Qassem",
-                //    EmailConfirmed = true,
-                //}, "P@ssw0rd").GetAwaiter().GetResult();
-                //var qassem = _dbcontext.Users.FirstOrDefault(x => x.Email == "qassemshaban7@gmail.com");
-                //if (qassem != null)
-                //    _userManager.AddToRoleAsync(qassem, SD.AdminRole).GetAwaiter().GetResult();
-
-
-                _userManager.CreateAsync(new AppUser
+                //if (_dbcontext.Users.Any())
                 {
-                    Email = "admin@gmail.com",
-                    UserName = "Admin",
-                    EmailConfirmed = true,
-                    DisplayName= "Admin",
-                    IsActive = true,
-                }, "P@ssw0rd").GetAwaiter().GetResult();
+                    _userManager.CreateAsync(new AppUser
+                    {
+                        Email = "admin@gmail.com",
+                        UserName = "Admin",
+                        EmailConfirmed = true,
+                        DisplayName= "Admin",
+                        IsActive = true,
+                    }, "P@ssw0rd").GetAwaiter().GetResult();
 
-                var admin = _dbcontext.Users.FirstOrDefault(x => x.Email == "admin@gmail.com");
+                    var admin = _dbcontext.Users.FirstOrDefault(x => x.Email == "admin@gmail.com");
 
-                if (admin != null)
-                    _userManager.AddToRoleAsync(admin, SD.AdminRole).GetAwaiter().GetResult();
-                if (_dbcontext.Users.Any())
-                {
-                   
+                    if (admin != null)
+                        _userManager.AddToRoleAsync(admin, SD.AdminRole).GetAwaiter().GetResult();
 
                     return;
                 }

@@ -51,12 +51,17 @@
             <div class="d-flex">
               <div class="flex-shrink-0 me-3">
                 <div class="avatar avatar-online">
-                  <img src="~/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
+                    @if(ViewBag.userData.Photo == null){
+                        <img src="~/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
+                    }
+                    else{
+                        <img src="~/Images/Users/@ViewBag.userData.Photo" alt class="w-px-40 h-auto rounded-circle">
+                    }
                 </div>
               </div>
               <div class="flex-grow-1">
-                <h6 class="mb-0">John Doe</h6>
-                <small class="text-muted">Admin</small>
+                <h6 class="mb-0">@ViewBag.userData.UserName</h6>
+                <small class="text-muted">@ViewBag.roleData.Name</small>
               </div>
             </div>
           </a>

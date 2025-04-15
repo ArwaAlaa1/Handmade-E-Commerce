@@ -45,20 +45,21 @@ namespace ECommerce.DashBoard.Controllers
             return RedirectToAction("Index", new { productId = pc.ProductId });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(int productId, int colorId)
-        {
-            var color = await _unitOfWork.Repository<ProductColor>()
-                .GetFirstOrDefaultAsync(pc => pc.ProductId == productId && pc.ColorId == colorId);
+        //[HttpPost]
+        //public async Task<IActionResult> Delete(int productId, int colorId)
+        //{
+        //    var color = await _unitOfWork.Repository<ProductColor>()
+        //        .GetFirstOrDefaultAsync(pc => pc.ProductId == productId && pc.ColorId == colorId);
 
-            if (color != null)
-            {
-                _unitOfWork.Repository<ProductColor>().Delete(color);
-                await _unitOfWork.SaveAsync();
-            }
+        //    if (color != null)
+        //    {
+        //        _unitOfWork.Repository<ProductColor>().Delete(color);
+        //        await _unitOfWork.SaveAsync();
+        //    }
 
-            return RedirectToAction("Index", new { productId });
-        }
+        //    return RedirectToAction("Index", new { productId });
+        //}
+    
     }
 
 }

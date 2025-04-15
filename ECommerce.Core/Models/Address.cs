@@ -14,7 +14,7 @@ namespace ECommerce.Core.Models
         public string AppUserId { get; set; }
 
         [JsonIgnore]
-        public AppUser AppUser { get; set; }
+        public AppUser? AppUser { get; set; }
 
     }
 }

@@ -30,31 +30,31 @@ namespace ECommerce.DashBoard.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(ProductSize ps)
-        {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.ProductId = ps.ProductId;
-                ViewBag.Sizes = new SelectList(await _unitOfWork.Repository<Size>().GetAllAsync(), "Id", "Name");
-                return View(ps);
-            }
+        //[HttpPost]
+        //public async Task<IActionResult> Create(ProductSize ps)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        ViewBag.ProductId = ps.ProductId;
+        //        ViewBag.Sizes = new SelectList(await _unitOfWork.Repository<Size>().GetAllAsync(), "Id", "Name");
+        //        return View(ps);
+        //    }
 
-            await _unitOfWork.Repository<ProductSize>().AddAsync(ps);
-            await _unitOfWork.SaveAsync();
-            return RedirectToAction("Index", new { productId = ps.ProductId });
-        }
+        //    await _unitOfWork.Repository<ProductSize>().AddAsync(ps);
+        //    await _unitOfWork.SaveAsync();
+        //    return RedirectToAction("Index", new { productId = ps.ProductId });
+        //}
 
-        public async Task<IActionResult> Edit(int productId, int sizeId)
-        {
-            var ps = await _unitOfWork.Repository<ProductSize>()
-                .GetFirstOrDefaultAsync(p => p.ProductId == productId && p.SizeId == sizeId,
-                                        includeProperties: "Size");
+        //public async Task<IActionResult> Edit(int productId, int sizeId)
+        //{
+        //    var ps = await _unitOfWork.Repository<ProductSize>()
+        //        .GetFirstOrDefaultAsync(p => p.ProductId == productId && p.SizeId == sizeId,
+        //                                includeProperties: "Size");
 
-            if (ps == null) return NotFound();
+        //    if (ps == null) return NotFound();
 
-            return View(ps);
-        }
+        //    return View(ps);
+        //}
 
         [HttpPost]
         public async Task<IActionResult> Edit(ProductSize ps)
@@ -67,20 +67,21 @@ namespace ECommerce.DashBoard.Controllers
             return RedirectToAction("Index", new { productId = ps.ProductId });
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Delete(int productId, int sizeId)
-        {
-            var ps = await _unitOfWork.Repository<ProductSize>()
-                .GetFirstOrDefaultAsync(p => p.ProductId == productId && p.SizeId == sizeId);
+        //[HttpPost]
+        //public async Task<IActionResult> Delete(int productId, int sizeId)
+        //{
+        //    var ps = await _unitOfWork.Repository<ProductSize>()
+        //        .GetFirstOrDefaultAsync(p => p.ProductId == productId && p.SizeId == sizeId);
 
-            if (ps != null)
-            {
-                _unitOfWork.Repository<ProductSize>().Delete(ps);
-                await _unitOfWork.SaveAsync();
-            }
+        //    if (ps != null)
+        //    {
+        //        _unitOfWork.Repository<ProductSize>().Delete(ps);
+        //        await _unitOfWork.SaveAsync();
+        //    }
 
-            return RedirectToAction("Index", new { productId });
-        }
+        //    return RedirectToAction("Index", new { productId });
+        //}
+   
     }
 
 }

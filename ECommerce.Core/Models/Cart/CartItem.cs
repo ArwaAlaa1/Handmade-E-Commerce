@@ -9,6 +9,8 @@
         public string PhotoUrl { get; set; }
         public string Category { get; set; }
         public string CustomizeInfo { get; set; }
+        public string Color { get; set; }
+        public string Size { get; set; }
         public decimal Price { get; set; }
         public int  ActiveSale { get; set; }
         public int Quantity { get; set; }

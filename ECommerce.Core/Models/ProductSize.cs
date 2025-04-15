@@ -11,8 +11,8 @@ namespace ECommerce.Core.Models
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
-        public int SizeId { get; set; }
-        public Size Size { get; set; }
+        public string Size { get; set; }
+        //public Size Size { get; set; }
 
         public decimal Cost { get; set; } // Custom price for this size
     }

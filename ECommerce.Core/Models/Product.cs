@@ -16,6 +16,7 @@ namespace ECommerce.Core.Models
         public decimal Cost { get; set; }
         //public string Photo { get; set;}
         public int? SallerId { get; set;}
+        public AppUser Seller { get; set; }
 
         // Foreign key
         public int CategoryId { get; set; }

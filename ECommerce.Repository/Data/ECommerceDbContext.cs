@@ -1,4 +1,5 @@
 ﻿using ECommerce.Core.Models;
+using ECommerce.Core.Models.Order;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +20,14 @@ namespace ECommerce.DashBoard.Data
 
         public DbSet<Sale> Sales { get; set; }
 
-        public DbSet<Color> Colors { get; set; }
-        public DbSet<Size> Sizes { get; set; }
+        //public DbSet<Color> Colors { get; set; }
+        //public DbSet<Size> Sizes { get; set; }
 
         public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<ShippingCost> ShippingCosts{ get; set; }
 
         public DbSet<Review> Reviews { get; set; }
 
@@ -38,32 +42,32 @@ namespace ECommerce.DashBoard.Data
                   .OnDelete(DeleteBehavior.Cascade);
 
 
-            modelBuilder.Entity<ProductSize>()
-    .HasKey(ps => new { ps.ProductId, ps.SizeId });
+    //        modelBuilder.Entity<ProductSize>()
+    //.HasKey(ps => new { ps.ProductId, ps.SizeId });
 
             modelBuilder.Entity<ProductSize>()
                 .HasOne(ps => ps.Product)
                 .WithMany(p => p.ProductSizes)
                 .HasForeignKey(ps => ps.ProductId);
 
-            modelBuilder.Entity<ProductSize>()
-                .HasOne(ps => ps.Size)
-                .WithMany(s => s.ProductSizes)
-                .HasForeignKey(ps => ps.SizeId);
+            //modelBuilder.Entity<ProductSize>()
+            //    .HasOne(ps => ps.Size)
+            //    .WithMany(s => s.ProductSizes)
+            //    .HasForeignKey(ps => ps.SizeId);
 
 
-            modelBuilder.Entity<ProductColor>()
-        .HasKey(pc => new { pc.ProductId, pc.ColorId });
+        //    modelBuilder.Entity<ProductColor>()
+        //.HasKey(pc => new { pc.ProductId, pc.ColorId });
 
             modelBuilder.Entity<ProductColor>()
                 .HasOne(pc => pc.Product)
                 .WithMany(p => p.ProductColors)
                 .HasForeignKey(pc => pc.ProductId);
 
-            modelBuilder.Entity<ProductColor>()
-                .HasOne(pc => pc.Color)
-                .WithMany(c => c.ProductColors)
-                .HasForeignKey(pc => pc.ColorId);
+            //modelBuilder.Entity<ProductColor>()
+            //    .HasOne(pc => pc.Color)
+            //    .WithMany(c => c.ProductColors)
+            //    .HasForeignKey(pc => pc.ColorId);
 
 
         }

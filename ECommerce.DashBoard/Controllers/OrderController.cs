@@ -15,7 +15,7 @@ namespace ECommerce.DashBoard.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-       
+
         [Authorize(Roles = SD.AdminRole)]
         public async Task<IActionResult> Index(string status)
         {
@@ -25,6 +25,7 @@ namespace ECommerce.DashBoard.Controllers
             // Filter data by status
             if (!string.IsNullOrEmpty(status) && status != "all")
             {
+                // Convert OrderStatus to string and compare
                 orders = orders.Where(o => o.Status.ToString().ToLower() == status.ToLower()).ToList();
             }
 
@@ -48,7 +49,8 @@ namespace ECommerce.DashBoard.Controllers
 
             return View(orderVMs);
         }
-       
+
+
         public async Task<IActionResult> Details(int id)
         {
             // Fetch request from database
@@ -57,10 +59,9 @@ namespace ECommerce.DashBoard.Controllers
 
             if (order == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
-          
             var orderVM = new OrderDetailsVM
             {
                 OrderId = order.Id,
@@ -83,53 +84,57 @@ namespace ECommerce.DashBoard.Controllers
             return View(orderVM);
         }
 
-        //[Authorize(Roles = SD.AdminRole)]
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //    var order = await _unitOfWork.Repository<Order>()
-        //        .GetFirstOrDefaultAsync(o => o.Id == id, includeProperties: "shippingCost");
 
-        //    if (order == null)
-        //        return NotFound();
+        [Authorize(Roles = SD.AdminRole)]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var order = await _unitOfWork.Repository<Order>()
+                .GetFirstOrDefaultAsync(o => o.Id == id, includeProperties: "shippingCost");
 
-        //    if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress)
-        //        return Forbid(); 
+            if (order == null)
+                return NotFound();
 
-        //    var viewModel = new OrderEditVM
-        //    {
-        //        OrderId = order.Id,
-        //        Status = order.Status,
-        //        ShippingCost = order.shippingCost?.Cost ?? 0
-        //    };
+            // تحويل قيمة الـ OrderStatus إلى string قبل المقارنة
+            if (order.Status.ToString() != "Pending" && order.Status.ToString() != "InProgress")
+                return Forbid();
 
-        //    return View(viewModel);
-        //}
-        //[HttpPost]
-        //[Authorize(Roles = SD.AdminRole)]
-        //public async Task<IActionResult> Edit(OrderEditVM model)
-        //{
-        //    var order = await _unitOfWork.Repository<Order>()
-        //        .GetFirstOrDefaultAsync(o => o.Id == model.OrderId, includeProperties: "shippingCost");
+            var viewModel = new OrderEditVM
+            {
+                OrderId = order.Id,
+                Status = order.Status,
+                ShippingCost = order.shippingCost?.Cost ?? 0
+            };
 
-        //    if (order == null)
-        //        return NotFound();
+            return View(viewModel);
+        }
 
-        //    if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress)
-        //        return Forbid();
+        [HttpPost]
+        [Authorize(Roles = SD.AdminRole)]
+        public async Task<IActionResult> Edit(OrderEditVM model)
+        {
+            var order = await _unitOfWork.Repository<Order>()
+                .GetFirstOrDefaultAsync(o => o.Id == model.OrderId, includeProperties: "shippingCost");
 
-        //    //Modify status
-        //    order.Status = model.Status;
+            if (order == null)
+                return NotFound();
 
-        //    // Edit shipping cost
-        //    if (order.shippingCost != null)
-        //    {
-        //        order.shippingCost.Cost = model.ShippingCost ?? 0;
-        //    }
+         
+            if (order.Status.ToString() != "Pending" && order.Status.ToString() != "InProgress")
+                return Forbid();
 
-        //    await _unitOfWork.SaveAsync();
+            // Modify status
+            order.Status = model.Status;
 
-        //    return RedirectToAction(nameof(Index));
-        //}
+            // Edit shipping cost
+            if (order.shippingCost != null)
+            {
+                order.shippingCost.Cost = model.ShippingCost ?? 0;
+            }
+
+            await _unitOfWork.SaveAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
 
 
 

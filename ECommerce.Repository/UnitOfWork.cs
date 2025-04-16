@@ -18,6 +18,7 @@ namespace ECommerce.Repository
         private Hashtable _repositories;
 
         public IReviewRepository Reviews { get; private set; }
+        public IFavoriteRepository Favorites { get; private set; }
       
         public UnitOfWork(ECommerceDbContext db)
         {

@@ -31,6 +31,7 @@ namespace ECommerce.DashBoard.Data
         public DbSet<ShippingCost> ShippingCosts{ get; set; }
 
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

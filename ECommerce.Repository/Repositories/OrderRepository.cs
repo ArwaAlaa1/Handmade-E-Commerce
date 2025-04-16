@@ -19,7 +19,7 @@ namespace ECommerce.Repository.Repositories
 
         public async Task<Order> GetOrderForUserAsync(int OrderId)
         {
-            var order = await _db.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).Include(o => o.shippingCost).FirstAsync();
+            var order = await _db.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).ThenInclude(OI=>OI.Product).Include(o => o.shippingCost).Include(s=>s.ShippingAddress).FirstAsync();
             return order;
         }
 

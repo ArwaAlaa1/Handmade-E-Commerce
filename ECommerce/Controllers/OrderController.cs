@@ -2,6 +2,7 @@
 using ECommerce.Core.Models;
 using ECommerce.Core.Repository.Contract;
 using ECommerce.Core.Services.Contract;
+using ECommerce.DTOs;
 using ECommerce.DTOs.OrderDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -71,6 +72,70 @@ namespace ECommerce.Controllers
             }
         }
 
-     
+        [Authorize]
+        [HttpGet("UserOrders")]
+        public async Task<ActionResult<IEnumerable<OrderReturnDto>>> GetUserOrders()
+        {
+            try
+            {
+
+                var user = await _userManager.GetUserAsync(User);
+                
+                var orders = await _orderService.GetOrdersForUserAsync(user.Email);
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound(new { Message = "User Not Have Orders !" });
+                }
+
+
+                var mappedOrders = _mapper.Map<List<OrderReturnDto>>(orders);
+
+
+                return Ok(mappedOrders);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error occurred while retrieving orders for user.");
+
+
+                return BadRequest(new { Message = "Try Another Time !" });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OneOrderReturnDto>> GetOrderForUser(int id)
+        {
+            try
+            {
+
+                var user = await _userManager.GetUserAsync(User);
+
+
+                var order = await _orderService.GetOrderForUserAsync(id);
+
+
+                if (order == null)
+                {
+                    _logger.LogWarning($"Order with id {id} not found for user {user?.Email}");
+                    return NotFound(new { Message = "الطلب غير موجود" });
+                }
+
+
+                var mappedOrder = _mapper.Map<OneOrderReturnDto>(order);
+
+
+                return Ok(mappedOrder);
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, $"An error occurred while retrieving order with id {id}");
+
+
+                return BadRequest(new { Message = "Try Another Time!." });
+            }
+        }
     }
 }

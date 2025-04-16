@@ -13,7 +13,8 @@ namespace ECommerce.Core
     {
 
         IReviewRepository Reviews { get; }
-        
+        IFavoriteRepository Favorites { get; }
+
         IGenericRepository<T> Repository<T>() where T : BaseEntity;
         Task<int> SaveAsync();
 

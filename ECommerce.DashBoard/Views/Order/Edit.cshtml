@@ -1,0 +1,38 @@
+﻿@* @model ECommerce.DashBoard.ViewModels.OrderEditVM
+
+@{
+    ViewData["Title"] = "Edit Order";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5>Edit Order - @Model.OrderId</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="OrderId" />
+
+            <div class="mb-3">
+                <label for="Status" class="form-label">Order Status</label>
+                <select asp-for="Status" class="form-select" required>
+                    <option value="Pending" @@(Model.Status == OrderStatus.Pending ? "selected" : "")>Pending</option>
+                    <option value="InProgress" @@(Model.Status= =OrderStatus.InProgress ? "selected" : "" )>In Progress</option>
+                    <option value="Ready" @@(Model.Status == OrderStatus.Ready ? "selected" : "")>Ready</option>
+                    <option value="Shipping" @@(Model.Status == OrderStatus.Shipping ? "selected" : "")>Shipping</option>
+                    <option value="Delivered" @@(Model.Status == OrderStatus.Deliverd ? "selected" : "")>Delivered</option>
+                    <option value="Cancelled" @@(Model.Status == OrderStatus.Cancelled ? "selected" : "")>Cancelled</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="ShippingCost" class="form-label">Shipping Cost</label>
+                <input type="number" asp-for="ShippingCost" class="form-control" required step="0.01" min="0" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+ *@

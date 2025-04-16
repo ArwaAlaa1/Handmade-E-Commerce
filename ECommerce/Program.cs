@@ -46,7 +46,7 @@ namespace ECommerce
             builder.Services.AddScoped<IEmailProvider, EmailProvider>();
 
             builder.Services.AddScoped<ICartRepository, CartRepository>();
-
+           
 
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();

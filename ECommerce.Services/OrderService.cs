@@ -39,7 +39,7 @@ namespace ECommerce.Services
                    
                     var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.ProductId);
                  
-                    var orderitem = new OrderItem(item.ProductId,item.CustomizeInfo, item.Color,item.Size,item.SellerId,item.Quantity);
+                    var orderitem = new OrderItem(item.ProductId,item.CustomizeInfo, item.Color,item.Size,product.SellerId,item.Quantity);
                     orderitem.TotalPrice = (decimal)(product.DiscountedPrice == 0 ? product.Cost * item.Quantity : product.DiscountedPrice * item.Quantity);
 
                     OrderItems.Add(orderitem);

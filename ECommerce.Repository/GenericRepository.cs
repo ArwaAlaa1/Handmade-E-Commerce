@@ -25,7 +25,6 @@ namespace ECommerce.Repository
             _dbSet = _db.Set<T>();
         }
       
-       
 
         public void Update(T entity)
         {

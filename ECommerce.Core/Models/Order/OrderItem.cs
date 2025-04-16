@@ -16,7 +16,7 @@ namespace ECommerce.Core.Models.Order
         public int OrderId { get; set; }
         public Order? Order { get; set; }
         public ItemStatus OrderItemStatus { get; set; } = ItemStatus.Pending;
-        private decimal totalprice;
+        public decimal TotalPrice { get; set; }
 
         public OrderItem(int productId, string? customizeInfo, string? color, string? size, 
             string traderId, int quantity)
@@ -27,17 +27,12 @@ namespace ECommerce.Core.Models.Order
             Color = color;
             Size = size;
            
-            this.totalprice = totalprice;
+           
             TraderId = traderId;
             Quantity = quantity;
         }
 
-        public decimal TotalPrice
-        {
-            get { return totalprice; }
-            set { totalprice = value; }
-        }
-
+      
 
         public string TraderId { get; set; }
         public int Quantity { get; set; }

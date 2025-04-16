@@ -51,8 +51,8 @@ namespace ECommerce.Services
 
             var TotalPrice = OrderItems.Sum(OI => OI.TotalPrice);
             ////get shippingcost
-            //var ShippingCost = await _unitOfWork.Repository<ShippingCost>().GetByIdAsync(shippingCostId);
-
+            var ShippingCost = await _unitOfWork.Repository<ShippingCost>().GetByIdAsync(shippingCostId);
+            TotalPrice += ShippingCost.Cost;
             //createorder
            
             var order = new Order(CustomerEmail, shippingCostId, ShippingAddressId, TotalPrice, OrderItems,"");

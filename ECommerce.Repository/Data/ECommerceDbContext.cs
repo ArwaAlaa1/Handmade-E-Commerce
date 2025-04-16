@@ -70,8 +70,9 @@ namespace ECommerce.DashBoard.Data
             //    .HasOne(pc => pc.Color)
             //    .WithMany(c => c.ProductColors)
             //    .HasForeignKey(pc => pc.ColorId);
+            //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ECommerceDbContext).Assembly);
 
-           
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

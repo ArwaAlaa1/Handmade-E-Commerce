@@ -43,6 +43,45 @@
                         <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
 
+
+                    <div class="mb-3">
+                        <label class="form-label">Colors</label>
+                        <div id="colors-container">
+                            @for (int i = 0; i < Model.Colors.Count; i++)
+                            {
+                                <div class="input-group mb-2">
+                                    <input type="text" name="Colors[@i].Name" value="@Model.Colors[i].Name" class="form-control" placeholder="Color Name" />
+                                    <button type="button" class="btn btn-outline-danger" onclick="removeColor(this)">X</button>
+                                </div>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addColor()">+ Add Color</button>
+                    </div>
+
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Sizes</label>
+                        <div id="sizes-container">
+                            @for (int i = 0; i < Model.Sizes.Count; i++)
+                            {
+                                <div class="row g-2 mb-2">
+                                    <div class="col-md-6">
+                                        <input type="text" name="Sizes[@i].Name" value="@Model.Sizes[i].Name" class="form-control" placeholder="Size Name" />
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="number" name="Sizes[@i].ExtraCost" value="@Model.Sizes[i].ExtraCost" class="form-control" placeholder="Extra Cost" />
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeSize(this)">X</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSize()">+ Add Size</button>
+                    </div>
+
+
                     @* Display Current Image *@
                     <div class="mb-4">
                         <label class="form-label">Current Photos</label>
@@ -79,6 +118,46 @@
         </div>
     </div>
 </div>
+
+
+
+<script>
+    function removeColor(btn) {
+        btn.closest('.input-group').remove();
+    }
+
+    function addColor() {
+        const index = document.querySelectorAll('#colors-container .input-group').length;
+        const html = `
+            <div class="input-group mb-2">
+                <input type="text" name="Colors[${index}].Name" class="form-control" placeholder="Color Name" />
+                <button type="button" class="btn btn-outline-danger" onclick="removeColor(this)">X</button>
+            </div>`;
+        document.getElementById('colors-container').insertAdjacentHTML('beforeend', html);
+    }
+
+    function removeSize(btn) {
+        btn.closest('.row').remove();
+    }
+
+    function addSize() {
+        const index = document.querySelectorAll('#sizes-container .row').length;
+        const html = `
+            <div class="row g-2 mb-2">
+                <div class="col-md-6">
+                    <input type="text" name="Sizes[${index}].Name" class="form-control" placeholder="Size Name" />
+                </div>
+                <div class="col-md-4">
+                    <input type="number" name="Sizes[${index}].ExtraCost" class="form-control" placeholder="Extra Cost" />
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-outline-danger w-100" onclick="removeSize(this)">X</button>
+                </div>
+            </div>`;
+        document.getElementById('sizes-container').insertAdjacentHTML('beforeend', html);
+    }
+</script>
+
 
 @section Scripts {
     @{

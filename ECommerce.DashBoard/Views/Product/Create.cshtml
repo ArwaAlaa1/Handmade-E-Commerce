@@ -53,6 +53,44 @@
                         <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
 
+                    <!-- Colors -->
+                    <h5>Add Colors</h5>
+                    <div id="colorContainer"></div>
+                    <button type="button" class="btn btn-secondary my-2" onclick="addColor()">+ Add Color</button>
+
+                    <!-- Sizes -->
+                    <h5>Add Sizes with Extra Cost</h5>
+                    <div id="sizeContainer"></div>
+                    <button type="button" class="btn btn-secondary my-2" onclick="addSize()">+ Add Size</button>
+
+                    @section ScriptsForSizeAndColor {
+                        <script>
+                            let colorIndex = 0;
+                            let sizeIndex = 0;
+
+                            function addColor() {
+                                const html = `
+                                    <div class="mb-2">
+                                        <input name="Colors[${colorIndex}].Name" class="form-control" placeholder="Color Name" />
+                                    </div>`;
+                                document.getElementById('colorContainer').insertAdjacentHTML('beforeend', html);
+                                colorIndex++;
+                            }
+
+                            function addSize() {
+                                const html = `
+                                    <div class="mb-2 d-flex gap-2">
+                                        <input name="Sizes[${sizeIndex}].Name" class="form-control" placeholder="Size Name" />
+                                        <input name="Sizes[${sizeIndex}].ExtraCost" type="number" class="form-control" placeholder="Extra Cost" />
+                                    </div>`;
+                                document.getElementById('sizeContainer').insertAdjacentHTML('beforeend', html);
+                                sizeIndex++;
+                            }
+                        </script>
+                    }
+
+
+
                     <div class="mb-6">
                         <label class="form-label" asp-for="Photos">Upload Product Images</label>
                         <div class="input-group input-group-merge">

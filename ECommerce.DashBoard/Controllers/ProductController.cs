@@ -3,6 +3,8 @@ using ECommerce.Core;
 using Microsoft.AspNetCore.Mvc;
 using ECommerce.DashBoard.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 
 namespace ECommerce.DashBoard.Controllers
 {
@@ -10,11 +12,15 @@ namespace ECommerce.DashBoard.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
+
         }
 
         public async Task<IActionResult> Index()
@@ -83,99 +89,157 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> Create()
         {
             var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
-            //var colors = await _unitOfWork.Repository<Color>().GetAllAsync();
-            //var sizes = await _unitOfWork.Repository<Size>().GetAllAsync();
 
             var vm = new ProductVM
             {
                 Categories = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
-                //AvailableColors = colors.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
-                //AvailableSizes = sizes.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name })
             };
             return View(vm);
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(ProductVM vm)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
-        //        vm.Categories = categories.Select(c => new SelectListItem
-        //        {
-        //            Value = c.Id.ToString(),
-        //            Text = c.Name
-        //        });
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ProductVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
+                vm.Categories = categories.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                });
 
-        //        return View(vm);
-        //    }
+                return View(vm);
+            }
 
-        //    var product = new Product
-        //    {
-        //        Name = vm.Name,
-        //        Description = vm.Description,
-        //        Cost = vm.Cost,
-        //        CategoryId = vm.CategoryId
-        //    };
+            var user = await _userManager.GetUserAsync(User);
 
-        //    await _unitOfWork.Repository<Product>().AddAsync(product);
-        //    await _unitOfWork.SaveAsync();
+            var product = new Product
+            {
+                Name = vm.Name,
+                Description = vm.Description,
+                Cost = vm.Cost,
+                CategoryId = vm.CategoryId,
+                SellerId = user.Id,
+                ProductColors = new List<ProductColor>(),
+                ProductSizes = new List<ProductSize>()
+            };
 
-        //    // Save uploaded photos
-        //    if (vm.Photos != null && vm.Photos.Any())
-        //    {
-        //        foreach (var photo in vm.Photos)
-        //        {
-        //            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
-        //            Directory.CreateDirectory(uploadsFolder);
 
-        //            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
-        //            var filePath = Path.Combine(uploadsFolder, fileName);
+            // Handle colors
+            foreach (var colorVM in vm.Colors)
+            {
+                //var color = new Color { Name = colorVM.Name, AppUserId = user.Id };
+                //await _unitOfWork.Repository<Color>().AddAsync(color);
+                product.ProductColors.Add(new ProductColor { Color = colorVM.Name });
+            }
 
-        //            using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //            {
-        //                await photo.CopyToAsync(fileStream);
-        //            }
+            // Handle sizes
+            foreach (var sizeVM in vm.Sizes)
+            {
+                //var size = new Size { Name = sizeVM.Name, AppUserId = user.Id };
+                //await _unitOfWork.Repository<Size>().AddAsync(size);
+                product.ProductSizes.Add(new ProductSize { Size = sizeVM.Name, ExtraCost = sizeVM.ExtraCost });
+            }
 
-        //            var photoEntity = new ProductPhoto
-        //            {
-        //                PhotoLink = "/images/products/" + fileName,
-        //                ProductId = product.Id
-        //            };
 
-        //            await _unitOfWork.Repository<ProductPhoto>().AddAsync(photoEntity);
-        //        }
-        //        await _unitOfWork.SaveAsync();
-        //    }
+            await _unitOfWork.Repository<Product>().AddAsync(product);
+            await _unitOfWork.SaveAsync();
 
-        //    if (vm.SelectedColorIds?.Any() == true)
-        //    {
-        //        foreach (var colorId in vm.SelectedColorIds)
-        //        {
-        //            await _unitOfWork.Repository<ProductColor>().AddAsync(new ProductColor
-        //            {
-        //                ProductId = product.Id,
-        //                ColorId = colorId
-        //            });
-        //        }
-        //    }
+            // Save uploaded photos
+            if (vm.Photos != null && vm.Photos.Any())
+            {
+                foreach (var photo in vm.Photos)
+                {
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    Directory.CreateDirectory(uploadsFolder);
 
-        //    if (vm.SelectedSizeIds?.Any() == true)
-        //    {
-        //        foreach (var sizeId in vm.SelectedSizeIds)
-        //        {
-        //            await _unitOfWork.Repository<ProductSize>().AddAsync(new ProductSize
-        //            {
-        //                ProductId = product.Id,
-        //                SizeId = sizeId
-        //            });
-        //        }
-        //    }
-        //    await _unitOfWork.SaveAsync();
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
+                    var filePath = Path.Combine(uploadsFolder, fileName);
 
-        //    return RedirectToAction(nameof(Index));
-        //}
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(fileStream);
+                    }
+
+                    var photoEntity = new ProductPhoto
+                    {
+                        PhotoLink = "/images/products/" + fileName,
+                        ProductId = product.Id
+                    };
+
+                    await _unitOfWork.Repository<ProductPhoto>().AddAsync(photoEntity);
+                }
+                await _unitOfWork.SaveAsync();
+            }
+
+            //if (vm.SelectedColorIds?.Any() == true)
+            //{
+            //    foreach (var colorId in vm.SelectedColorIds)
+            //    {
+            //        await _unitOfWork.Repository<ProductColor>().AddAsync(new ProductColor
+            //        {
+            //            ProductId = product.Id,
+            //            ColorId = colorId
+            //        });
+            //    }
+            //}
+
+            //if (vm.SelectedSizeIds?.Any() == true)
+            //{
+            //    foreach (var sizeId in vm.SelectedSizeIds)
+            //    {
+            //        await _unitOfWork.Repository<ProductSize>().AddAsync(new ProductSize
+            //        {
+            //            ProductId = product.Id,
+            //            SizeId = sizeId
+            //        });
+            //    }
+            //}
+            await _unitOfWork.SaveAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            if (product == null) return NotFound();
+
+            var photos = await _unitOfWork.Repository<ProductPhoto>()
+                .GetAllAsync(p => p.ProductId == product.Id);
+
+            var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
+
+            var vm = new ProductVM
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Cost = product.Cost,
+                CategoryId = product.CategoryId,
+                Categories = categories?.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }) ?? new List<SelectListItem>(),
+                Colors = product.ProductColors?.Select(pc => new ColorVM { Name = pc.Color }).ToList() ?? new List<ColorVM>(),
+                Sizes = product.ProductSizes?.Select(ps => new SizeVM { Name = ps.Size, ExtraCost = ps.ExtraCost }).ToList() ?? new List<SizeVM>(),
+                ExistingPhotoLinksWithIds = photos?.Select(p => new ProductPhotoVM
+                {
+                    Id = p.Id,
+                    PhotoLink = p.PhotoLink
+                }).ToList() ?? new List<ProductPhotoVM>()
+            };
+
+            return View(vm);
+        }
+
+
+
+
+
+
 
         //public async Task<IActionResult> Edit(int id)
         //{
@@ -220,6 +284,93 @@ namespace ECommerce.DashBoard.Controllers
 
         //    return View(vm);
         //}
+
+
+
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(ProductVM vm)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                foreach (var key in ModelState.Keys)
+                {
+                    var state = ModelState[key];
+                    foreach (var error in state.Errors)
+                    {
+                        Console.WriteLine($"ModelState Error on '{key}': {error.ErrorMessage}");
+                    }
+                }
+                var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
+                vm.Categories = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
+                return View(vm);
+            }
+
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(vm.Id);
+            if (product == null) return NotFound();
+
+            var user = await _userManager.GetUserAsync(User);
+
+            product.Name = vm.Name;
+            product.Description = vm.Description;
+            product.Cost = vm.Cost;
+            product.CategoryId = vm.CategoryId;
+            product.SellerId = user.Id;
+            //product.ProductColors = new List<ProductColor>();
+            //product.ProductSizes = new List<ProductSize>();
+
+            // Clear existing colors and add new ones
+            product.ProductColors.Clear();
+            foreach (var colorVM in vm.Colors)
+            {
+                product.ProductColors.Add(new ProductColor { Color = colorVM.Name });
+            }
+
+            // Clear existing sizes and add new ones
+            product.ProductSizes.Clear();
+            foreach (var sizeVM in vm.Sizes)
+            {
+                product.ProductSizes.Add(new ProductSize { Size = sizeVM.Name, ExtraCost = sizeVM.ExtraCost });
+            }
+
+            _unitOfWork.Repository<Product>().Update(product);
+            await _unitOfWork.SaveAsync();
+
+
+            // Save new uploaded photos
+            if (vm.Photos != null && vm.Photos.Any())
+            {
+                foreach (var photo in vm.Photos)
+                {
+                    var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "products");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(photo.FileName);
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(fileStream);
+                    }
+
+                    var photoEntity = new ProductPhoto
+                    {
+                        PhotoLink = "/images/products/" + fileName,
+                        ProductId = product.Id
+                    };
+
+                    await _unitOfWork.Repository<ProductPhoto>().AddAsync(photoEntity);
+                }
+            }
+
+            await _unitOfWork.SaveAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
 
         //[HttpPost]

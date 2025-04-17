@@ -16,7 +16,7 @@ namespace ECommerce.DashBoard.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        //[Authorize(Roles = SD.AdminRole)]
+        [Authorize(Roles = SD.AdminRole)]
         //Order/Index
         public async Task<IActionResult> Index(string status)
         {
@@ -51,7 +51,7 @@ namespace ECommerce.DashBoard.Controllers
             return View(orderVMs);
         }
 
-
+        [Authorize(Roles = SD.AdminRole)]
         public async Task<IActionResult> Details(int id)
         {
             // Fetch request from database

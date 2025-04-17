@@ -154,7 +154,40 @@
 
             </ul>
         </li>
-      
+        <!-- Orders -->
+        <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div>Manage Order Data</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <a asp-controller="Order" asp-action="Index" class="menu-link">
+                        <div>All Orders</div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <!---->
+        <!-- Order Items -->
+        <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-layout"></i>
+                <div>Manage OrderItem Data</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <a asp-controller="OrderItem" asp-action="Index" class="menu-link">
+                        <div>All Order Items</div>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <!---->
     <!-- Layouts -->
     <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
       <a href="javascript:void(0);" class="menu-link menu-toggle">

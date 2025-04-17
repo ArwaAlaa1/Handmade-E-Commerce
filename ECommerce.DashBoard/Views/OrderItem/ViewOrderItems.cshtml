@@ -20,14 +20,39 @@
         {
             <tr>
                 <td>@item.Product.Name</td>
-                <td>@item.OrderItemStatus</td>
+                <td>
+                    @if (item.OrderItemStatus == ItemStatus.Pending)
+                    {
+                        <span class="badge bg-warning text-dark">Pending</span>
+                    }
+                    else if (item.OrderItemStatus == ItemStatus.Ready)
+                    {
+                        <span class="badge bg-success">Ready</span>
+                    }
+                    else if (item.OrderItemStatus == ItemStatus.InProgress)
+                    {
+                        <span class="badge bg-info">In Progress</span>
+                    }
+                    else if (item.OrderItemStatus == ItemStatus.Cancelled)
+                    {
+                        <span class="badge bg-danger">Cancelled</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Unknown</span>
+                    }
+                </td>
                 <td>
                     @if (item.OrderItemStatus == ItemStatus.Pending)
                     {
                         <form asp-action="ConfirmOrderItem" method="post" style="display:inline;">
                             <input type="hidden" name="orderItemId" value="@item.Id" />
-                            <button type="submit" class="btn btn-success">Confirm</button>
+                            <button type="submit" class="btn btn-success" >Confirm</button>
                         </form>
+                    }
+                    else
+                    {
+                    <span class="btn btn-success" style="visibility: hidden;">Confirm</span>
                     }
                     <a href="@Url.Action("Edit", new { orderItemId = item.Id })" class="btn btn-primary">Edit</a>
 					<a href="@Url.Action("Details", new { orderItemId = item.Id })" class="btn btn-info">Details</a>

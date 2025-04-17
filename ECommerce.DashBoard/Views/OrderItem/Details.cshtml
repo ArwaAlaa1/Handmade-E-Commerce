@@ -1,41 +1,57 @@
-﻿@model ECommerce.Core.Models.Order.OrderItem
+﻿
+@using ECommerce.Core.Models.Order
+@model ECommerce.Core.Models.Order.OrderItem
 
-@{
-    ViewData["Title"] = "Order Item Details";
-}
+<div class="card">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center px-3 pt-3">
+        <h5 class="card-header mb-0">Order Item Details - @Model.Id</h5>
+    </div>
 
-<h2>@ViewData["Title"]</h2>
+    <!-- Order Item Details -->
+    <div class="card-body">
+        <div class="mb-3">
+            <strong>Product Name:</strong> @Model.Product?.Name
+        </div>
+        <div class="mb-3">
+            <strong>Quantity:</strong> @Model.Quantity
+        </div>
+        <div class="mb-3">
+            <strong>Price:</strong> @Model.Product?.Cost.ToString("C")
+        </div>
+        <div class="mb-3">
+            <strong>Order Item Status:</strong> 
+            
+                @if (@Model.OrderItemStatus == ItemStatus.Pending)
+                {
+                    <span class="badge bg-warning text-dark">Pending</span>
+                }
+                else if (@Model.OrderItemStatus == ItemStatus.Ready)
+                {
+                    <span class="badge bg-success">Ready</span>
+                }
+                else if (@Model.OrderItemStatus == ItemStatus.InProgress)
+                {
+                    <span class="badge bg-info">In Progress</span>
+                }
+                else if (@Model.OrderItemStatus == ItemStatus.Cancelled)
+                {
+                    <span class="badge bg-danger">Cancelled</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Unknown</span>
+                }
+            
+        </div>
+        <div class="mb-3">
+            <strong>Order ID:</strong> @Model.OrderId
+        </div>
 
-<div>
-    <h4>Order Item Details</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Order Item ID</dt>
-        <dd class="col-sm-10">@Model.Id</dd>
-
-        <dt class="col-sm-2">Product Name</dt>
-        <dd class="col-sm-10">@Model.Product?.Name</dd>
-
-        <dt class="col-sm-2">Quantity</dt>
-        <dd class="col-sm-10">@Model.Quantity</dd>
-
-        <dt class="col-sm-2">Price</dt>
-        <dd class="col-sm-10">@Model.Product.Cost</dd>
-
-        <dt class="col-sm-2">Order Item Status</dt>
-        <dd class="col-sm-10">@Model.OrderItemStatus</dd>
-
-        <dt class="col-sm-2">Order ID</dt>
-        <dd class="col-sm-10">@Model.OrderId</dd>
-
-    @*     <dt class="col-sm-2">Order Status</dt>
-        <dd class="col-sm-10">@Model.Order?.Status</dd> *@
-    </dl>
-
-    <div class="btn-group" role="group" aria-label="Actions">
-        <a href="@Url.Action("Edit", "OrderItem", new { orderItemId = Model.Id })" class="btn btn-primary">Edit</a>
-       @*  <form method="post" action="@Url.Action("DeleteOrderItem", "OrderItem", new { orderItemId = Model.Id })" style="display:inline;">
-            <button type="submit" class="btn btn-danger">Delete</button>
-        </form> *@
+        <!-- Action Buttons -->
+        <div class="btn-group" role="group" aria-label="Actions">
+            <a href="@Url.Action("Edit", "OrderItem", new { orderItemId = Model.Id })" class="btn btn-primary">Edit</a>
+            @* <a href="@Url.Action("Delete", "OrderItem", new { orderItemId = Model.Id })" class="btn btn-danger">Delete</a> *@
+        </div>
     </div>
 </div>

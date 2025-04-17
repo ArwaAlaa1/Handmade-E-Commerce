@@ -1,0 +1,42 @@
+﻿@using ECommerce.Core.Models.Order
+@model IEnumerable<OrderItem>
+
+@{
+    ViewData["Title"] = "Order Items";
+}
+
+<h2>Order Items</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product Name</th>
+            <th>Order Item Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Product.Name</td>
+                <td>@item.OrderItemStatus</td>
+                <td>
+                    @if (item.OrderItemStatus == ItemStatus.Pending)
+                    {
+                        <form asp-action="ConfirmOrderItem" method="post" style="display:inline;">
+                            <input type="hidden" name="orderItemId" value="@item.Id" />
+                            <button type="submit" class="btn btn-success">Confirm</button>
+                        </form>
+                    }
+                    <a href="@Url.Action("Edit", new { orderItemId = item.Id })" class="btn btn-primary">Edit</a>
+					<a href="@Url.Action("Details", new { orderItemId = item.Id })" class="btn btn-info">Details</a>
+                   @*  <form asp-action="DeleteOrderItem" method="post" style="display:inline;">
+                        <input type="hidden" name="orderItemId" value="@item.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,111 @@
+<!-- Login -->
+<section class="section-login padding-tb-50">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div
+          class="section-title bb-center"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          <div class="section-detail">
+            <h2 class="bb-title">Log <span>In</span></h2>
+            <p>Best place to buy and sell digital products</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div
+          class="bb-login-contact"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="400"
+        >
+          <div *ngIf="errorMessage" class="text-center alert alert-danger">
+            {{ errorMessage }}
+          </div>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="bb-login-wrap">
+              <label for="emailOrUserName">Email*</label>
+              <input
+                type="email"
+                id="emailOrUserName"
+                name="emailOrUserName"
+                formControlName="emailOrUserName"
+                placeholder="Enter Your Email"
+                [ngClass]="{
+                  'is-invalid':
+                    f['emailOrUserName'].invalid && f['emailOrUserName'].touched
+                }"
+              />
+              <div
+                *ngIf="
+                  f['emailOrUserName'].invalid && f['emailOrUserName'].touched
+                "
+                class="invalid-feedback"
+              >
+                <div *ngIf="f['emailOrUserName'].errors?.['required']">
+                  Email is required.
+                </div>
+                <div *ngIf="f['emailOrUserName'].errors?.['email']">
+                  Please enter a valid email address.
+                </div>
+              </div>
+            </div>
+            <div class="bb-login-wrap">
+              <label for="password">Password*</label>
+              <div class="input-group mb-2">
+                <input
+                  [type]="passwordVisible ? 'text' : 'password'"
+                  id="password"
+                  name="password"
+                  class="form-control"
+                  placeholder="Enter Your Password"
+                  formControlName="password"
+                  [ngClass]="{
+                    'is-invalid': f['password'].invalid && f['password'].touched
+                  }"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="togglePasswordVisibility()"
+                >
+                  <i
+                    class="fas"
+                    [ngClass]="passwordVisible ? 'fa-eye' : 'fa-eye-slash'"
+                  ></i>
+                </button>
+              </div>
+              <div
+                class="invalid-feedback"
+                *ngIf="f['password'].invalid && f['password'].touched"
+              >
+                <div *ngIf="f['password'].errors?.['required']">
+                  Password is required.
+                </div>
+              </div>
+            </div>
+            <div class="bb-login-wrap">
+              <a style="text-decoration: none" routerLink="sendPin"
+                >Forgot Password?</a
+              >
+            </div>
+            <div class="bb-login-button">
+              <button class="bb-btn-2" type="submit" (click)="onSubmit()">
+                <span *ngIf="isLoading">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </span>
+                <span *ngIf="!isLoading">Login</span>
+              </button>
+              <a style="text-decoration: none" routerLink="register"
+                >Register</a
+              >
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

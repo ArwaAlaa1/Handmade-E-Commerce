@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace ECommerce.DashBoard.ViewModels
 {
@@ -25,10 +26,16 @@ namespace ECommerce.DashBoard.ViewModels
         [ValidateNever]
         public IEnumerable<SelectListItem> Categories { get; set; }
 
-        public List<int> SelectedColorIds { get; set; } = new();
-        public List<int> SelectedSizeIds { get; set; } = new();
-        public IEnumerable<SelectListItem> AvailableColors { get; set; } = new List<SelectListItem>();
-        public IEnumerable<SelectListItem> AvailableSizes { get; set; } = new List<SelectListItem>();
+        //public List<int> SelectedColorIds { get; set; } = new();
+        //public List<int> SelectedSizeIds { get; set; } = new();
+
+        // New: Colors and Sizes to be added dynamically
+        public List<ColorVM> Colors { get; set; } = new();
+        public List<SizeVM> Sizes { get; set; } = new();
+
+
+        //public IEnumerable<SelectListItem> AvailableColors { get; set; } = new List<SelectListItem>();
+        //public IEnumerable<SelectListItem> AvailableSizes { get; set; } = new List<SelectListItem>();
 
 
         //  Handle new uploaded photos

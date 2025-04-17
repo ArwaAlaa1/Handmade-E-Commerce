@@ -17,6 +17,7 @@ namespace ECommerce.DashBoard.Controllers
         }
 
         [Authorize(Roles = SD.AdminRole)]
+        //Order/Index
         public async Task<IActionResult> Index(string status)
         {
             var ordersQuery = _unitOfWork.Repository<Order>().GetAllAsync(includeProperties: "OrderItems.Product,shippingCost");
@@ -50,7 +51,7 @@ namespace ECommerce.DashBoard.Controllers
             return View(orderVMs);
         }
 
-
+        [Authorize(Roles = SD.AdminRole)]
         public async Task<IActionResult> Details(int id)
         {
             // Fetch request from database
@@ -94,7 +95,7 @@ namespace ECommerce.DashBoard.Controllers
             if (order == null)
                 return NotFound();
 
-            // تحويل قيمة الـ OrderStatus إلى string قبل المقارنة
+           
             if (order.Status.ToString() != "Pending" && order.Status.ToString() != "InProgress")
                 return Forbid();
 
@@ -135,9 +136,6 @@ namespace ECommerce.DashBoard.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-
-
 
     }
 }

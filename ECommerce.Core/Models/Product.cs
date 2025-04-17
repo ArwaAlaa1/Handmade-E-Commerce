@@ -13,7 +13,6 @@ namespace ECommerce.Core.Models
 
         public string Description { get; set; }
         public decimal Cost { get; set; }
-        //public string Photo { get; set;}
         public string? SellerId { get; set;}
         public AppUser? Seller { get; set; }
 

@@ -132,7 +132,10 @@
                     </a>
                     <ul class="bb-dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="register.html"
+                        <a class="dropdown-item"  
+                        routerLinkActive="active"
+                        [routerLinkActiveOptions]="{ exact: true }"
+                        routerLink="register"
                           >Register</a
                         >
                       </li>

@@ -50,9 +50,9 @@ namespace ECommerce.DashBoard.Controllers
 
             foreach (var order in allOrders)
             {
-                var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-                var allReady = traderOrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
-                var anyPending = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
+                //var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
+                var allReady = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
+                var anyPending = order.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
 
                 if (allReady)
                     order.Status = OrderStatus.Ready;
@@ -148,9 +148,9 @@ namespace ECommerce.DashBoard.Controllers
 
             if (order != null)
             {
-                var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-                var allReady = traderOrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
-                var anyPending = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
+               // var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
+                var allReady = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
+                var anyPending = order.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
 
                 if (allReady)
                     order.Status = OrderStatus.Ready;

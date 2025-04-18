@@ -39,13 +39,13 @@
                             <form  [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
                                 <div class="bb-register-wrap bb-register-width-50">
                                     <label>Display Name*</label>
-                                    <input formControlName="displayName" type="text" />
+                                    <input formControlName="displayName" type="text" placeholder="Enter Display name" />
                            <div *ngIf="submitted && RegisterForm.controls['displayName'].errors" class="text-danger">Display name is required.</div>
                                 
                         </div>
                                     <div class="bb-register-wrap bb-register-width-50">
                                         <label>User Name*</label>
-                                        <input type="text" formControlName="userName" placeholder="Enter your Last name" required>
+                                        <input type="text" formControlName="userName" placeholder="Enter your User name" required>
                                         <div *ngIf="submitted && RegisterForm.controls['userName'].errors" class="text-danger">User Name name is required.</div>
                               
                                     </div>

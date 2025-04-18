@@ -19,7 +19,7 @@ export class RegisterComponent {
       displayName: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       userName: new FormControl('', [Validators.required, Validators.pattern(/^\S+$/)]),
-      phonenumber: new FormControl('', [Validators.required, Validators.pattern(/^\d{10}$/)]),
+      phonenumber: new FormControl('', [Validators.required, Validators.pattern(/^\d{11}$/)]),
       password: new FormControl('', [Validators.required, Validators.minLength(6)]),
       confirmpassword: new FormControl('', Validators.required)
     }, { validators: this.matchPasswords('password', 'confirmpassword') as ValidatorFn });
@@ -46,7 +46,7 @@ export class RegisterComponent {
     if (this.RegisterForm.invalid) {
      console.log('Form is invalid');
       this.RegisterForm.markAllAsTouched();
-      
+      return;
      
     }
 

@@ -53,7 +53,7 @@ export class AuthService {
   }
 
   signup(formData: any): Observable<any> {
-    return this._HttpClient.post(`${environment.baseURL}Account/register`, formData);
+    return this._HttpClient.post(`https://localhost:7223/api/Account/register`, formData);
   }
 
   login(credentials: { emailOrUserName: string; password: string }): Observable<any> {

@@ -43,18 +43,21 @@ namespace ECommerce
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
+
             builder.Services.AddScoped<IEmailProvider, EmailProvider>();
 
             builder.Services.AddScoped<ICartRepository, CartRepository>();
            
 
-            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-            builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
+            builder.Services.AddTransient<IFavoriteRepository, FavoriteRepository>();
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService,OrderService>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
-            builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
+
+          
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 

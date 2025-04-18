@@ -70,6 +70,7 @@ namespace ECommerce
                                .AllowAnyHeader();
                     });
             });
+           
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             //builder.Services.AddOpenApi();
@@ -117,7 +118,7 @@ namespace ECommerce
 
 
             var app = builder.Build();
-
+            
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -129,7 +130,7 @@ namespace ECommerce
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hand-made E-Commerce v1"));
             app.UseStaticFiles();
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowAllOrigins");
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -12,17 +12,18 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
+  loginForm: FormGroup = new FormGroup(
+    {
+      emailOrUserName: new FormControl(null, { validators: [Validators.required, Validators.email] }),
+      password: new FormControl(null, { validators: [Validators.required] }),
+    },
+  );
 
-  loginForm: FormGroup;
   errorMessage: string = '';
   isLoading: boolean = false;
   passwordVisible: boolean = false;
 
   constructor(private _authService: AuthService, private _router: Router) {
-    this.loginForm = new FormGroup({
-      emailOrUserName: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required])
-    });
   }
 
   ngOnInit(): void {}

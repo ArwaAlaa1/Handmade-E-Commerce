@@ -79,8 +79,8 @@
                 </button>
               </div>
               <div
-                class="invalid-feedback"
                 *ngIf="f['password'].invalid && f['password'].touched"
+                class="invalid-feedback"
               >
                 <div *ngIf="f['password'].errors?.['required']">
                   Password is required.
@@ -88,7 +88,7 @@
               </div>
             </div>
             <div class="bb-login-wrap">
-              <a style="text-decoration: none" routerLink="sendPin"
+              <a style="text-decoration: none" routerLink="/sendpin"
                 >Forgot Password?</a
               >
             </div>
@@ -99,7 +99,7 @@
                 </span>
                 <span *ngIf="!isLoading">Login</span>
               </button>
-              <a style="text-decoration: none" routerLink="register"
+              <a style="text-decoration: none" routerLink="/register"
                 >Register</a
               >
             </div>

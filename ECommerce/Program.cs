@@ -49,7 +49,7 @@ namespace ECommerce
            
 
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-            builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+            //builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService,OrderService>();

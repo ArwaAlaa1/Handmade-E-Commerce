@@ -59,7 +59,14 @@
                                         <label>Phone Number*</label>
                                         <input type="text" formControlName="phonenumber" placeholder="Enter your phone number" required>
                                         <div *ngIf="submitted && RegisterForm.controls['phonenumber'].errors" class="text-danger">phonenumber is required.</div>
-                              
+                                        <div *ngIf="submitted && RegisterForm.get('phonenumber')?.errors">
+                                            <div class="text-danger" *ngIf="RegisterForm.get('phonenumber')?.errors?.['required']">
+                                              phonenumber is required.
+                                            </div>
+                                            <div class="text-danger" *ngIf="RegisterForm.get('phonenumber')?.errors?.['pattern']">
+                                                phone number must be 11 digits.
+                                              </div>
+                                       </div>
                                     </div>
                                     
                                     <div class="bb-register-wrap bb-register-width-50">
@@ -72,8 +79,15 @@
                                     <div class="bb-register-wrap bb-register-width-50">
                                         <label>Confirm Password*</label>
                                         <input type="password" formControlName="confirmpassword" placeholder="Enter your confirm password" required>
-                                        <div *ngIf="submitted && RegisterForm.controls['confirmpassword'].errors" class="text-danger">confirm password is required.</div>
-                              
+                                        <div *ngIf="submitted && RegisterForm.get('confirmpassword')?.errors">
+                                            <div class="text-danger" *ngIf="RegisterForm.get('confirmpassword')?.errors?.['required']">
+                                              Confirm password is required.
+                                            </div>
+                                            <div class="text-danger" *ngIf="RegisterForm.get('confirmpassword')?.errors?.['notEquivalent']">
+                                              Passwords do not match.
+                                            </div>
+                                          </div>
+                                          
                                     </div>
                                   
                                     <div class="bb-register-button">

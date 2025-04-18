@@ -8,6 +8,7 @@ using ECommerce.Core;
 using ECommerce.Core.Models;
 using ECommerce.Core.Repository.Contract;
 using ECommerce.DashBoard.Data;
+using ECommerce.Repository.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Repository
@@ -24,6 +25,7 @@ namespace ECommerce.Repository
         {
             _db = db;
             _repositories = new Hashtable();
+            //Favorites = new FavoriteRepository( db);
         }
 
         public IGenericRepository<T> Repository<T>() where T : BaseEntity

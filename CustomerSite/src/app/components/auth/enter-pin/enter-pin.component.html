@@ -1,1 +1,70 @@
-<p>enter-pin works!</p>
+<section class="section-login padding-tb-50">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div
+          class="section-title bb-center"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          <div class="section-detail">
+            <h2 class="bb-title">Verify <span>PIN Code</span></h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div
+          class="bb-login-contact"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="400"
+        >
+          <div *ngIf="errorMessage" class="text-center alert alert-danger">
+            {{ errorMessage }}
+          </div>
+          <form [formGroup]="verifyPinCodeForm" (ngSubmit)="onSubmit()">
+            <div class="bb-login-wrap">
+              <label for="pin">Pin Code Will {{ expireAt }}</label>
+              <input
+                id="pin"
+                name="pin"
+                formControlName="pin"
+                placeholder="Enter Your pin code"
+                [ngClass]="{
+                  'is-invalid': f['pin'].invalid && f['pin'].touched
+                }"
+              />
+              <div
+                class="invalid-feedback"
+                *ngIf="f['pin'].invalid && f['pin'].touched"
+              >
+                <div *ngIf="f['pin'].errors?.['required']">
+                  Pin Code is required.
+                </div>
+                <div *ngIf="f['pin'].errors?.['minlength']">
+                  Pin Code must be 6 characters.
+                </div>
+                <div *ngIf="f['pin'].errors?.['maxlength']">
+                  Pin Code must be 6 characters.
+                </div>
+              </div>
+            </div>
+
+            <div class="bb-login-button">
+              <button class="bb-btn-2" type="submit" (click)="onSubmit()">
+                <span *ngIf="isLoading">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </span>
+                <span *ngIf="!isLoading">Verify Pin Code</span>
+              </button>
+              <a style="text-decoration: none" (click)="ResndCode()"
+                >Resnd Code</a
+              >
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

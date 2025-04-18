@@ -85,7 +85,7 @@
                 <form class="bb-btn-group-form" action="#">
                   <div class="inner-select">
                     <div class="custom-select">
-                      <select>
+                      <select title="options">
                         <option value="option1">vegetables</option>
                         <option value="option2">Cold Drinks</option>
                         <option value="option3">Fruits</option>
@@ -132,7 +132,11 @@
                     </a>
                     <ul class="bb-dropdown-menu">
                       <li>
-                        <a class="dropdown-item" href="register.html"
+                        <a
+                          class="dropdown-item"
+                          routerLinkActive="active"
+                          [routerLinkActiveOptions]="{ exact: true }"
+                          routerLink="register"
                           >Register</a
                         >
                       </li>
@@ -569,7 +573,7 @@
                   />
                 </svg>
                 <div class="custom-select">
-                  <select>
+                  <select title="options">
                     <option value="option1">Surat</option>
                     <option value="option2">Delhi</option>
                     <option value="option3">Rajkot</option>

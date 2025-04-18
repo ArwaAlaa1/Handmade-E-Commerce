@@ -30,6 +30,7 @@
               <label for="emailOrUserName">Email*</label>
               <input
                 type="email"
+                autocomplete="on"
                 id="emailOrUserName"
                 name="emailOrUserName"
                 formControlName="emailOrUserName"
@@ -54,15 +55,15 @@
               </div>
             </div>
             <div class="bb-login-wrap">
-              <label for="password">Password*</label>
+              <label for="password">Password :</label>
               <div class="input-group mb-2">
                 <input
-                  [type]="passwordVisible ? 'text' : 'password'"
                   id="password"
-                  name="password"
-                  class="form-control"
-                  placeholder="Enter Your Password"
                   formControlName="password"
+                  placeholder="Enter your password"
+                  [type]="passwordVisible ? 'text' : 'password'"
+                  autocomplete="on"
+                  class="form-control"
                   [ngClass]="{
                     'is-invalid': f['password'].invalid && f['password'].touched
                   }"
@@ -77,16 +78,17 @@
                     [ngClass]="passwordVisible ? 'fa-eye' : 'fa-eye-slash'"
                   ></i>
                 </button>
-              </div>
-              <div
-                *ngIf="f['password'].invalid && f['password'].touched"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f['password'].errors?.['required']">
-                  Password is required.
+                <div
+                  class="invalid-feedback"
+                  *ngIf="f['password'].invalid && f['password'].touched"
+                >
+                  <div *ngIf="f['password'].errors?.['required']">
+                    Password is required.
+                  </div>
                 </div>
               </div>
             </div>
+
             <div class="bb-login-wrap">
               <a style="text-decoration: none" routerLink="/sendpin"
                 >Forgot Password?</a

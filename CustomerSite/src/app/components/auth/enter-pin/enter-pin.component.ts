@@ -45,6 +45,7 @@ export class EnterPinComponent implements OnInit {
   }
 
   submitVerifyForm() {
+
     this.isLoading = true;
     const pinData = {
       pin: this.verifyPinCodeForm.value.pin,
@@ -53,12 +54,13 @@ export class EnterPinComponent implements OnInit {
     this._authService.Verify_Pin( this.email, pinData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        this._Router.navigate([`/resetpassword/${this.email}`]);
+        // this._Router.navigate([`/resetpassword/${this.email}`]);
+        window.location.href = `/resetpassword/${this.email}`;
       },
       error: (error) => {
         this.isLoading = false;
         if (error.status === 404 || error.status === 400) {
-          this.errorMessage = error.errorMessage;
+          this.errorMessage = error.error.errorMessage;
         }
       }
     });
@@ -73,7 +75,8 @@ export class EnterPinComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         window.alert('A code has been sent to you. Check your email now.')
-        this._Router.navigate([`/enterpin/${response.email}/${response.expireAt}`]);
+        // this._Router.navigate([`/enterpin/${response.email}/${response.expireAt}`]);
+        window.location.href = `/enterpin/${response.email}/${response.expireAt}`;
       },
       error: (error) => {
         this.isLoading = false;

@@ -133,10 +133,11 @@
                     <ul class="bb-dropdown-menu">
                       <li>
                         <a
+                          *ngIf="!isLogin"
                           class="dropdown-item"
                           routerLinkActive="active"
                           [routerLinkActiveOptions]="{ exact: true }"
-                          routerLink="register"
+                          href="register"
                           >Register</a
                         >
                       </li>
@@ -147,13 +148,16 @@
                       </li>
                       <li>
                         <a
+                          *ngIf="!isLogin"
                           class="dropdown-item"
                           routerLinkActive="active"
                           [routerLinkActiveOptions]="{ exact: true }"
-                          routerLink="login"
+                          href="login"
                           >Login</a
                         >
                       </li>
+
+                      <li><a *ngIf="isLogin" (click)="logout()">Logout</a></li>
                     </ul>
                   </div>
                   <a
@@ -466,6 +470,7 @@
                     </li>
                     <li>
                       <a
+                        *ngIf="!isLogin"
                         class="dropdown-item"
                         routerLinkActive="active"
                         [routerLinkActiveOptions]="{ exact: true }"
@@ -474,7 +479,9 @@
                       >
                     </li>
                     <li>
-                      <a class="dropdown-item" href="register.html">Register</a>
+                      <a *ngIf="!isLogin" class="dropdown-item" href="register"
+                        >Register</a
+                      >
                     </li>
                   </ul>
                 </li>
@@ -768,15 +775,6 @@
               <li><a href="checkout.html">Checkout</a></li>
               <li><a href="compare.html">Compare</a></li>
               <li><a href="faq.html">Faq</a></li>
-              <li>
-                <a
-                  routerLinkActive="active"
-                  [routerLinkActiveOptions]="{ exact: true }"
-                  routerLink="login"
-                  >Login</a
-                >
-              </li>
-              <li><a href="register.html">Register</a></li>
             </ul>
           </li>
           <li>

@@ -50,7 +50,8 @@ export class AuthService {
   signout() {
     this._CookieService.delete('userData', '/');
     this.userData.next(null);
-    this._Router.navigate(['/login']);
+    // this._Router.navigate(['/login']);
+    window.location.href = '/login';
   }
 
   signup(formData: any): Observable<any> {

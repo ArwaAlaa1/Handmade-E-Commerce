@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -8,6 +9,29 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+
+  isLogin: boolean = false;
+
+  constructor(private _AuthService : AuthService) {
+  }
+
+  ngOnInit(): void {
+    this._AuthService.userData.subscribe({
+      next: (data) => {
+        if (data) {
+          this.isLogin = true;
+        }
+        else
+        {
+          this.isLogin = false;
+        }
+      }
+    });
+  }
+
+  logout(){
+    this._AuthService.signout();
+  }
 
 }

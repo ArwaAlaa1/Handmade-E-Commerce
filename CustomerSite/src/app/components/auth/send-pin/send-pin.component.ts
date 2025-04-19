@@ -48,7 +48,8 @@ export class SendPinComponent implements OnInit {
       this._authService.SendPinCode(sendPinData).subscribe({
         next: (response) => {
           this.isLoading = false;
-          this._Router.navigate([`/enterpin/${response.email}/${response.expireAt}`]);
+          // this._Router.navigate([`/enterpin/${response.email}/${response.expireAt}`]);
+          window.location.href = `/enterpin/${response.email}/${response.expireAt}`;
         },
         error: (error) => {
           this.isLoading = false;

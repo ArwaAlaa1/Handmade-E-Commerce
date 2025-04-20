@@ -1,4 +1,5 @@
 ﻿using ECommerce.Core.Models;
+using System.Text.Json.Serialization;
 
 namespace ECommerce.DTOs.AddressDtos
 {
@@ -11,6 +12,5 @@ namespace ECommerce.DTOs.AddressDtos
 
         public string Country { get; set; }
         public string? AddressDetails { get; set; }
-        public string AppUserId { get; set; }
     }
 }

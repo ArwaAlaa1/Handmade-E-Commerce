@@ -56,6 +56,8 @@ namespace ECommerce.Repository.Repositories
 
             if (maxPrice.HasValue)
                 query = query.Where(p => p.Cost <= maxPrice.Value);
+            
+            query = query.Where(p => p.Sales.Any());
 
             return await query.OrderBy(Product => Product.Id)
                 .Where(p => p.Category.IsDeleted == false)

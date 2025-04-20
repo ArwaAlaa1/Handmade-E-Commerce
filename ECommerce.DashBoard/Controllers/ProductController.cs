@@ -78,10 +78,19 @@ namespace ECommerce.DashBoard.Controllers
                     Name = ps.Size,
                     ExtraCost = ps.ExtraCost
                 }).ToList() ?? new List<SizeVM>(),
-                ExistingPhotoLinks = product.ProductPhotos?.Select(p => p.PhotoLink).ToList() ?? new List<string>(),
-                ExistingPhotoLinksWithIds = product.ProductPhotos?
-                    .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink }).ToList()
-                    ?? new List<ProductPhotoVM>(),
+                //ExistingPhotoLinks = product.ProductPhotos?.Select(p => p.PhotoLink).ToList() ?? new List<string>(),
+                //ExistingPhotoLinksWithIds = product.ProductPhotos?
+                //    .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink }).ToList()
+                //    ?? new List<ProductPhotoVM>(),
+                ExistingPhotoLinks = product.ProductPhotos?
+                             .Where(p => !p.IsDeleted)
+                             .Select(p => p.PhotoLink)
+                             .ToList() ?? new List<string>(),
+
+                                         ExistingPhotoLinksWithIds = product.ProductPhotos?
+                             .Where(p => !p.IsDeleted)
+                             .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink })
+                             .ToList() ?? new List<ProductPhotoVM>(),
                 IsOnSale = currentSale != null,
                 SaleId = currentSale?.Id,
                 SalePercent = currentSale?.Percent,
@@ -213,7 +222,7 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var product = await _unitOfWork.Repository<Product>()
-   .GetByIdWithIncludeAsync(id,"ProductColors,ProductSizes");
+   .GetByIdWithIncludeAsync(id, "ProductColors,ProductSizes");
 
             if (product == null) return NotFound();
 
@@ -325,7 +334,7 @@ namespace ECommerce.DashBoard.Controllers
             var oldColors = product.ProductColors.ToList();
             foreach (var color in oldColors)
             {
-                 _unitOfWork.Repository<ProductColor>().Delete(color);
+                _unitOfWork.Repository<ProductColor>().Delete(color);
             }
 
             product.ProductColors.Clear();
@@ -338,7 +347,7 @@ namespace ECommerce.DashBoard.Controllers
             var oldSizes = product.ProductSizes.ToList();
             foreach (var size in oldSizes)
             {
-                 _unitOfWork.Repository<ProductSize>().Delete(size);
+                _unitOfWork.Repository<ProductSize>().Delete(size);
             }
 
             product.ProductSizes.Clear();
@@ -511,7 +520,7 @@ namespace ECommerce.DashBoard.Controllers
 
             // Remove from database
             _unitOfWork.Repository<ProductPhoto>().Delete(photo);
-            await _unitOfWork.SaveAsync(); 
+            await _unitOfWork.SaveAsync();
 
             return RedirectToAction("Edit", new { id = productId });
         }

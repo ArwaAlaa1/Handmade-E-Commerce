@@ -97,11 +97,13 @@ namespace ECommerce.DashBoard.Controllers
                 StartDate = sale.StartDate,
                 EndDate = sale.EndDate,
                 ProductId = sale.ProductId,
-                Products = products.Select(p => new SelectListItem
-                {
-                    Value = p.Id.ToString(),
-                    Text = p.Name
-                })
+                Products = new List<SelectListItem>
+                {new SelectListItem
+                     {
+                       Value = sale.ProductId.ToString(),
+                      Text = sale.Product.Name
+                     }
+                 }
             };
 
             return View(vm);

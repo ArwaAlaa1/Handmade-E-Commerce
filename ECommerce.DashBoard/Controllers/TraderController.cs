@@ -2,12 +2,14 @@
 using ECommerce.DashBoard.Helper;
 using ECommerce.DashBoard.ViewModels;
 using ECommerce.Services.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.DashBoard.Controllers
 {
+    [Authorize(Roles = SD.AdminRole)]
     public class TraderController : Controller
     {
         private readonly UserManager<AppUser> _userManager;

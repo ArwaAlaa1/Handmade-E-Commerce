@@ -30,6 +30,18 @@
                 <span>@Model.Cost.ToString("C")</span>
             }
         </dd>
+        <dt class="col-sm-3">  <span>Availabale Colors : </span>
+        <dd class="col-sm-9">
+            @foreach (var color in Model.Colors)
+            {
+                <span> @color.Name </span>
+                    if (Model.Colors.Last() != color)
+                    {
+                    <span> , </span>
+                    }
+            }
+            </dd>
+        </dt>
         <dt class="col-sm-3">Category</dt>
         <dd class="col-sm-9">@Model.CategoryName</dd>
 

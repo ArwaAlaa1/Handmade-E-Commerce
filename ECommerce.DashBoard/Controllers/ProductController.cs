@@ -54,7 +54,7 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var product = await _unitOfWork.Repository<Product>()
-               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales");
+               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales,ProductColors,ProductSizes");
 
 
             if (product == null) return NotFound();
@@ -67,6 +67,8 @@ namespace ECommerce.DashBoard.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Cost = product.Cost,
+                Colors = product.ProductColors?.Select(c => new ColorVM { Name = c.Color }).ToList() ?? new List<ColorVM>(),
+                Sizes = product.ProductSizes?.Select(s => new SizeVM { Name = s.Size, ExtraCost = s.ExtraCost }).ToList() ?? new List<SizeVM>(),
                 CategoryName = product.Category?.Name,
                 CategoryId = product.CategoryId,
                 ExistingPhotoLinks = product.ProductPhotos?.Select(p => p.PhotoLink).ToList() ?? new List<string>(),
@@ -321,8 +323,8 @@ namespace ECommerce.DashBoard.Controllers
             product.Cost = vm.Cost;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;
-            //product.ProductColors = new List<ProductColor>();
-            //product.ProductSizes = new List<ProductSize>();
+            product.ProductColors = new List<ProductColor>();
+            product.ProductSizes = new List<ProductSize>();
 
             // Clear existing colors and add new ones
             product.ProductColors.Clear();

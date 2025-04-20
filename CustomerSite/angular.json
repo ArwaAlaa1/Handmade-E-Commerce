@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "app02": {
+    "CustomerSite": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/app02",
+            "outputPath": "dist/customer-site",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -62,13 +62,7 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.development.ts"
-                }
-              ]
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
@@ -77,10 +71,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "app02:build:production"
+              "buildTarget": "CustomerSite:build:production"
             },
             "development": {
-              "buildTarget": "app02:build:development"
+              "buildTarget": "CustomerSite:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -112,6 +106,6 @@
     }
   },
   "cli": {
-    "analytics": "9e333f96-80a1-40c6-ad96-4f4db2e7f13b"
+    "analytics": "592eda96-23f6-431a-a770-d8be069f85d3"
   }
 }

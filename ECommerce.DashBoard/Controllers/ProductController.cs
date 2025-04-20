@@ -321,8 +321,8 @@ namespace ECommerce.DashBoard.Controllers
             product.Cost = vm.Cost;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;
-            //product.ProductColors = new List<ProductColor>();
-            //product.ProductSizes = new List<ProductSize>();
+            product.ProductColors = new List<ProductColor>();
+            product.ProductSizes = new List<ProductSize>();
 
             // Clear existing colors and add new ones
             product.ProductColors.Clear();

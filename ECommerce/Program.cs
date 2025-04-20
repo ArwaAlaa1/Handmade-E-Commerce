@@ -49,7 +49,6 @@ namespace ECommerce
 
             builder.Services.AddScoped<ICartRepository, CartRepository>();
            
-
             builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
             builder.Services.AddTransient<IFavoriteRepository, FavoriteRepository>();
 

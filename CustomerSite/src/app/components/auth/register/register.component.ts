@@ -61,7 +61,7 @@ export class RegisterComponent {
      console.log('Form is invalid');
       this.RegisterForm.markAllAsTouched();
       return;
-     
+
     }
 
     const formValue = this.RegisterForm.value;

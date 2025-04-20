@@ -130,16 +130,12 @@ namespace ECommerce.DashBoard.Controllers
             // Handle colors
             foreach (var colorVM in vm.Colors)
             {
-                //var color = new Color { Name = colorVM.Name, AppUserId = user.Id };
-                //await _unitOfWork.Repository<Color>().AddAsync(color);
                 product.ProductColors.Add(new ProductColor { Color = colorVM.Name });
             }
 
             // Handle sizes
             foreach (var sizeVM in vm.Sizes)
             {
-                //var size = new Size { Name = sizeVM.Name, AppUserId = user.Id };
-                //await _unitOfWork.Repository<Size>().AddAsync(size);
                 product.ProductSizes.Add(new ProductSize { Size = sizeVM.Name, ExtraCost = sizeVM.ExtraCost });
             }
 
@@ -207,7 +203,10 @@ namespace ECommerce.DashBoard.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var product = await _unitOfWork.Repository<Product>()
+   .GetByIdWithIncludeAsync(id,"ProductColors,ProductSizes");
+
+            //var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
             if (product == null) return NotFound();
 
             var photos = await _unitOfWork.Repository<ProductPhoto>()
@@ -311,7 +310,10 @@ namespace ECommerce.DashBoard.Controllers
                 return View(vm);
             }
 
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(vm.Id);
+            var product = await _unitOfWork.Repository<Product>().GetFirstOrDefaultAsync(
+                    filter: p => p.Id == vm.Id,
+                    includeProperties: "ProductColors,ProductSizes"
+                );
             if (product == null) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
@@ -321,23 +323,32 @@ namespace ECommerce.DashBoard.Controllers
             product.Cost = vm.Cost;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;
-            product.ProductColors = new List<ProductColor>();
-            product.ProductSizes = new List<ProductSize>();
 
-            // Clear existing colors and add new ones
+            // Delete old ProductColors
+            var oldColors = product.ProductColors.ToList();
+            foreach (var color in oldColors)
+            {
+                 _unitOfWork.Repository<ProductColor>().Delete(color);
+            }
+
             product.ProductColors.Clear();
             foreach (var colorVM in vm.Colors)
             {
-                product.ProductColors.Add(new ProductColor { Color = colorVM.Name });
+                product.ProductColors.Add(new ProductColor { Color = colorVM.Name, ProductId = product.Id });
             }
 
-            // Clear existing sizes and add new ones
+            // Delete old ProductSizes
+            var oldSizes = product.ProductSizes.ToList();
+            foreach (var size in oldSizes)
+            {
+                 _unitOfWork.Repository<ProductSize>().Delete(size);
+            }
+
             product.ProductSizes.Clear();
             foreach (var sizeVM in vm.Sizes)
             {
-                product.ProductSizes.Add(new ProductSize { Size = sizeVM.Name, ExtraCost = sizeVM.ExtraCost });
+                product.ProductSizes.Add(new ProductSize { Size = sizeVM.Name, ExtraCost = sizeVM.ExtraCost, ProductId = product.Id });
             }
-
             _unitOfWork.Repository<Product>().Update(product);
             await _unitOfWork.SaveAsync();
 

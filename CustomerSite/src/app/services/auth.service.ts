@@ -21,6 +21,7 @@ export class AuthService {
     const userData = {
       token: response.token,
       userId: response.userId,
+      displayName: response.displayName,
       userName: response.userName,
       email: response.email,
       image: response.image,
@@ -49,7 +50,8 @@ export class AuthService {
   signout() {
     this._CookieService.delete('userData', '/');
     this.userData.next(null);
-    this._Router.navigate(['/login']);
+    // this._Router.navigate(['/login']);
+    window.location.href = '/login';
   }
 
   signup(formData: any): Observable<any> {
@@ -59,6 +61,21 @@ export class AuthService {
   login(credentials: { emailOrUserName: string; password: string }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._HttpClient.post(`${environment.baseURL}Account/login`, credentials, { headers });
+  }
+
+  SendPinCode(credentials: { email: string }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.post(`${environment.baseURL}Account/send_reset_code`, credentials, { headers });
+  }
+
+  Verify_Pin( email : string, credentials: { pin: string }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.post(`${environment.baseURL}Account/verify_pin/${email}`, credentials, { headers });
+  }
+
+  ForgetPassword( email : string, credentials: { newPassword: string, confirmNewPassword: string }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.post(`${environment.baseURL}Account/forget_password/${email}`, credentials, { headers });
   }
 
 }

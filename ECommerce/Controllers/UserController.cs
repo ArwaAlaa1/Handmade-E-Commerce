@@ -51,6 +51,7 @@ namespace ECommerce.Controllers
         public async Task<IActionResult> AddAddress( [FromBody] AddAddressDto dto)
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var address = new Address
@@ -69,6 +70,7 @@ namespace ECommerce.Controllers
 
             return CreatedAtAction(nameof(GetAddress), new { id = address.Id }, address);
         }
+
 
         [HttpPut("UpdateAddress")]
         public async Task<IActionResult> UpdateAddress(int id, [FromBody] AddAddressDto dto)
@@ -154,6 +156,8 @@ namespace ECommerce.Controllers
                 await addPhoto.Photo.CopyToAsync(fileStream);
             }
             user.Photo = uniqueFileName;
+            await _userManager.UpdateAsync(user);
+
             return Ok(uniqueFileName);
         }
        

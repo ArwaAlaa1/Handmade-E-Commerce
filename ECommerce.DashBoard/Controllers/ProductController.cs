@@ -13,14 +13,15 @@ namespace ECommerce.DashBoard.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<ProductController> _logger;
 
 
-        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<AppUser> userManager)
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<AppUser> userManager, ILogger<ProductController> logger)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
-
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -54,7 +55,7 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var product = await _unitOfWork.Repository<Product>()
-               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales");
+               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales,ProductSizes,ProductColors");
 
 
             if (product == null) return NotFound();
@@ -69,6 +70,17 @@ namespace ECommerce.DashBoard.Controllers
                 Cost = product.Cost,
                 CategoryName = product.Category?.Name,
                 CategoryId = product.CategoryId,
+                //handle colors and sizes
+                Colors = product.ProductColors?.Select(pc => new ColorVM
+                {
+                    Name = pc.Color
+                }).ToList() ?? new List<ColorVM>(),
+
+                Sizes = product.ProductSizes?.Select(ps => new SizeVM
+                {
+                    Name = ps.Size,
+                    ExtraCost = ps.ExtraCost
+                }).ToList() ?? new List<SizeVM>(),
                 ExistingPhotoLinks = product.ProductPhotos?.Select(p => p.PhotoLink).ToList() ?? new List<string>(),
                 ExistingPhotoLinksWithIds = product.ProductPhotos?
                     .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink }).ToList()
@@ -235,12 +247,6 @@ namespace ECommerce.DashBoard.Controllers
             return View(vm);
         }
 
-
-
-
-
-
-
         //public async Task<IActionResult> Edit(int id)
         //{
         //    var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
@@ -284,12 +290,6 @@ namespace ECommerce.DashBoard.Controllers
 
         //    return View(vm);
         //}
-
-
-
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -371,7 +371,6 @@ namespace ECommerce.DashBoard.Controllers
             await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
-
 
         //[HttpPost]
         //[ValidateAntiForgeryToken]
@@ -489,6 +488,7 @@ namespace ECommerce.DashBoard.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePhoto(int photoId, int productId)
         {
             var photo = await _unitOfWork.Repository<ProductPhoto>().GetByIdAsync(photoId);

@@ -27,7 +27,8 @@ export class AuthGuard implements CanActivate {
     }
 
     setTimeout(() => {
-      this._Router.navigate(['/login']);
+      // this._Router.navigate(['/login']);
+      window.location.href = '/login';
     }, 0);
 
     return of(false);

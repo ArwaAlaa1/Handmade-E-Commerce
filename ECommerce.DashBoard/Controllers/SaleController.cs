@@ -69,7 +69,7 @@ namespace ECommerce.DashBoard.Controllers
             await _unitOfWork.Repository<Sale>().AddAsync(sale);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Product"/*nameof(Index)*/);
         }
 
         // GET: Sale/Edit
@@ -126,7 +126,7 @@ namespace ECommerce.DashBoard.Controllers
             _unitOfWork.Repository<Sale>().Update(sale);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Product"/*nameof(Index)*/);
         }
 
         // GET: Sale/Delete
@@ -158,7 +158,7 @@ namespace ECommerce.DashBoard.Controllers
             _unitOfWork.Repository<Sale>().Delete(sale);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index","Product"/*nameof(Index)*/);
         }
 
 

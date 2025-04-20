@@ -8,7 +8,6 @@
 <div class="row">
     <div class="col-xl">
         <div class="card mb-4">
-            <!-- Header -->
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Edit Product</h5>
                 <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
@@ -18,6 +17,7 @@
 
             <div class="card-body">
                 <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Id" />
 
                     <div class="mb-3">
@@ -43,7 +43,7 @@
                         <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
 
-
+                    <!-- Colors -->
                     <div class="mb-3">
                         <label class="form-label">Colors</label>
                         <div id="colors-container">
@@ -58,8 +58,7 @@
                         <button type="button" class="btn btn-sm btn-outline-primary" onclick="addColor()">+ Add Color</button>
                     </div>
 
-
-
+                    <!-- Sizes -->
                     <div class="mb-3">
                         <label class="form-label">Sizes</label>
                         <div id="sizes-container">
@@ -81,29 +80,13 @@
                         <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSize()">+ Add Size</button>
                     </div>
 
-
-                    @* Display Current Image *@
-                    <div class="mb-4">
-                        <label class="form-label">Current Photos</label>
-                        <div class="row">
-                            @foreach (var photo in Model.ExistingPhotoLinksWithIds)
-                            {
-                                <div class="col-md-2 mb-3 text-center">
-                                    <img src="@photo.PhotoLink" class="img-thumbnail mb-2" style="max-width: 100%;" />
-                                    <form asp-action="DeletePhoto" method="post">
-                                        <input type="hidden" name="photoId" value="@photo.Id" />
-                                        <input type="hidden" name="productId" value="@Model.Id" />
-                                        <button type="submit" class="btn btn-sm btn-danger w-100">Delete</button>
-                                    </form>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
+                    <!-- Upload new photos -->
                     <div class="mb-4">
                         <label for="Photos" class="form-label">Upload New Photos</label>
-                        <input asp-for="Photos" type="file" name="Photos" multiple class="form-control" />
+                        <input asp-for="Photos" type="file" multiple class="form-control" />
                     </div>
+
+                    <div asp-validation-summary="All" class="text-danger"></div>
 
                     <div class="d-flex justify-content-end gap-2">
                         <button type="submit" class="btn btn-primary">
@@ -114,54 +97,70 @@
                         </a>
                     </div>
                 </form>
+
+                <!-- Show current photos & delete form OUTSIDE the edit form -->
+                @if (Model.ExistingPhotoLinksWithIds?.Count > 0)
+                {
+                    <hr />
+                    <h6>Existing Photos</h6>
+                    <div class="row">
+                        @foreach (var photo in Model.ExistingPhotoLinksWithIds)
+                        {
+                            <div class="col-md-2 mb-3 text-center">
+                                <img src="@photo.PhotoLink" class="img-thumbnail mb-2" style="max-width: 100%;" />
+                                <form asp-action="DeletePhoto" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="photoId" value="@photo.Id" />
+                                    <input type="hidden" name="productId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-sm btn-danger w-100">Delete</button>
+                                   
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
 
-
-
-<script>
-    function removeColor(btn) {
-        btn.closest('.input-group').remove();
-    }
-
-    function addColor() {
-        const index = document.querySelectorAll('#colors-container .input-group').length;
-        const html = `
-            <div class="input-group mb-2">
-                <input type="text" name="Colors[${index}].Name" class="form-control" placeholder="Color Name" />
-                <button type="button" class="btn btn-outline-danger" onclick="removeColor(this)">X</button>
-            </div>`;
-        document.getElementById('colors-container').insertAdjacentHTML('beforeend', html);
-    }
-
-    function removeSize(btn) {
-        btn.closest('.row').remove();
-    }
-
-    function addSize() {
-        const index = document.querySelectorAll('#sizes-container .row').length;
-        const html = `
-            <div class="row g-2 mb-2">
-                <div class="col-md-6">
-                    <input type="text" name="Sizes[${index}].Name" class="form-control" placeholder="Size Name" />
-                </div>
-                <div class="col-md-4">
-                    <input type="number" name="Sizes[${index}].ExtraCost" class="form-control" placeholder="Extra Cost" />
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-outline-danger w-100" onclick="removeSize(this)">X</button>
-                </div>
-            </div>`;
-        document.getElementById('sizes-container').insertAdjacentHTML('beforeend', html);
-    }
-</script>
-
-
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
+    <partial name="_ValidationScriptsPartial" />
 
+    <script>
+        function removeColor(btn) {
+            btn.closest('.input-group').remove();
+        }
+
+        function addColor() {
+            const index = document.querySelectorAll('#colors-container .input-group').length;
+            const html = `
+                <div class="input-group mb-2">
+                    <input type="text" name="Colors[${index}].Name" class="form-control" placeholder="Color Name" />
+                    <button type="button" class="btn btn-outline-danger" onclick="removeColor(this)">X</button>
+                </div>`;
+            document.getElementById('colors-container').insertAdjacentHTML('beforeend', html);
+        }
+
+        function removeSize(btn) {
+            btn.closest('.row').remove();
+        }
+
+        function addSize() {
+            const index = document.querySelectorAll('#sizes-container .row').length;
+            const html = `
+                <div class="row g-2 mb-2">
+                    <div class="col-md-6">
+                        <input type="text" name="Sizes[${index}].Name" class="form-control" placeholder="Size Name" />
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" name="Sizes[${index}].ExtraCost" class="form-control" placeholder="Extra Cost" />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeSize(this)">X</button>
+                    </div>
+                </div>`;
+            document.getElementById('sizes-container').insertAdjacentHTML('beforeend', html);
+        }
+    </script>
+}

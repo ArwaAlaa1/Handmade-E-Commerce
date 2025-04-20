@@ -86,7 +86,7 @@
                 <form class="bb-btn-group-form" action="#">
                   <div class="inner-select">
                     <div class="custom-select">
-                      <select>
+                      <select title="options">
                         <option value="option1">vegetables</option>
                         <option value="option2">Cold Drinks</option>
                         <option value="option3">Fruits</option>
@@ -133,10 +133,12 @@
                     </a>
                     <ul class="bb-dropdown-menu">
                       <li>
-                        <a class="dropdown-item"  
-                        routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: true }"
-                        routerLink="/register"
+                        <a
+                          *ngIf="!isLogin"
+                          class="dropdown-item"
+                          routerLinkActive="active"
+                          [routerLinkActiveOptions]="{ exact: true }"
+                          href="/register"
                           >Register</a
                         >
                       </li>
@@ -147,13 +149,16 @@
                       </li>
                       <li>
                         <a
+                          *ngIf="!isLogin"
                           class="dropdown-item"
                           routerLinkActive="active"
                           [routerLinkActiveOptions]="{ exact: true }"
-                          routerLink="/login"
+                          href="/login"
                           >Login</a
                         >
                       </li>
+
+                      <li><a *ngIf="isLogin" (click)="logout()">Logout</a></li>
                     </ul>
                   </div>
                   <a
@@ -470,6 +475,7 @@
                     </li>
                     <li>
                       <a
+                        *ngIf="!isLogin"
                         class="dropdown-item"
                         routerLinkActive="active"
                         [routerLinkActiveOptions]="{ exact: true }"
@@ -478,7 +484,9 @@
                       >
                     </li>
                     <li>
-                      <a class="dropdown-item" href="register.html">Register</a>
+                      <a *ngIf="!isLogin" class="dropdown-item" href="register"
+                        >Register</a
+                      >
                     </li>
                   </ul>
                 </li>
@@ -577,7 +585,7 @@
                   />
                 </svg>
                 <div class="custom-select">
-                  <select>
+                  <select title="options">
                     <option value="option1">Surat</option>
                     <option value="option2">Delhi</option>
                     <option value="option3">Rajkot</option>

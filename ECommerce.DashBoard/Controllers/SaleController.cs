@@ -47,6 +47,17 @@ namespace ECommerce.DashBoard.Controllers
             if (vm.EndDate <= vm.StartDate)
                 ModelState.AddModelError("EndDate", "End Date must be after Start Date.");
 
+            // Check if this product already has a sale that overlaps with the new one
+            var existingSales = await _unitOfWork.Repository<Sale>()
+                .GetAllAsync(s => s.ProductId == vm.ProductId &&
+                                 s.EndDate >= vm.StartDate &&
+                                 s.StartDate <= vm.EndDate); 
+
+            if (existingSales.Any())
+            {
+                ModelState.AddModelError("", "This product already has a sale during the selected period.");
+            }
+
             if (!ModelState.IsValid)
             {
                 var products = await _unitOfWork.Repository<Product>().GetAllAsync();
@@ -69,7 +80,7 @@ namespace ECommerce.DashBoard.Controllers
             await _unitOfWork.Repository<Sale>().AddAsync(sale);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToAction("Index","Product"/*nameof(Index)*/);
+            return RedirectToAction("Index", "Product");
         }
 
         // GET: Sale/Edit
@@ -86,11 +97,13 @@ namespace ECommerce.DashBoard.Controllers
                 StartDate = sale.StartDate,
                 EndDate = sale.EndDate,
                 ProductId = sale.ProductId,
-                Products = products.Select(p => new SelectListItem
-                {
-                    Value = p.Id.ToString(),
-                    Text = p.Name
-                })
+                Products = new List<SelectListItem>
+                {new SelectListItem
+                     {
+                       Value = sale.ProductId.ToString(),
+                      Text = sale.Product.Name
+                     }
+                 }
             };
 
             return View(vm);

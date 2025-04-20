@@ -55,9 +55,9 @@ export class LoginComponent implements OnInit {
         // this._router.navigate(['/home']);
         window.location.href = '/home';
       },
-      error: () => {
+      error: (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Invalid email or password.';
+        this.errorMessage = error.error.message;
       }
     });
   }

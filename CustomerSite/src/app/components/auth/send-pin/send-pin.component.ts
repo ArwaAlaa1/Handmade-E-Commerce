@@ -54,7 +54,7 @@ export class SendPinComponent implements OnInit {
         error: (error) => {
           this.isLoading = false;
           if (error.status === 404) {
-            this.errorMessage = error.errorMessage;
+            this.errorMessage = error.error.errorMessage;
           }
         }
       });

@@ -54,7 +54,7 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var product = await _unitOfWork.Repository<Product>()
-               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales");
+               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales,ProductSizes,ProductColors");
 
 
             if (product == null) return NotFound();
@@ -69,6 +69,17 @@ namespace ECommerce.DashBoard.Controllers
                 Cost = product.Cost,
                 CategoryName = product.Category?.Name,
                 CategoryId = product.CategoryId,
+                //handle colors and sizes
+                Colors = product.ProductColors?.Select(pc => new ColorVM
+                {
+                    Name = pc.Color
+                }).ToList() ?? new List<ColorVM>(),
+
+                Sizes = product.ProductSizes?.Select(ps => new SizeVM
+                {
+                    Name = ps.Size,
+                    ExtraCost = ps.ExtraCost
+                }).ToList() ?? new List<SizeVM>(),
                 ExistingPhotoLinks = product.ProductPhotos?.Select(p => p.PhotoLink).ToList() ?? new List<string>(),
                 ExistingPhotoLinksWithIds = product.ProductPhotos?
                     .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink }).ToList()

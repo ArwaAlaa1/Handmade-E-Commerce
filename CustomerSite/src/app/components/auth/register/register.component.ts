@@ -30,15 +30,29 @@ export class RegisterComponent {
       const group = control as FormGroup;
       const password = group.controls[passwordKey];
       const confirmPassword = group.controls[confirmPasswordKey];
+  
+      if (!password || !confirmPassword) return null;
+  
       if (password.value !== confirmPassword.value) {
-        confirmPassword.setErrors({ notEquivalent: true });
+        const errors = confirmPassword.errors || {};
+        errors['notEquivalent'] = true;
+        confirmPassword.setErrors(errors);
         return { notEquivalent: true };
       } else {
-        confirmPassword.setErrors(null);
+        const errors = confirmPassword.errors;
+        if (errors) {
+          delete errors['notEquivalent'];
+          if (Object.keys(errors).length === 0) {
+            confirmPassword.setErrors(null);
+          } else {
+            confirmPassword.setErrors(errors);
+          }
+        }
         return null;
       }
     };
   }
+  
 
   onSubmit(): void {
     this.submitted = true;

@@ -22,11 +22,11 @@
                     <div class="app-brand justify-content-center">
                         <a href="/" class="app-brand-link gap-2">
                             <span class="app-brand-logo demo">@await Html.PartialAsync("../_Partials/_Macros")</span>
-                            <span class="app-brand-text demo text-heading fw-bold">@TempData.Peek("appName")</span>
+                            <span class="app-brand-text demo text-heading fw-bold"> @TempData.Peek("Handmade E-Commerce")</span>
                         </a>
                     </div>
                     <!-- /Logo -->
-                    <h4 class="mb-1">Welcome to @TempData.Peek("Handmade E-Commerce")! 👋</h4>
+                   
                     @if (TempData["Message"] != null)
                     {
                         <div class="alert alert-success">@TempData["Message"]</div>

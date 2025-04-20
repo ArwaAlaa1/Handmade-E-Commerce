@@ -2,11 +2,14 @@
 using ECommerce.Core.Models;
 using ECommerce.DashBoard.Helper;
 using ECommerce.DashBoard.ViewModels;
+using ECommerce.Services.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.DashBoard.Controllers
 {
+    [Authorize(Roles = SD.AdminRole)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

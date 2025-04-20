@@ -16,5 +16,6 @@ export class AppComponent {
   constructor(private _AuthService: AuthService) {
     this._AuthService.loadUserData();
   }
+  
   title = 'Handmade E-Commerce';
 }

@@ -1,8 +1,83 @@
-﻿@model ECommerce.DashBoard.ViewModels.ProductVM
+﻿
+
+  @model ECommerce.DashBoard.ViewModels.ProductVM
 
 @{
     ViewData["Title"] = "Product Details";
 }
+<style>
+    .carousel-item img {
+        border-radius: 8px;
+        margin: 0 auto;
+    }
+
+    .carousel-control-prev, .carousel-control-next {
+        width: 5%;
+        background: rgba(0, 0, 0, 0.3); 
+        border-radius: 50%; 
+        width: 35px; 
+        height: 35px; 
+        top: 50%;
+        transform: translateY(-50%);
+        transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+        .carousel-control-prev:hover, .carousel-control-next:hover {
+            background: rgba(0, 0, 0, 0.6); 
+            transform: translateY(-50%) scale(1.1); 
+        }
+
+    .carousel-control-prev-icon, .carousel-control-next-icon {
+        background-image: none; 
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: relative;
+    }
+
+        .carousel-control-prev-icon::before, .carousel-control-next-icon::before {
+            content: '';
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .carousel-control-prev-icon::before {
+            background-image: url('data:image/svg+xml;charset=UTF8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="%23ffffff" viewBox="0 0 24 24"%3E%3Cpath d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/%3E%3C/svg%3E'); /* سهم أكبر وأنيق */
+        }
+
+        .carousel-control-next-icon::before {
+            background-image: url('data:image/svg+xml;charset=UTF8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="%23ffffff" viewBox="0 0 24 24"%3E%3Cpath d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/%3E%3C/svg%3E'); /* سهم أكبر وأنيق */
+        }
+
+    .carousel-indicators button {
+        background-color: #888;
+        border-radius: 50%;
+        width: 10px;
+        height: 10px;
+        margin: 0 5px;
+    }
+
+    .carousel-indicators .active {
+        background-color: #007bff;
+    }
+
+    .thumbnail {
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+
+        .thumbnail:hover, .thumbnail.active {
+            opacity: 1;
+        }
+</style>
 
 <div class="card p-4 shadow rounded-3">
     <h4 class="mb-4">Product Details</h4>
@@ -13,6 +88,7 @@
 
         <dt class="col-sm-3">Description</dt>
         <dd class="col-sm-9">@Model.Description</dd>
+
         <dt class="col-sm-3">Price</dt>
         <dd class="col-sm-9">
             @if (Model.DiscountedPrice.HasValue)
@@ -30,14 +106,111 @@
                 <span>@Model.Cost.ToString("C")</span>
             }
         </dd>
+
+        <dt class="col-sm-3">Available Colors:</dt>
+        <dd class="col-sm-9">
+            @if (Model.Colors != null && Model.Colors.Any())
+            {
+                @foreach (var color in Model.Colors)
+                {
+                    @* <span class="badge rounded-pill bg-secondary text-white me-2">@color.Name</span> *@
+                    <span class="badge rounded-pill text-white me-2" style="background-color: @color.Name.ToLower();">@color.Name</span>
+                }
+            }
+            else
+            {
+                <span class="text-muted">No colors available</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Available Sizes:</dt>
+        <dd class="col-sm-9">
+            @if (Model.Sizes != null && Model.Sizes.Any())
+            {
+                @foreach (var size in Model.Sizes)
+                {
+                    <span class="badge rounded-pill bg-info text-white me-2">
+                        @size.Name
+                        @if (size.ExtraCost > 0)
+                        {
+                            <span class="ms-1">(+@size.ExtraCost.ToString("C"))</span>
+                        }
+                    </span>
+                }
+            }
+            else
+            {
+                <span class="text-muted">No sizes available</span>
+            }
+        </dd>
+
         <dt class="col-sm-3">Category</dt>
         <dd class="col-sm-9">@Model.CategoryName</dd>
 
-        <dt class="col-sm-3">Photos</dt>
+       @*  <dt class="col-sm-3">Photos</dt>
         <dd class="col-sm-9">
             @foreach (var photo in Model.ExistingPhotoLinks)
             {
                 <img src="@photo" class="img-thumbnail me-2 mb-2" style="width: 100px;" />
+            }
+        </dd> *@
+        <dt class="col-sm-3">Photos</dt>
+        <dd class="col-sm-9">
+            @if (Model.ExistingPhotoLinks != null && Model.ExistingPhotoLinks.Any())
+            {
+                @if (Model.ExistingPhotoLinks.Count == 1)
+                {
+                   
+                    <div>
+                        <img src="@Model.ExistingPhotoLinks[0]" class="d-block w-100" style="max-height: 200px; object-fit: contain;" alt="Product Photo">
+                    </div>
+                }
+                else
+                {
+                    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <!-- Indicators -->
+                        <div class="carousel-indicators">
+                            @for (int i = 0; i < Model.ExistingPhotoLinks.Count; i++)
+                            {
+                                <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+                            }
+                        </div>
+
+                        <!-- Carousel Items -->
+                        <div class="carousel-inner">
+                            @for (int i = 0; i < Model.ExistingPhotoLinks.Count; i++)
+                            {
+                                var photo = Model.ExistingPhotoLinks[i];
+                                <div class="carousel-item @(i == 0 ? "active" : "")">
+                                    <img src="@photo" class="d-block w-100" style="max-height: 200px; object-fit: contain;" alt="Product Photo">
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Controls -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                    <!-- Thumbnails -->
+                    <div class="mt-2 d-flex flex-wrap gap-2">
+                        @for (int i = 0; i < Model.ExistingPhotoLinks.Count; i++)
+                        {
+                            var photo = Model.ExistingPhotoLinks[i];
+                            <img src="@photo" class="img-thumbnail thumbnail @(i == 0 ? "active" : "")" style="width: 50px;" data-bs-target="#productCarousel" data-bs-slide-to="@i" alt="Thumbnail">
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <span class="text-muted">No photos available</span>
             }
         </dd>
     </dl>

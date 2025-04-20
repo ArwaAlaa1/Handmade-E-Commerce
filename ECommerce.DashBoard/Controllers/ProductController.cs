@@ -218,11 +218,10 @@ namespace ECommerce.DashBoard.Controllers
             var product = await _unitOfWork.Repository<Product>()
    .GetByIdWithIncludeAsync(id,"ProductColors,ProductSizes");
 
-            //var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
             if (product == null) return NotFound();
 
             var photos = await _unitOfWork.Repository<ProductPhoto>()
-                .GetAllAsync(p => p.ProductId == product.Id);
+                .GetAllAsync(p => p.ProductId == product.Id && !p.IsDeleted);
 
             var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
 
@@ -498,7 +497,6 @@ namespace ECommerce.DashBoard.Controllers
         //}
 
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePhoto(int photoId, int productId)
@@ -516,11 +514,10 @@ namespace ECommerce.DashBoard.Controllers
 
             // Remove from database
             _unitOfWork.Repository<ProductPhoto>().Delete(photo);
-            _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveAsync(); 
 
             return RedirectToAction("Edit", new { id = productId });
         }
-
 
 
         public async Task<IActionResult> Delete(int id)

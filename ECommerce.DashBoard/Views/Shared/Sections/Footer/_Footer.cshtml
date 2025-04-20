@@ -1,17 +1,42 @@
 @{
     TempData.Keep();
-    ViewData["containerNav"] = (ViewData["containerNav"] ??= "container-fluid");
+    ViewData["containerNav"] ??= "container-fluid";
 }
 
-<footer class="content-footer footer bg-footer-theme">
-    <div class="@ViewData["/* containerNav */"]">
-        <div class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
-            <div class="text-body@* " >
-                All copy Right Reserved © <script>
-                                              document.write(new Date().getFullYear())
-                </script> HandMade
+<style>
+    .footer {
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        z-index: 100;
+        background: #f8f9fa;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .footer-content {
+        text-align: center;
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+        .footer-content span {
+            font-weight: 500;
+            color: #343a40;
+        }
+</style>
+
+<footer class="content-footer footer bg-footer-theme py-3">
+    <div class="@ViewData["containerNav"]">
+        <div class="footer-container d-flex justify-content-center align-items-center">
+            <div class="footer-content">
+                All rights reserved ©
+                <span>
+                    <script>document.write(new Date().getFullYear());</script>
+                </span>
+                HandMade 🧶
             </div>
-          
         </div>
     </div>
 </footer>
+
+

@@ -13,48 +13,46 @@ namespace ECommerce.DashBoard.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<ProductController> _logger;
 
 
-        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<AppUser> userManager)
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<AppUser> userManager, ILogger<ProductController> logger)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
-
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
         {
-
             var products = await _unitOfWork.Repository<Product>()
-         .GetAllAsync(includeProperties: "Category,Sales");
+                .GetAllAsync(p => !p.Category.IsDeleted, includeProperties: "Category,Sales");
 
             var productVMs = products.Select(p =>
             {
                 var activeSale = p.Sales?.FirstOrDefault(s =>
                     s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
 
-                decimal discountedPrice = activeSale != null
-                    ? p.Cost * (1 - activeSale.Percent / 100m)
-                    : p.Cost;
-
                 return new ProductListVM
                 {
                     Id = p.Id,
                     Name = p.Name,
                     Cost = p.Cost,
-                    DiscountedPrice = discountedPrice,
+                    DiscountedPrice = activeSale != null
+                        ? p.Cost * (1 - activeSale.Percent / 100m)
+                        : p.Cost,
                     CategoryName = p.Category?.Name,
                     IsOnSale = activeSale != null
                 };
-            });
+            }).ToList();
 
             return View(productVMs);
         }
         public async Task<IActionResult> Details(int id)
         {
             var product = await _unitOfWork.Repository<Product>()
-               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales,ProductColors,ProductSizes");
+               .GetByIdWithIncludeAsync(id, "Category,ProductPhotos,Sales,ProductSizes,ProductColors");
 
 
             if (product == null) return NotFound();
@@ -67,14 +65,32 @@ namespace ECommerce.DashBoard.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Cost = product.Cost,
-                Colors = product.ProductColors?.Select(c => new ColorVM { Name = c.Color }).ToList() ?? new List<ColorVM>(),
-                Sizes = product.ProductSizes?.Select(s => new SizeVM { Name = s.Size, ExtraCost = s.ExtraCost }).ToList() ?? new List<SizeVM>(),
                 CategoryName = product.Category?.Name,
                 CategoryId = product.CategoryId,
-                ExistingPhotoLinks = product.ProductPhotos?.Select(p => p.PhotoLink).ToList() ?? new List<string>(),
-                ExistingPhotoLinksWithIds = product.ProductPhotos?
-                    .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink }).ToList()
-                    ?? new List<ProductPhotoVM>(),
+                //handle colors and sizes
+                Colors = product.ProductColors?.Select(pc => new ColorVM
+                {
+                    Name = pc.Color
+                }).ToList() ?? new List<ColorVM>(),
+
+                Sizes = product.ProductSizes?.Select(ps => new SizeVM
+                {
+                    Name = ps.Size,
+                    ExtraCost = ps.ExtraCost
+                }).ToList() ?? new List<SizeVM>(),
+                //ExistingPhotoLinks = product.ProductPhotos?.Select(p => p.PhotoLink).ToList() ?? new List<string>(),
+                //ExistingPhotoLinksWithIds = product.ProductPhotos?
+                //    .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink }).ToList()
+                //    ?? new List<ProductPhotoVM>(),
+                ExistingPhotoLinks = product.ProductPhotos?
+                             .Where(p => !p.IsDeleted)
+                             .Select(p => p.PhotoLink)
+                             .ToList() ?? new List<string>(),
+
+                                         ExistingPhotoLinksWithIds = product.ProductPhotos?
+                             .Where(p => !p.IsDeleted)
+                             .Select(p => new ProductPhotoVM { Id = p.Id, PhotoLink = p.PhotoLink })
+                             .ToList() ?? new List<ProductPhotoVM>(),
                 IsOnSale = currentSale != null,
                 SaleId = currentSale?.Id,
                 SalePercent = currentSale?.Percent,
@@ -132,16 +148,12 @@ namespace ECommerce.DashBoard.Controllers
             // Handle colors
             foreach (var colorVM in vm.Colors)
             {
-                //var color = new Color { Name = colorVM.Name, AppUserId = user.Id };
-                //await _unitOfWork.Repository<Color>().AddAsync(color);
                 product.ProductColors.Add(new ProductColor { Color = colorVM.Name });
             }
 
             // Handle sizes
             foreach (var sizeVM in vm.Sizes)
             {
-                //var size = new Size { Name = sizeVM.Name, AppUserId = user.Id };
-                //await _unitOfWork.Repository<Size>().AddAsync(size);
                 product.ProductSizes.Add(new ProductSize { Size = sizeVM.Name, ExtraCost = sizeVM.ExtraCost });
             }
 
@@ -209,11 +221,13 @@ namespace ECommerce.DashBoard.Controllers
 
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+            var product = await _unitOfWork.Repository<Product>()
+   .GetByIdWithIncludeAsync(id, "ProductColors,ProductSizes");
+
             if (product == null) return NotFound();
 
             var photos = await _unitOfWork.Repository<ProductPhoto>()
-                .GetAllAsync(p => p.ProductId == product.Id);
+                .GetAllAsync(p => p.ProductId == product.Id && !p.IsDeleted);
 
             var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
 
@@ -236,12 +250,6 @@ namespace ECommerce.DashBoard.Controllers
 
             return View(vm);
         }
-
-
-
-
-
-
 
         //public async Task<IActionResult> Edit(int id)
         //{
@@ -287,12 +295,6 @@ namespace ECommerce.DashBoard.Controllers
         //    return View(vm);
         //}
 
-
-
-
-
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ProductVM vm)
@@ -313,7 +315,10 @@ namespace ECommerce.DashBoard.Controllers
                 return View(vm);
             }
 
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(vm.Id);
+            var product = await _unitOfWork.Repository<Product>().GetFirstOrDefaultAsync(
+                    filter: p => p.Id == vm.Id,
+                    includeProperties: "ProductColors,ProductSizes"
+                );
             if (product == null) return NotFound();
 
             var user = await _userManager.GetUserAsync(User);
@@ -323,23 +328,33 @@ namespace ECommerce.DashBoard.Controllers
             product.Cost = vm.Cost;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;
-            product.ProductColors = new List<ProductColor>();
-            product.ProductSizes = new List<ProductSize>();
 
-            // Clear existing colors and add new ones
+
+            // Delete old ProductColors
+            var oldColors = product.ProductColors.ToList();
+            foreach (var color in oldColors)
+            {
+                _unitOfWork.Repository<ProductColor>().Delete(color);
+            }
+
             product.ProductColors.Clear();
             foreach (var colorVM in vm.Colors)
             {
-                product.ProductColors.Add(new ProductColor { Color = colorVM.Name });
+                product.ProductColors.Add(new ProductColor { Color = colorVM.Name, ProductId = product.Id });
             }
 
-            // Clear existing sizes and add new ones
+            // Delete old ProductSizes
+            var oldSizes = product.ProductSizes.ToList();
+            foreach (var size in oldSizes)
+            {
+                _unitOfWork.Repository<ProductSize>().Delete(size);
+            }
+
             product.ProductSizes.Clear();
             foreach (var sizeVM in vm.Sizes)
             {
-                product.ProductSizes.Add(new ProductSize { Size = sizeVM.Name, ExtraCost = sizeVM.ExtraCost });
+                product.ProductSizes.Add(new ProductSize { Size = sizeVM.Name, ExtraCost = sizeVM.ExtraCost, ProductId = product.Id });
             }
-
             _unitOfWork.Repository<Product>().Update(product);
             await _unitOfWork.SaveAsync();
 
@@ -373,7 +388,6 @@ namespace ECommerce.DashBoard.Controllers
             await _unitOfWork.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
-
 
         //[HttpPost]
         //[ValidateAntiForgeryToken]
@@ -489,8 +503,8 @@ namespace ECommerce.DashBoard.Controllers
         //}
 
 
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePhoto(int photoId, int productId)
         {
             var photo = await _unitOfWork.Repository<ProductPhoto>().GetByIdAsync(photoId);
@@ -506,11 +520,10 @@ namespace ECommerce.DashBoard.Controllers
 
             // Remove from database
             _unitOfWork.Repository<ProductPhoto>().Delete(photo);
-            _unitOfWork.SaveAsync();
+            await _unitOfWork.SaveAsync();
 
             return RedirectToAction("Edit", new { id = productId });
         }
-
 
 
         public async Task<IActionResult> Delete(int id)

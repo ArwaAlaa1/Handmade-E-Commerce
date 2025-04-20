@@ -10,16 +10,16 @@
     @* ! Hide app brand if navbar-full *@
     <div
     class='app-brand demo @((@ViewData["navbarFull"] != null && Convert.ToBoolean(@ViewData["navbarFull"])) ? "d-xl-none" : "")'>
-        <a asp-controller="Dashboards" asp-action="Index" class="app-brand-link">
+        <a asp-controller="Product" asp-action="Index" class="app-brand-link">
             <span class="app-brand-logo demo">
                 @await Html.PartialAsync("../_Partials/_Macros")
             </span>
-            <span class="app-brand-text demo menu-text fw-bold ms-2">@TempData.Peek("appName")</span>
+            <span class="app-brand-text demo menu-text fw-bold ms-2">@* @TempData.Peek("appName") *@Handmade E-C</span>
         </a>
 
-        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+       @*  <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
-        </a>
+        </a> *@
     </div>
 
     <div class="menu-inner-shadow"></div>
@@ -27,13 +27,13 @@
     @* ! Full version menu-items *@
     <ul class="menu-inner py-1">
         <!-- Dashboards -->
-        @*  <li class='menu-item@(currentPage.EndsWith("/") || currentPage.StartsWith("/Dashboards/") ? " active open" : "")'>
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
+         <li class='menu-item@(currentPage.EndsWith("/") || currentPage.StartsWith("/Dashboards/") ? " active open" : "")'>
+             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-home-smile"></i>
                 <div class="text-truncate" data-i18n="Dashboards">Dashboards</div>
-                <span class="badge rounded-pill bg-danger ms-auto">5</span>
+                <span class="badge rounded-pill bg-danger ms-auto">3</span>
             </a>
-            <ul class="menu-sub">
+            @* <ul class="menu-sub">
                 <li class='menu-item@(currentPage == "/" ? " active" : "")'>
                     <a asp-controller="Dashboards" asp-action="Index" class="menu-link">
                         <div>Analytics</div>
@@ -59,9 +59,9 @@
                         <div>Academy</div><div class="badge bg-label-primary fs-tiny rounded-pill ms-auto text-uppercase">Pro</div>
                     </a>
                 </li>
-            </ul>
+            </ul>  *@
         </li>
-        *@ <!---->
+        <!---->
         <!-- Products -->
         <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">

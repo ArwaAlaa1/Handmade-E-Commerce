@@ -8,6 +8,7 @@ import { EnterPinComponent } from './components/auth/enter-pin/enter-pin.compone
 import { ResetPasswordComponent } from './components/auth/reset-password/reset-password.component';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ChangePasswordComponent } from './components/auth/change-password/change-password.component';
+import { CartComponent } from './components/cart/cart.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -19,6 +20,7 @@ export const routes: Routes = [
   {path:'enterpin/:email/:expireAt', component:EnterPinComponent, title:'Enter Pin Page'},
   {path:'resetpassword/:email', component:ResetPasswordComponent, title:'Forget Password Page'},
   {path:'changepassword', canActivate:[AuthGuard], component:ChangePasswordComponent, title:'Change Password Page'},
+  {path:'cart', component:CartComponent, title:'Cart Page'},
 
   {path:'**', canActivate:[AuthGuard],component: NotFoundComponent , title:'NotFound Page'}
 ];

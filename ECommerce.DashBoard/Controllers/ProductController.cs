@@ -13,14 +13,15 @@ namespace ECommerce.DashBoard.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<AppUser> _userManager;
+        private readonly ILogger<ProductController> _logger;
 
 
-        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<AppUser> userManager)
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, UserManager<AppUser> userManager, ILogger<ProductController> logger)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
-
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()
@@ -371,7 +372,6 @@ namespace ECommerce.DashBoard.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> Edit(ProductVM vm)
@@ -488,6 +488,7 @@ namespace ECommerce.DashBoard.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePhoto(int photoId, int productId)
         {
             var photo = await _unitOfWork.Repository<ProductPhoto>().GetByIdAsync(photoId);

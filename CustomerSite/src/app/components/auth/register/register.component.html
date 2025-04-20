@@ -58,7 +58,7 @@
                                     <div class="bb-register-wrap bb-register-width-50">
                                         <label>Phone Number*</label>
                                         <input type="text" formControlName="phonenumber" placeholder="Enter your phone number" required>
-                                        <div *ngIf="submitted && RegisterForm.controls['phonenumber'].errors" class="text-danger">phonenumber is required.</div>
+                                        <!-- <div *ngIf="submitted && RegisterForm.controls['phonenumber'].errors" class="text-danger">phonenumber is required.</div> -->
                                         <div *ngIf="submitted && RegisterForm.get('phonenumber')?.errors">
                                             <div class="text-danger" *ngIf="RegisterForm.get('phonenumber')?.errors?.['required']">
                                               phonenumber is required.

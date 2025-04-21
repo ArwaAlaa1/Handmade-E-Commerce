@@ -17,7 +17,7 @@ namespace ECommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = SD.CustomerRole)]
     public class UserController : ControllerBase
     {
        
@@ -119,7 +119,6 @@ namespace ECommerce.Controllers
             return Ok(address);
         }
 
-        [Authorize]
         [HttpPost("UpdateUserData")]
         public async Task<IActionResult> UpdateUserData(string email,[FromBody] UpdateUserData userdata )
         {

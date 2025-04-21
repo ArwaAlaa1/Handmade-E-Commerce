@@ -45,8 +45,9 @@ namespace ECommerce.Helper
                 .ForMember(dest=>dest.ItemStatus,opt=>opt.MapFrom(src => src.OrderItemStatus.GetType().GetMember(src.OrderItemStatus.ToString())
                           .FirstOrDefault()
                           .GetCustomAttribute<EnumMemberAttribute>().Value))
+                .ForMember(dest => dest.SellerName, opt => opt.MapFrom(src => src.Product.Seller.DisplayName))
                 .ForMember(dest => dest.PriceAfterSale, opt => opt.MapFrom(src => src.Product.DiscountedPrice))
-                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Product.ProductPhotos.FirstOrDefault())).ReverseMap();
+                .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Product.ProductPhotos.FirstOrDefault().PhotoLink)).ReverseMap();
 
           //  CreateMap<OrderItem, OrderItemReturnDto>()
           //     .ForMember(dest => dest.ItemId, opt => opt.MapFrom(src => src.Id))

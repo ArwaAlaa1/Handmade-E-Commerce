@@ -57,7 +57,7 @@ namespace ECommerce.Services
            
             var order = new Order(CustomerEmail, shippingCostId, ShippingAddressId, TotalPrice, OrderItems,"");
             //save to db
-            _unitOfWork.Repository<Order>().AddAsync(order);
+            await _unitOfWork.Repository<Order>().AddAsync(order);
             var rows = await _unitOfWork.SaveAsync();
             if (rows <= 0)
                 return null;
@@ -80,7 +80,20 @@ namespace ECommerce.Services
 
             return order;
         }
-
+        public async Task<Order> CancelOrder(int orderid)
+        {
+            var order = await _orderRepo.GetOrderForUserAsync(orderid);
+            order.IsDeleted = true;
+            order.Status = OrderStatus.Cancelled;
+            foreach (var item in order.OrderItems)
+            {
+                item.OrderItemStatus = ItemStatus.Cancelled;
+            }
+            
+             await _unitOfWork.SaveAsync();
+           
+            return order;
+        }
 
     }
 }

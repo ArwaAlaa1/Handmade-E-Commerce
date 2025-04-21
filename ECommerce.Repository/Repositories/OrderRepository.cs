@@ -15,7 +15,8 @@ namespace ECommerce.Repository.Repositories
         public OrderRepository(ECommerceDbContext context) : base(context)
         {
         }
-  
+
+     
 
         public async Task<Order> GetOrderForUserAsync(int OrderId)
         {
@@ -29,6 +30,7 @@ namespace ECommerce.Repository.Repositories
              .ThenInclude(p => p.Seller)
      .Include(o => o.shippingCost)
      .Include(o => o.ShippingAddress)
+      .AsNoTracking()
      .FirstAsync();
 
             return order;
@@ -38,6 +40,13 @@ namespace ECommerce.Repository.Repositories
         {
             var order = await _db.Set<Order>().Where(O => O.CustomerEmail == Email && O.IsDeleted == false).Include(o => o.shippingCost).Include(o => o.OrderItems).ToListAsync();
             return order;
+        }
+
+
+        public Task<OrderItem?> GetItemInOrderAsync(int OrderItemId)
+        {
+           var orderItem = _db.Set<OrderItem>().Where(o => o.Id == OrderItemId).FirstOrDefaultAsync();
+            return orderItem;
         }
     }
     

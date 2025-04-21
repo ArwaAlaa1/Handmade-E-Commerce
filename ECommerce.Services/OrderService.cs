@@ -3,8 +3,10 @@ using ECommerce.Core.Models;
 using ECommerce.Core.Models.Order;
 using ECommerce.Core.Repository.Contract;
 using ECommerce.Core.Services.Contract;
+
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,11 +91,25 @@ namespace ECommerce.Services
             {
                 item.OrderItemStatus = ItemStatus.Cancelled;
             }
-            
+            _unitOfWork.Repository<Order>().Update(order);
              await _unitOfWork.SaveAsync();
            
             return order;
         }
 
+        public async Task<OrderItem> CancelItemOrder(int orderItemId)
+        {
+            var orderitem = await _orderRepo.GetItemInOrderAsync(orderItemId);
+
+            orderitem.IsDeleted = true;
+            orderitem.OrderItemStatus = ItemStatus.Cancelled;
+          
+            await _unitOfWork.SaveAsync();
+
+            return orderitem;
+
+        }
+
+       
     }
 }

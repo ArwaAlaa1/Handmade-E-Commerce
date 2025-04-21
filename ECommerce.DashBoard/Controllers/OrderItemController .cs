@@ -69,6 +69,7 @@ namespace ECommerce.DashBoard.Controllers
            
             var orderListVM = allOrders.Select(o =>
             {
+                var traderOrderItems = o.OrderItems.Where(oi => oi.TraderId == userId).ToList();
                 var totalAmount = o.OrderItems
                     .Where(oi => oi.TraderId == userId && oi.Product != null)
                     .Sum(oi => oi.Quantity * oi.Product.Cost);
@@ -76,13 +77,13 @@ namespace ECommerce.DashBoard.Controllers
                 var shippingCost = o.shippingCost?.Cost ?? 0;
                 var traderOrderStatus = OrderStatus.Pending;
                 //var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-                var allInProgress = o.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.InProgress);
+                var allInProgress = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.InProgress);
 
-                var anyPending = o.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
+                var anyPending = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
 
-                var allReady = o.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Ready);
+                var allReady = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Ready);
 
-                var allCancelled = o.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Cancelled);
+                var allCancelled = traderOrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Cancelled);
 
                 if (allInProgress)
                     traderOrderStatus = OrderStatus.InProgress;

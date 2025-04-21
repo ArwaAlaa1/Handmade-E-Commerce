@@ -14,5 +14,6 @@ namespace ECommerce.Core.Services.Contract
         Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email);
         Task<Order> GetOrderForUserAsync(int orderid);
         Task<Order> CancelOrder(int orderid);
+        Task<OrderItem> CancelItemOrder(int orderItemId);
     }
 }

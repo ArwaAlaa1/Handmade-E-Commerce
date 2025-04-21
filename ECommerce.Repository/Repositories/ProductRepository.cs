@@ -26,7 +26,10 @@ namespace ECommerce.Repository.Repositories
 
         public async Task<IEnumerable<Product>> GetProductsWithFilters(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)
         {
-            var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category).Include(i => i.ProductPhotos).AsQueryable();
+            var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category)
+                                                               .Include(i => i.ProductPhotos)
+                                                               .Include(p => p.ProductColors)
+                                                               .Include(p => p.ProductSizes).Include(p => p.Sales).AsQueryable();
 
             if (categoryId.HasValue)
                 query = query.Where(p => p.CategoryId == categoryId.Value);
@@ -46,7 +49,10 @@ namespace ECommerce.Repository.Repositories
 
         public async Task<IEnumerable<Product>> GetProductsWithOffer(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)
         {
-            var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category).Include(d => d.Sales).Include(i => i.ProductPhotos).AsQueryable();
+            var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category)
+                                                              .Include(i => i.ProductPhotos)
+                                                              .Include(p => p.ProductColors)
+                                                              .Include(p => p.ProductSizes).Include(p => p.Sales).AsQueryable();
 
             if (categoryId.HasValue)
                 query = query.Where(p => p.CategoryId == categoryId.Value);
@@ -68,8 +74,10 @@ namespace ECommerce.Repository.Repositories
 
         public async Task<Product> GetProductByIDWithOffer(int id)
         {
-            var product = await _context.Products.Include(c => c.Category).Include(s => s.Sales).Include(i => i.ProductPhotos).FirstOrDefaultAsync( p => p.Id == id);
-
+            var product = await _context.Products.Include(c => c.Category).Include(s => s.Sales)
+                                                 .Include(i => i.ProductPhotos)
+                                                 .Include(p=>p.ProductColors)
+                                                 .Include(p=>p.ProductSizes).FirstOrDefaultAsync( p => p.Id == id);
             return product;
         }
 

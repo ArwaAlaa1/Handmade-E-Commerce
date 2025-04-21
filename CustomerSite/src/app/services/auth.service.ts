@@ -47,15 +47,39 @@ export class AuthService {
     }
   }
 
+  private getAuthHeaders(): HttpHeaders {
+    const storedData = this._CookieService.get('userData');
+    if (!storedData) {
+      return new HttpHeaders();
+    }
+    const parsedData = JSON.parse(storedData);
+    if (parsedData && parsedData.token) {
+      return new HttpHeaders({
+        Authorization: `Bearer ${parsedData.token}`,
+      });
+    }
+    return new HttpHeaders();
+  }
+
   signout() {
     this._CookieService.delete('userData', '/');
     this.userData.next(null);
-    // this._Router.navigate(['/login']);
-    window.location.href = '/login';
+    // this._Router.navigate(['/home']);
+    window.location.href = '/home';
   }
 
-  signup(formData: any): Observable<any> {
-    return this._HttpClient.post(`${environment.baseURL}Account/register`, formData);
+  signup(
+    credentials:{
+      displayName: string;
+      userName: string;
+      phoneNumber: string;
+      email: string;
+      password: string;
+      confirmPassword: string;
+    }): Observable<any>
+    {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.post(`${environment.baseURL}Account/register`, credentials, { headers });
   }
 
   login(credentials: { emailOrUserName: string; password: string }): Observable<any> {
@@ -77,5 +101,11 @@ export class AuthService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._HttpClient.post(`${environment.baseURL}Account/forget_password/${email}`, credentials, { headers });
   }
+
+  ChangePassword( credentials: { oldPassword: string, newPassword: string, confirmPassword: string }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.post(`${environment.baseURL}Account/change_password`, credentials, { headers: this.getAuthHeaders() });
+  }
+
 
 }

@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, NgControl, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
-import { log } from 'node:console';
 
 @Component({
   selector: 'app-register',
@@ -11,78 +10,74 @@ import { log } from 'node:console';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  RegisterForm: FormGroup;
-  submitted = false;
+  RegisterForm: FormGroup = new FormGroup({
+    displayName: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    userName: new FormControl('', [Validators.required, Validators.pattern(/^\S+$/)]),
+    phoneNumber: new FormControl('', [Validators.required, Validators.pattern(/^\d{11}$/)]),
+    password: new FormControl(null, { validators: [Validators.required, Validators.minLength(8), this.passwordStrengthValidator()] }),
+    confirmPassword: new FormControl(null, { validators: [Validators.required]}),
+  },
+  { validators: this.passwordMatchValidator });
 
-  constructor(private authService: AuthService) {
-    this.RegisterForm = new FormGroup({
-      displayName: new FormControl('', Validators.required),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      userName: new FormControl('', [Validators.required, Validators.pattern(/^\S+$/)]),
-      phonenumber: new FormControl('', [Validators.required, Validators.pattern(/^\d{11}$/)]),
-      password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      confirmpassword: new FormControl('', Validators.required)
-    }, { validators: this.matchPasswords('password', 'confirmpassword') as ValidatorFn });
+
+  errorMessage: string = '';
+  isLoading: boolean = false;
+  passwordVisible: boolean = false;
+  togglePasswordVisibility() {
+    this.passwordVisible = !this.passwordVisible;
+  }
+  confirmPasswordVisible: boolean = false;
+  toggleConfirmPasswordVisibility() {
+    this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
-  matchPasswords(passwordKey: string, confirmPasswordKey: string): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const group = control as FormGroup;
-      const password = group.controls[passwordKey];
-      const confirmPassword = group.controls[confirmPasswordKey];
-  
-      if (!password || !confirmPassword) return null;
-  
-      if (password.value !== confirmPassword.value) {
-        const errors = confirmPassword.errors || {};
-        errors['notEquivalent'] = true;
-        confirmPassword.setErrors(errors);
-        return { notEquivalent: true };
-      } else {
-        const errors = confirmPassword.errors;
-        if (errors) {
-          delete errors['notEquivalent'];
-          if (Object.keys(errors).length === 0) {
-            confirmPassword.setErrors(null);
-          } else {
-            confirmPassword.setErrors(errors);
-          }
-        }
-        return null;
-      }
-    };
-  }
-  
-
-  onSubmit(): void {
-    this.submitted = true;
-
-    if (this.RegisterForm.invalid) {
-     console.log('Form is invalid');
-      this.RegisterForm.markAllAsTouched();
-      return;
-
+    constructor(private authService: AuthService) {
     }
 
+  passwordStrengthValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value || '';
+      const hasLowerCase = /[a-z]/.test(value);
+      const hasUpperCase = /[A-Z]/.test(value);
+      const hasDigit = /[0-9]/.test(value);
+      const hasSpecialChar = /[@%$#]/.test(value);
+
+      return hasLowerCase && hasUpperCase && hasDigit && hasSpecialChar ? null : { passwordStrength: true };
+    };
+  }
+
+  passwordMatchValidator(formGroup: AbstractControl): ValidationErrors | null {
+    const password = formGroup.get('Password')?.value;
+    const confirmPassword = formGroup.get('ConfirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
+  }
+
+  get f() {
+    return this.RegisterForm.controls;
+  }
+
+  onSubmit(): void {
+    if (this.RegisterForm.invalid) {
+      this.RegisterForm.markAllAsTouched();
+      return;
+    }
+    this.register();
+  }
+
+  private register(): void {
+    this.isLoading = true;
     const formValue = this.RegisterForm.value;
 
-    // Remove confirmPassword (not needed for backend)
-    const requestData = {
-      displayName: formValue.displayName,
-      userName: formValue.userName,
-      phoneNumber: formValue.phonenumber,
-      email: formValue.email,
-      password: formValue.password,
-      confirmPassword: formValue.confirmpassword // Not needed for backend
-    };
-
-    this.authService.signup(requestData).subscribe({
-      next: (res) => {
-        console.log('Registration successful:', res);
-        // You can navigate to login page or show success message here
+    this.authService.signup(formValue).subscribe({
+      next: () => {
+        this.isLoading = false;
+        window.alert('Registration Successful! Please confirm your email before logging in.');
+        window.location.href = '/login';
       },
-      error: (err) => {
-        console.error(' Registration error:', err);
+      error: (error) => {
+        this.isLoading = false;
+        this.errorMessage = error.error.message;
       }
     });
   }

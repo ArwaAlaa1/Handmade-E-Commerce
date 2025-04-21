@@ -131,9 +131,8 @@
                       </div>
                     </a>
                     <ul class="bb-dropdown-menu">
-                      <li>
+                      <li *ngIf="!isLogin">
                         <a
-                          *ngIf="!isLogin"
                           class="dropdown-item"
                           routerLinkActive="active"
                           [routerLinkActiveOptions]="{ exact: true }"
@@ -141,14 +140,8 @@
                           >Register</a
                         >
                       </li>
-                      <li>
-                        <a class="dropdown-item" href="checkout.html"
-                          >Checkout</a
-                        >
-                      </li>
-                      <li>
+                      <li *ngIf="!isLogin">
                         <a
-                          *ngIf="!isLogin"
                           class="dropdown-item"
                           routerLinkActive="active"
                           [routerLinkActiveOptions]="{ exact: true }"
@@ -156,8 +149,31 @@
                           >Login</a
                         >
                       </li>
+                      <li>
+                        <a class="dropdown-item" href="checkout.html"
+                          >Checkout</a
+                        >
+                      </li>
 
-                      <li><a *ngIf="isLogin" (click)="logout()">Logout</a></li>
+                      <li *ngIf="isLogin">
+                        <a
+                          class="dropdown-item"
+                          routerLinkActive="active"
+                          [routerLinkActiveOptions]="{ exact: true }"
+                          href="profile"
+                          >Profile</a
+                        >
+                      </li>
+                      <li *ngIf="isLogin">
+                        <a
+                          class="dropdown-item"
+                          routerLinkActive="active"
+                          [routerLinkActiveOptions]="{ exact: true }"
+                          href="changepassword"
+                          >Change Password</a
+                        >
+                      </li>
+                      <li *ngIf="isLogin"><a (click)="logout()">Logout</a></li>
                     </ul>
                   </div>
                   <a
@@ -447,43 +463,6 @@
                   <a class="nav-link bb-dropdown-item" href="javascript:void(0)"
                     >Pages</a
                   >
-                  <ul class="bb-dropdown-menu">
-                    <li>
-                      <a class="dropdown-item" href="about-us.html">About Us</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="contact-us.html"
-                        >Contact Us</a
-                      >
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="cart.html">Cart</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="checkout.html">Checkout</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="compare.html">Compare</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="faq.html">Faq</a>
-                    </li>
-                    <li>
-                      <a
-                        *ngIf="!isLogin"
-                        class="dropdown-item"
-                        routerLinkActive="active"
-                        [routerLinkActiveOptions]="{ exact: true }"
-                        routerLink="login"
-                        >Login</a
-                      >
-                    </li>
-                    <li>
-                      <a *ngIf="!isLogin" class="dropdown-item" href="register"
-                        >Register</a
-                      >
-                    </li>
-                  </ul>
                 </li>
                 <li class="nav-item bb-dropdown">
                   <a class="nav-link bb-dropdown-item" href="javascript:void(0)"

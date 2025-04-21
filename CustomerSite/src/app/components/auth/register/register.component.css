@@ -1,0 +1,14 @@
+.input-group {
+  display: flex;
+  align-items: center;
+}
+
+.input-group .form-control {
+  flex: 1;
+}
+
+.input-group .btn {
+  margin-left: 5px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0;
+}

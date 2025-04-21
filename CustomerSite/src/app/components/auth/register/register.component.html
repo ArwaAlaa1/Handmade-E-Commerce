@@ -1,31 +1,20 @@
-<!-- Breadcrumb -->
-<section class="section-breadcrumb margin-b-50">
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div class="row bb-breadcrumb-inner">
-          <div class="col-md-6 col-sm-12">
-            <h2 class="bb-breadcrumb-title">Register</h2>
-          </div>
-          <div class="col-md-6 col-sm-12">
-            <ul class="bb-breadcrumb-list">
-              <li class="bb-breadcrumb-item">
-                <a href="index-2.html">Home</a>
-              </li>
-              <li><i class="ri-arrow-right-double-fill"></i></li>
-              <li class="bb-breadcrumb-item active">Register</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- Register -->
 <section class="section-register padding-tb-50">
   <div class="container">
     <div class="row">
+      <div class="col-12">
+        <div
+          class="section-title bb-center"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          <div class="section-detail text-center mb-4">
+            <h2 class="bb-title"><span>Register</span></h2>
+            <p>Best place to buy and sell digital products</p>
+          </div>
+        </div>
+      </div>
       <div class="col-12">
         <div
           class="bb-register"
@@ -33,200 +22,220 @@
           data-aos-duration="1000"
           data-aos-delay="200"
         >
-          <div class="row">
-            <div class="col-12">
-<<<<<<< HEAD
-                <div class="bb-register" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="section-title bb-center">
-                                <div class="section-detail">
-                                    <h2 class="bb-title">Register</h2>
-                                    <p>Best place to buy and sell HandMade products</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <form  [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
-                                <div class="bb-register-wrap bb-register-width-50">
-                                    <label>Display Name*</label>
-                                    <input formControlName="displayName" type="text" placeholder="Enter Display name" />
-                           <div *ngIf="submitted && RegisterForm.controls['displayName'].errors" class="text-danger">Display name is required.</div>
-                                
-                        </div>
-                                    <div class="bb-register-wrap bb-register-width-50">
-                                        <label>User Name*</label>
-                                        <input type="text" formControlName="userName" placeholder="Enter your User name" required>
-                                        <div *ngIf="submitted && RegisterForm.controls['userName'].errors" class="text-danger">User Name name is required.</div>
-                              
-                                    </div>
-                                    <div class="bb-register-wrap bb-register-width-50">
-                                        <label>Email*</label>
-                                        <input type="email" formControlName="email" placeholder="Enter your Email" required>
-                                        <div *ngIf="submitted && RegisterForm.controls['email'].errors" class="text-danger">email name is required.</div>
-                              
-                                    </div>
-                                    <div class="bb-register-wrap bb-register-width-50">
-                                        <label>Phone Number*</label>
-                                        <input type="text" formControlName="phonenumber" placeholder="Enter your phone number" required>
-                                        <!-- <div *ngIf="submitted && RegisterForm.controls['phonenumber'].errors" class="text-danger">phonenumber is required.</div> -->
-                                        <div *ngIf="submitted && RegisterForm.get('phonenumber')?.errors">
-                                            <div class="text-danger" *ngIf="RegisterForm.get('phonenumber')?.errors?.['required']">
-                                              phonenumber is required.
-                                            </div>
-                                            <div class="text-danger" *ngIf="RegisterForm.get('phonenumber')?.errors?.['pattern']">
-                                                phone number must be 11 digits.
-                                              </div>
-                                       </div>
-                                    </div>
-                                    
-                                    <div class="bb-register-wrap bb-register-width-50">
-                                        <label>Password*</label>
-                                        <input type="password" formControlName="password" placeholder="Enter your password" required>
-                                        <div *ngIf="submitted && RegisterForm.controls['password'].errors" class="text-danger">password is required.</div>
-                              
-                                    </div>
-                                
-                                    <div class="bb-register-wrap bb-register-width-50">
-                                        <label>Confirm Password*</label>
-                                        <input type="password" formControlName="confirmpassword" placeholder="Enter your confirm password" required>
-                                        <div *ngIf="submitted && RegisterForm.get('confirmpassword')?.errors">
-                                            <div class="text-danger" *ngIf="RegisterForm.get('confirmpassword')?.errors?.['required']">
-                                              Confirm password is required.
-                                            </div>
-                                            <div class="text-danger" *ngIf="RegisterForm.get('confirmpassword')?.errors?.['notEquivalent']">
-                                              Passwords do not match.
-                                            </div>
-                                          </div>
-                                          
-                                    </div>
-                                  
-                                    <div class="bb-register-button">
-                                        <button type="submit" class="bb-btn-2">Register</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-=======
-              <div class="section-title bb-center">
-                <div class="section-detail">
-                  <h2 class="bb-title">Register</h2>
-                  <p>Best place to buy and sell HandMade products</p>
->>>>>>> 2d55dd50f3a8e2dbecc1be2d1e5b212b5b2f9916
+          <div class="col-12">
+            <div *ngIf="errorMessage" class="text-center alert alert-danger">
+              {{ errorMessage }}
+            </div>
+            <form [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>Display Name*</label>
+                <input
+                  id="displayName"
+                  name="displayName"
+                  formControlName="displayName"
+                  type="text"
+                  placeholder="Enter Display Name"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      f['displayName'].invalid && f['displayName'].touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="f['displayName'].invalid && f['displayName'].touched"
+                >
+                  <div *ngIf="f['displayName'].errors?.['required']">
+                    Display Name is required.
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-12">
-              <form [formGroup]="RegisterForm" (ngSubmit)="onSubmit()">
-                <div class="bb-register-wrap bb-register-width-50">
-                  <label>Display Name*</label>
-                  <input
-                    formControlName="displayName"
-                    type="text"
-                    placeholder="Enter Display name"
-                  />
-                  <div
-                    *ngIf="
-                      submitted && RegisterForm.controls['displayName'].errors
-                    "
-                    class="text-danger"
-                  >
-                    Display name is required.
-                  </div>
-                </div>
-                <div class="bb-register-wrap bb-register-width-50">
-                  <label>User Name*</label>
-                  <input
-                    type="text"
-                    formControlName="userName"
-                    placeholder="Enter your User name"
-                    required
-                  />
-                  <div
-                    *ngIf="
-                      submitted && RegisterForm.controls['userName'].errors
-                    "
-                    class="text-danger"
-                  >
-                    User Name name is required.
-                  </div>
-                </div>
-                <div class="bb-register-wrap bb-register-width-50">
-                  <label>Email*</label>
-                  <input
-                    type="email"
-                    formControlName="email"
-                    placeholder="Enter your Email"
-                    required
-                  />
-                  <div
-                    *ngIf="submitted && RegisterForm.controls['email'].errors"
-                    class="text-danger"
-                  >
-                    email name is required.
-                  </div>
-                </div>
-                <div class="bb-register-wrap bb-register-width-50">
-                  <label>Phone Number*</label>
-                  <input
-                    type="text"
-                    formControlName="phonenumber"
-                    placeholder="Enter your phone number"
-                    required
-                  />
-                  <div
-                    *ngIf="
-                      submitted && RegisterForm.controls['phonenumber'].errors
-                    "
-                    class="text-danger"
-                  >
-                    phonenumber is required.
-                  </div>
-                </div>
 
-                <div class="bb-register-wrap bb-register-width-50">
-                  <label>Password*</label>
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>User Name*</label>
+                <input
+                  type="text"
+                  id="userName"
+                  name="userName"
+                  formControlName="userName"
+                  placeholder="Enter your User name"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid': f['userName'].invalid && f['userName'].touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="f['userName'].invalid && f['userName'].touched"
+                >
+                  <div *ngIf="f['userName'].errors?.['required']">
+                    User Name is required.
+                  </div>
+                  <div *ngIf="f['userName'].errors?.['pattern']">
+                    User Name Can't contain white spaces.
+                  </div>
+                </div>
+              </div>
+
+              <div class="bb-register-wrap bb-register-width-50">
+                <label for="email">Email*:</label>
+                <input
+                  id="email"
+                  name="email"
+                  formControlName="email"
+                  placeholder="Enter Your Email"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid': f['email'].invalid && f['email'].touched
+                  }"
+                />
+
+                <div
+                  *ngIf="f['email'].invalid && f['email'].touched"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="f['email'].errors?.['required']">
+                    Email is required.
+                  </div>
+                  <div *ngIf="f['email'].errors?.['email']">
+                    Please enter a valid email address.
+                  </div>
+                </div>
+              </div>
+
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>Phone Number*</label>
+                <input
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  formControlName="phoneNumber"
+                  placeholder="Enter your phone number"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      f['phoneNumber'].invalid && f['phoneNumber'].touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="f['phoneNumber'].invalid && f['phoneNumber'].touched"
+                >
+                  <div *ngIf="f['phoneNumber'].errors?.['required']">
+                    Phone Number is required.
+                  </div>
+
+                  <div *ngIf="f['phoneNumber'].errors?.['pattern']">
+                    Phone Number Must be 11 digit.
+                  </div>
+                </div>
+              </div>
+
+              <div class="bb-register-wrap bb-register-width-50">
+                <label for="password">Password :</label>
+                <div class="input-group mb-2">
                   <input
-                    type="password"
+                    id="password"
+                    name="password"
                     formControlName="password"
-                    placeholder="Enter your password"
-                    required
+                    placeholder="Enter your Password"
+                    [type]="passwordVisible ? 'text' : 'password'"
+                    autocomplete="on"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid':
+                        f['password'].invalid && f['password'].touched
+                    }"
                   />
-                  <div
-                    *ngIf="
-                      submitted && RegisterForm.controls['password'].errors
-                    "
-                    class="text-danger"
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="togglePasswordVisibility()"
                   >
-                    password is required.
+                    <i
+                      class="fas"
+                      [ngClass]="passwordVisible ? 'fa-eye' : 'fa-eye-slash'"
+                    ></i>
+                  </button>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="f['password'].invalid && f['password'].touched"
+                  >
+                    <div *ngIf="f['password'].errors?.['required']">
+                      Password is required.
+                    </div>
+                    <div *ngIf="f['password'].errors?.['minlength']">
+                      Password must be at least 8 characters long.
+                    </div>
+                    <div *ngIf="f['password'].errors?.['passwordStrength']">
+                      Password must contain at least one lowercase, one
+                      uppercase, one digit, and one special character.
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div class="bb-register-wrap bb-register-width-50">
-                  <label>Confirm Password*</label>
+              <div class="bb-register-wrap bb-register-width-50">
+                <label for="confirmPassword"> Confirm Password :</label>
+                <div class="input-group mb-2">
                   <input
-                    type="password"
-                    formControlName="confirmpassword"
-                    placeholder="Enter your confirm password"
-                    required
+                    id="confirmPassword"
+                    formControlName="confirmPassword"
+                    placeholder="Enter your Confirm Password"
+                    [type]="confirmPasswordVisible ? 'text' : 'password'"
+                    autocomplete="on"
+                    class="form-control"
+                    [ngClass]="{
+                      'is-invalid':
+                        (f['confirmPassword'].invalid &&
+                          f['confirmPassword'].touched) ||
+                        RegisterForm.hasError('passwordMismatch')
+                    }"
                   />
-                  <div
-                    *ngIf="
-                      submitted &&
-                      RegisterForm.controls['confirmpassword'].errors
-                    "
-                    class="text-danger"
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="toggleConfirmPasswordVisibility()"
                   >
-                    confirm password is required.
+                    <i
+                      class="fas"
+                      [ngClass]="
+                        confirmPasswordVisible ? 'fa-eye' : 'fa-eye-slash'
+                      "
+                    ></i>
+                  </button>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      f['confirmPassword'].invalid &&
+                      f['confirmPassword'].touched
+                    "
+                  >
+                    <div *ngIf="f['confirmPassword'].errors?.['required']">
+                      Confirm Password is required.
+                    </div>
+                  </div>
+                  <div
+                    class="invalid-feedback"
+                    *ngIf="
+                      RegisterForm.hasError('confirmPassword') &&
+                      f['confirmPassword'].touched
+                    "
+                  >
+                    Passwords don't match.
                   </div>
                 </div>
+              </div>
 
-                <div class="bb-register-button">
-                  <button type="submit" class="bb-btn-2">Register</button>
-                </div>
-              </form>
-            </div>
+              <div class="bb-register-button">
+                <button class="bb-btn-2 w-100" type="submit">
+                  <span *ngIf="isLoading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                  </span>
+                  <span *ngIf="!isLoading">Register</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

@@ -81,7 +81,7 @@ export class EnterPinComponent implements OnInit {
       error: (error) => {
         this.isLoading = false;
         if (error.status === 404) {
-          this.errorMessage = error.errorMessage;
+          this.errorMessage = error.error.errorMessage;
         }
       }
     });

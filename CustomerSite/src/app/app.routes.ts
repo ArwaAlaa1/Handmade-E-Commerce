@@ -9,17 +9,24 @@ import { ResetPasswordComponent } from './components/auth/reset-password/reset-p
 import { NotFoundComponent } from './components/not-found/not-found.component';
 import { ChangePasswordComponent } from './components/auth/change-password/change-password.component';
 import { CartComponent } from './components/cart/cart.component';
+import { ProfileComponent } from './components/user/profile/profile.component';
+import { EditProfileComponent } from './components/user/edit-profile/edit-profile.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
-  {path:'register', component:RegisterComponent, title:'Register Page'},
-  {path:'login', component:LoginComponent, title:'Login Page'},
   {path:'home', component:HomeComponent, title:'Home Page'},
 
+  {path:'profile', canActivate:[AuthGuard], component:ProfileComponent, title:'Profile Page'},
+  {path:'editprofile', canActivate:[AuthGuard], component:EditProfileComponent, title:'Edit Profile Page'},
+
+  {path:'register', component:RegisterComponent, title:'Register Page'},
+  {path:'login', component:LoginComponent, title:'Login Page'},
   {path:'sendpin', component:SendPinComponent, title:'Send Pin Page'},
   {path:'enterpin/:email/:expireAt', component:EnterPinComponent, title:'Enter Pin Page'},
   {path:'resetpassword/:email', component:ResetPasswordComponent, title:'Forget Password Page'},
   {path:'changepassword', canActivate:[AuthGuard], component:ChangePasswordComponent, title:'Change Password Page'},
+
+
   {path:'cart', component:CartComponent, title:'Cart Page'},
 
   {path:'**', canActivate:[AuthGuard],component: NotFoundComponent , title:'NotFound Page'}

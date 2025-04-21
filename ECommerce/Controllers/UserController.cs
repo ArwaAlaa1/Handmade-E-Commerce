@@ -133,7 +133,7 @@ namespace ECommerce.Controllers
 
 
         [HttpPost("AddUserImage")]
-        public async Task<IActionResult> AddUserImage(AddPhotoDTO addPhoto)
+        public async Task<IActionResult> AddUserImage([FromForm]AddPhotoDTO addPhoto)
         {
 
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == addPhoto.Email);

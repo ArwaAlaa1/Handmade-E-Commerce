@@ -14,6 +14,12 @@
                 <small class="text-muted float-end">Add new product</small>
             </div>
             <div class="card-body">
+                @if (ViewBag.AdminProfit != null)
+                {
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> Current admin profit percentage is <strong>@ViewBag.AdminProfit%</strong>.
+                    </div>
+                }
                 <form asp-action="Create" method="post" enctype="multipart/form-data">
 
                     <div class="mb-6">
@@ -33,13 +39,24 @@
                         </div>
                     </div>
 
-                    <div class="mb-6">
+                   @*  <div class="mb-6">
                         <label class="form-label" asp-for="Cost"></label>
                         <div class="input-group input-group-merge">
                             <span class="input-group-text"><i class="bx bx-dollar"></i></span>
                             <input asp-for="Cost" type="text" class="form-control" placeholder="Cost" />
                         </div>
+                       
                         <span asp-validation-for="Cost" class="text-danger"></span>
+                    </div> *@
+
+                    <div class="mb-3">
+                        <label asp-for="Cost" class="form-label"></label>
+                        <input asp-for="Cost" class="form-control" />
+                        <span asp-validation-for="Cost" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SellingPrice" class="form-label">Selling Price</label>
+                        <input asp-for="SellingPrice" class="form-control" readonly />
                     </div>
 
                     <div class="mb-6">
@@ -101,7 +118,6 @@
                     </div>
 
                     @* <div asp-validation-summary="All" class="text-danger"></div> *@
-
                     <button type="submit" class="btn btn-primary">Create</button>
                     <a asp-action="Index" asp-controller="Product" class="btn btn-danger">Back To List</a>
                 </form>
@@ -112,5 +128,18 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+     <script>
+
+        var profitPercentage = parseFloat('@ViewBag.AdminProfit');
+
+        document.querySelector('input[name="Cost"]').addEventListener('input', function() {
+            var cost = parseFloat(this.value);
+            if (!isNaN(cost)) {
+                var sellingPrice = cost + (cost * profitPercentage / 100);
+                document.querySelector('input[name="SellingPrice"]').value = sellingPrice.toFixed(2);
+            }
+        });
+    </script>
 }
 

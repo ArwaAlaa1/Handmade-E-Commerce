@@ -17,7 +17,7 @@
             <span class="app-brand-text demo menu-text fw-bold ms-2">@* @TempData.Peek("appName") *@Handmade E-C</span>
         </a>
 
-       @*  <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+        @*  <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
             <i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
         </a> *@
     </div>
@@ -27,11 +27,11 @@
     @* ! Full version menu-items *@
     <ul class="menu-inner py-1">
         <!-- Dashboards -->
-         <li class='menu-item@(currentPage.EndsWith("/") || currentPage.StartsWith("/Dashboards/") ? " active open" : "")'>
-             <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <li class='menu-item@(currentPage.EndsWith("/") || currentPage.StartsWith("/Dashboards/") ? " active open" : "")'>
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-home-smile"></i>
-                <div class="text-truncate" data-i18n="Dashboards">Dashboards</div>
-                <span class="badge rounded-pill bg-danger ms-auto">3</span>
+                <div class="text-truncate" data-i18n="Dashboards">Dashboard</div>
+                 <span class="badge rounded-pill bg-danger ms-auto"></span>
             </a>
             @* <ul class="menu-sub">
                 <li class='menu-item@(currentPage == "/" ? " active" : "")'>
@@ -62,21 +62,50 @@
             </ul>  *@
         </li>
         <!---->
+        @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
+        {
+            <!-- Admin Profits -->
+
+            <li class='menu-item@(currentPage.StartsWith("/Admin") ? " active open" : "")'>
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-layout"></i>
+                    <div>Manage Profit Settings</div>
+                </a>
+
+                <ul class="menu-sub">
+
+                    @*   <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                        <a asp-controller="Admin" asp-action="UpdateProfit" class="menu-link">
+                            <div>Update Profit Settings</div>
+                        </a>
+                    </li> *@
+                    <li class='menu-item@(currentPage == "/Admin" ? " active" : "")'>
+                        <a asp-controller="Admin" asp-action="Index" class="menu-link">
+                            <div>View Admin Profits</div>
+                        </a>
+                    </li>
+
+                </ul>
+            </li>
+        }
+        <!---->
         <!-- Products -->
-        <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+        <li class='menu-item@(currentPage.StartsWith("/Product") ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div>Manage Product Data</div>
             </a>
 
             <ul class="menu-sub">
-
-                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
-                    <a asp-controller="Product" asp-action="Create" class="menu-link">
-                        <div>Add Product</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Supplier"))
+                {
+                    <li class='menu-item@(currentPage == "/Product/Create" ? " active" : "")'>
+                        <a asp-controller="Product" asp-action="Create" class="menu-link">
+                            <div>Add Product</div>
+                        </a>
+                    </li>
+                }
+                <li class='menu-item@(currentPage == "/Product" ? " active" : "")'>
                     <a asp-controller="Product" asp-action="Index" class="menu-link">
                         <div>All Products</div>
                     </a>
@@ -87,20 +116,22 @@
         <!---->
         <!---->
         <!-- Sales -->
-        <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+        <li class='menu-item@(currentPage.StartsWith("/Sale") ? " active open" : "")'>
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div>Manage Sale Data</div>
             </a>
 
             <ul class="menu-sub">
-
-                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
-                    <a asp-controller="Sale" asp-action="Create" class="menu-link">
-                        <div>Add Sale</div>
-                    </a>
-                </li>
-                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Supplier"))
+                {
+                    <li class='menu-item@(currentPage == "/Sale/Create" ? " active" : "")'>
+                        <a asp-controller="Sale" asp-action="Create" class="menu-link">
+                            <div>Add Sale</div>
+                        </a>
+                    </li>
+                }
+                <li class='menu-item@(currentPage == "/Sale" ? " active" : "")'>
                     <a asp-controller="Sale" asp-action="Index" class="menu-link">
                         <div>All Sales</div>
                     </a>
@@ -113,7 +144,7 @@
         <!-- Traders -->
         @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
         {
-            <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+            <li class='menu-item@(currentPage.StartsWith("/Trader") ? " active open" : "")'>
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div>Manage Trader Data</div>
@@ -121,12 +152,12 @@
 
             <ul class="menu-sub">
 
-                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/Trader/AddTrader" ? " active" : "")'>
                     <a asp-controller="Trader" asp-action="AddTrader" class="menu-link">
                         <div>Add Trader</div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/Trader" ? " active" : "")'>
                     <a asp-controller="Trader" asp-action="Index" class="menu-link">
                         <div>All Traders</div>
                     </a>
@@ -139,7 +170,7 @@
         @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
         {
             <!-- Categories -->
-            <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+            <li class='menu-item@(currentPage.StartsWith("/Category") ? " active open" : "")'>
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-layout"></i>
                 <div>Manage Category Data</div>
@@ -147,12 +178,12 @@
 
             <ul class="menu-sub">
 
-                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/Category/Create" ? " active" : "")'>
                     <a asp-controller="Category" asp-action="Create" class="menu-link">
                         <div>Add Category</div>
                     </a>
                 </li>
-                <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/Category" ? " active" : "")'>
                     <a asp-controller="Category" asp-action="Index" class="menu-link">
                         <div>All Categories</div>
                     </a>
@@ -164,14 +195,14 @@
         <!-- Orders -->
         @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Admin"))
         {
-            <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+            <li class='menu-item@(currentPage.StartsWith("/Order") ? " active open" : "")'>
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
                     <div>Manage Order Data</div>
                 </a>
 
                 <ul class="menu-sub">
-                    <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/Order" ? " active" : "")'>
                         <a asp-controller="Order" asp-action="Index" class="menu-link">
                             <div>All Orders</div>
                         </a>
@@ -184,14 +215,14 @@
         <!-- Order Items -->
         @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Supplier"))
         {
-            <li class='menu-item@(currentPage.StartsWith("/LayoutExamples") ? " active open" : "")'>
+            <li class='menu-item@(currentPage.StartsWith("/OrderItem") ? " active open" : "")'>
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
                     <div>Manage OrderItem Data</div>
                 </a>
 
                 <ul class="menu-sub">
-                    <li class='menu-item@(currentPage == "/LayoutExamples/WithoutMenu" ? " active" : "")'>
+                    <li class='menu-item@(currentPage == "/OrderItem" ? " active" : "")'>
                         <a asp-controller="OrderItem" asp-action="Index" class="menu-link">
                             <div>All Order Items</div>
                         </a>

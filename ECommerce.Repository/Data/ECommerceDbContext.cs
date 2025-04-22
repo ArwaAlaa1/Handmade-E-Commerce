@@ -18,6 +18,7 @@ namespace ECommerce.DashBoard.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductPhoto> ProductPhotos { get; set; }
+        public DbSet<ProfitSetting> ProfitSettings { get; set; }
 
         public DbSet<Sale> Sales { get; set; }
 

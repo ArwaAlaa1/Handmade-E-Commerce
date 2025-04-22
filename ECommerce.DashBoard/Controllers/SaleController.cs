@@ -3,6 +3,10 @@ using ECommerce.Core;
 using ECommerce.DashBoard.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using ECommerce.Services.Utility;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ECommerce.DashBoard.Controllers
 {
@@ -16,17 +20,33 @@ namespace ECommerce.DashBoard.Controllers
         }
 
         // GET: Sale
+
         public async Task<IActionResult> Index()
         {
-            var sales = await _unitOfWork.Repository<Sale>()
-                .GetAllAsync(includeProperties: "Product");
-            return View(sales);
+            if(User.IsInRole(SD.AdminRole))
+            {
+                var sales = await _unitOfWork.Repository<Sale>().GetAllAsync(includeProperties: "Product");
+                return View(sales);
+            }
+            else
+            {
+                var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var tradersale = await _unitOfWork.Repository<Sale>()
+                    .GetAllAsync(s => s.Product.SellerId == userid, includeProperties: "Product");
+
+                return View(tradersale);
+            }
+            
         }
 
         // GET: Sale/Create
+        [Authorize(Roles =SD.SuplierRole)]
         public async Task<IActionResult> Create()
         {
-            var products = await _unitOfWork.Repository<Product>().GetAllAsync();
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var products = await _unitOfWork.Repository<Product>()
+                .GetAllAsync(p => p.SellerId == userid);
+            //var products = await _unitOfWork.Repository<Product>().GetAllAsync();
             var vm = new SaleVM
             {
                 Products = products.Select(p => new SelectListItem
@@ -40,6 +60,7 @@ namespace ECommerce.DashBoard.Controllers
         }
 
         // POST: Sale/Create
+        [Authorize(Roles = SD.SuplierRole)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SaleVM vm)
@@ -60,7 +81,10 @@ namespace ECommerce.DashBoard.Controllers
 
             if (!ModelState.IsValid)
             {
-                var products = await _unitOfWork.Repository<Product>().GetAllAsync();
+                var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var products = await _unitOfWork.Repository<Product>()
+                    .GetAllAsync(p => p.SellerId == userid);
+                //var products = await _unitOfWork.Repository<Product>().GetAllAsync();
                 vm.Products = products.Select(p => new SelectListItem
                 {
                     Value = p.Id.ToString(),
@@ -84,12 +108,16 @@ namespace ECommerce.DashBoard.Controllers
         }
 
         // GET: Sale/Edit
+        [Authorize(Roles = SD.SuplierRole)]
         public async Task<IActionResult> Edit(int id)
         {
             var sale = await _unitOfWork.Repository<Sale>().GetByIdAsync(id);
             if (sale == null) return NotFound();
 
-            var products = await _unitOfWork.Repository<Product>().GetAllAsync();
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var products = await _unitOfWork.Repository<Product>()
+                .GetAllAsync(p => p.SellerId == userid);
+            //var products = await _unitOfWork.Repository<Product>().GetAllAsync();
             var vm = new SaleVM
             {
                 Id = sale.Id,
@@ -119,7 +147,10 @@ namespace ECommerce.DashBoard.Controllers
 
             if (!ModelState.IsValid)
             {
-                var products = await _unitOfWork.Repository<Product>().GetAllAsync();
+                var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var products = await _unitOfWork.Repository<Product>()
+                    .GetAllAsync(p => p.SellerId == userid);
+                //var products = await _unitOfWork.Repository<Product>().GetAllAsync();
                 vm.Products = products.Select(p => new SelectListItem
                 {
                     Value = p.Id.ToString(),
@@ -143,6 +174,7 @@ namespace ECommerce.DashBoard.Controllers
         }
 
         // GET: Sale/Delete
+        [Authorize(Roles = SD.SuplierRole)]
         public async Task<IActionResult> Delete(int id)
         {
             var sale = await _unitOfWork.Repository<Sale>().GetByIdWithIncludeAsync(id, "Product");
@@ -153,6 +185,7 @@ namespace ECommerce.DashBoard.Controllers
 
 
         // POST: Sale/DeleteConfirmed
+        [Authorize(Roles = SD.SuplierRole)]
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

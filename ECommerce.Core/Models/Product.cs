@@ -13,6 +13,7 @@ namespace ECommerce.Core.Models
 
         public string Description { get; set; }
         public decimal Cost { get; set; }
+        public decimal AdminProfitPercentage { get; set; }
         public string? SellerId { get; set;}
         public AppUser? Seller { get; set; }
 
@@ -47,6 +48,16 @@ namespace ECommerce.Core.Models
                 }
 
                 return Cost;
+            }
+        }
+
+        [NotMapped]
+        public decimal SellingPrice
+        {
+            get
+            {
+                decimal adminProfit = Cost * AdminProfitPercentage / 100;
+                return Cost + adminProfit;
             }
         }
 

@@ -132,6 +132,13 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
                                     select role)
                   .FirstOrDefaultAsync();
 
+                if(role01 == null)
+                {
+                    TempData["Error"] = "Invalid Email or Password.";
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Page();
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(user01, Input.Password, Input.RememberMe,false);
                 if (result.Succeeded && role01.Name == "Admin" || role01.Name == "Supplier")
                 {

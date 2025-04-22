@@ -1,0 +1,88 @@
+<!-- Login -->
+<section class="section-login padding-tb-50">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div
+          class="section-title bb-center"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          <div class="section-detail">
+            <h2 class="bb-title">Edit <span>Profile</span></h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div
+          class="bb-login-contact"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="400"
+        >
+          <div *ngIf="errorMessage" class="text-center alert alert-danger">
+            {{ errorMessage }}
+          </div>
+          <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+            <div class="bb-login-wrap">
+              <label for="userName">User Name</label>
+              <input
+                type="text"
+                autocomplete="on"
+                id="userName"
+                name="userName"
+                formControlName="userName"
+                placeholder="Enter Your User Name"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid': f['userName'].invalid && f['userName'].touched
+                }"
+              />
+              <div
+                *ngIf="f['userName'].invalid && f['userName'].touched"
+                class="invalid-feedback"
+              >
+                <div *ngIf="f['userName'].errors?.['required']">
+                  User Name is required.
+                </div>
+              </div>
+            </div>
+            <div class="bb-login-wrap">
+              <label for="phone">Phone Number</label>
+              <input
+                type="text"
+                autocomplete="on"
+                id="phone"
+                name="phone"
+                formControlName="phone"
+                placeholder="Enter Your Phone Number"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid': f['phone'].invalid && f['phone'].touched
+                }"
+              />
+              <div
+                *ngIf="f['phone'].invalid && f['phone'].touched"
+                class="invalid-feedback"
+              >
+                <div *ngIf="f['phone'].errors?.['required']">
+                  Phone Number is required.
+                </div>
+              </div>
+            </div>
+
+            <div class="bb-login-button">
+              <button class="bb-btn-2 w-100" type="submit">
+                <span *ngIf="isLoading">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </span>
+                <span *ngIf="!isLoading">Edit Profile</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

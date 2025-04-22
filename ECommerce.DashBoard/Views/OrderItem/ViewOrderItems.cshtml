@@ -43,17 +43,7 @@
                     }
                 </td>
                 <td>
-                    @if (item.OrderItemStatus == ItemStatus.Pending)
-                    {
-                        <form asp-action="ConfirmOrderItem" method="post" style="display:inline;">
-                            <input type="hidden" name="orderItemId" value="@item.Id" />
-                            <button type="submit" class="btn btn-success" >Confirm</button>
-                        </form>
-                    }
-                    else
-                    {
-                    <span class="btn btn-success" style="visibility: hidden;">Confirm</span>
-                    }
+                    
                     <a href="@Url.Action("Edit", new { orderItemId = item.Id })" class="btn btn-primary">Edit</a>
 					<a href="@Url.Action("Details", new { orderItemId = item.Id })" class="btn btn-info">Details</a>
                    @*  <form asp-action="DeleteOrderItem" method="post" style="display:inline;">
@@ -65,3 +55,28 @@
         }
     </tbody>
 </table>
+
+
+    @if (Model.Any(oi => oi.OrderItemStatus == ItemStatus.Pending))
+    {
+        <form asp-action="ConfirmOrderItem" method="post" style="display:inline;">
+        <input type="hidden" name="orderId" value="@Model.FirstOrDefault().OrderId" />
+            <button type="submit" class="btn btn-success">Confirm</button>
+        </form>
+    }
+else if (Model.Any(oi => oi.OrderItemStatus == ItemStatus.InProgress))
+    {
+        
+    <form asp-action="OrderReady" method="post" style="display:inline;">
+        <input type="hidden" name="orderId" value="@Model.FirstOrDefault().OrderId" />
+        <button type="submit" class="btn btn-success">OrderReady</button>
+    </form>
+    <span class="btn btn-success" style="visibility: hidden;">Confirm</span>
+    }else{
+    <button type="submit" class="btn btn-success" style="visibility: hidden;">OrderReady</button>
+    <button type="submit" class="btn btn-success" style="visibility: hidden;">Confirm</button>
+    }
+<form asp-action="Index" method="post" style="display:inline;">
+   
+    <button type="submit" class="btn btn-success">Back To Order</button>
+</form>

@@ -9,13 +9,13 @@ namespace ECommerce.Core.Models.Order
     public class ShippingCost:BaseEntity
     {
       
-        public ShippingCost(string Name,  string deliveryTime, decimal cost)
-        {
-            Name = Name;
+        //public ShippingCost(string _Name,  string deliveryTime, decimal cost)
+        //{
+        //    Name = _Name;
            
-            DeliveryTime = deliveryTime;
-            Cost = cost;
-        }
+        //    DeliveryTime = deliveryTime;
+        //    Cost = cost;
+        //}
 
         public string Name { get; set; }
         public string DeliveryTime { get; set; }

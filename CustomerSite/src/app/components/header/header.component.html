@@ -140,11 +140,6 @@
                           >Register</a
                         >
                       </li>
-                      <li>
-                        <a class="dropdown-item" href="checkout.html"
-                          >Checkout</a
-                        >
-                      </li>
                       <li *ngIf="!isLogin">
                         <a
                           class="dropdown-item"
@@ -152,6 +147,21 @@
                           [routerLinkActiveOptions]="{ exact: true }"
                           href="login"
                           >Login</a
+                        >
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="checkout.html"
+                          >Checkout</a
+                        >
+                      </li>
+
+                      <li *ngIf="isLogin">
+                        <a
+                          class="dropdown-item"
+                          routerLinkActive="active"
+                          [routerLinkActiveOptions]="{ exact: true }"
+                          href="profile"
+                          >Profile</a
                         >
                       </li>
                       <li *ngIf="isLogin">

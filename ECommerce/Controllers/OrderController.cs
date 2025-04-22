@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using ECommerce.Core;
 using ECommerce.Core.Models;
+using ECommerce.Core.Models.Order;
 using ECommerce.Core.Repository.Contract;
 using ECommerce.Core.Services.Contract;
 using ECommerce.DTOs;
@@ -22,7 +24,7 @@ namespace ECommerce.Controllers
         private readonly UserManager<AppUser> _userManager;
        
         private readonly ILogger<OrderController> _logger;
-       
+        private readonly IUnitOfWork _unitOfWork;
 
         public OrderController(IOrderService orderService
             , ICartRepository cartRepository
@@ -31,7 +33,8 @@ namespace ECommerce.Controllers
             , UserManager<AppUser> userManager
             , IWebHostEnvironment webHostEnvironment,
             ILogger<OrderController> logger,
-                        IConfiguration configuration)
+                        IConfiguration configuration,
+                        IUnitOfWork unitOfWork)
         {
             _orderService = orderService;
             _cartRepository = cartRepository;
@@ -40,7 +43,7 @@ namespace ECommerce.Controllers
             _userManager = userManager;
         
             _logger = logger;
-            
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -135,6 +138,78 @@ namespace ECommerce.Controllers
 
 
                 return BadRequest(new { Message = "Try Another Time!." });
+            }
+        }
+
+        [Authorize]
+        [HttpPost("CancelOrder")]
+        public async Task<ActionResult> CancelOrder(int orderId)
+        {
+            try
+            {
+                //var user = await _userManager.GetUserAsync(User);
+                var order = await _orderService.GetOrderForUserAsync(orderId);
+                if (order == null)
+                {
+                    return NotFound(new { Message = "order not exsist" });
+                }
+                else if (order.OrderItems.Any(x => x.OrderItemStatus == ItemStatus.InProgress))
+                {
+                    return BadRequest(new { Message = "You Can't Cancel Order ,Order Already Is InProgress" });
+                }else if(order.OrderItems.All(x => x.OrderItemStatus == ItemStatus.Pending))
+                {
+                      await _orderService.CancelOrder(orderId);
+                    return Ok(new { Message = "Order Canceled Successfully" });
+                }
+                else if (order.OrderItems.Any(x => x.OrderItemStatus == ItemStatus.Ready))
+                {
+                    return Ok(new { Message = "Order  Can't Canceled , Order Already Is Ready" });
+                }
+                return Ok(new { Message = "Order  Can't Canceled " });
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while canceling the order.");
+                return BadRequest(new { Message = "Try Another Time !" });
+            }
+        }
+
+        [Authorize]
+        [HttpPost("CancelItem")]
+        public async Task<ActionResult> CancelItemInOrder(int orderItemId)
+        {
+            try
+            {
+                //var user = await _userManager.GetUserAsync(User);
+                var orderitem = await _unitOfWork.Repository<OrderItem>().GetByIdAsync(orderItemId);
+                if (orderitem == null)
+                {
+                    return NotFound(new { Message = "order not exsist" });
+                }
+                else if (orderitem.OrderItemStatus == ItemStatus.InProgress)
+                {
+                    return BadRequest(new { Message = "You Can't Cancel Item ,Item Already InProgress" });
+                }
+                else if (orderitem.OrderItemStatus == ItemStatus.Pending)
+                {
+                    await _orderService.CancelItemOrder(orderItemId);
+                    return Ok(new { Message = "Item Canceled Successfully" });
+                }
+                else if (orderitem.OrderItemStatus == ItemStatus.Ready)
+                {
+                    
+                    return Ok(new { Message = "Item Already Ready Successfully" });
+                }
+                return Ok(new { Message = "Failed Cancel Item " });
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while canceling Item.");
+                return BadRequest(new { Message = "Try Another Time !" });
             }
         }
     }

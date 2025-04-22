@@ -13,5 +13,7 @@ namespace ECommerce.Core.Services.Contract
         Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId, int shippingCostId, int ShippingAddress);
         Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email);
         Task<Order> GetOrderForUserAsync(int orderid);
+        Task<Order> CancelOrder(int orderid);
+        Task<OrderItem> CancelItemOrder(int orderItemId);
     }
 }

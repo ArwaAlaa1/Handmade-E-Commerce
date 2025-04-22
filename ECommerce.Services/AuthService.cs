@@ -1,5 +1,6 @@
 ﻿using ECommerce.Core.Models;
 using ECommerce.Core.Services.Contract;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -17,13 +18,18 @@ namespace ECommerce.Services
     public class AuthService : IAuthService
     {
         private readonly IConfiguration _configuration;
+        private readonly UserManager<AppUser> _usermanager;
 
-        public AuthService(IConfiguration configuration)
+        public AuthService(IConfiguration configuration, UserManager<AppUser> usermanager)
         {
             _configuration = configuration;
+            _usermanager = usermanager;
         }
+
         public async Task<string> CreateTokenAsync(AppUser user)
         {
+            var roles = await _usermanager.GetRolesAsync(user);
+            
             // private claims
             var authClaims = new List<Claim>
             {
@@ -31,7 +37,14 @@ namespace ECommerce.Services
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.MobilePhone, user.PhoneNumber),
+                
             };
+
+            //get role
+            foreach (var itemRole in roles)
+            {
+            authClaims.Add(new Claim(ClaimTypes.Role, itemRole/*.ToString()*/));
+            }
 
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]));
 

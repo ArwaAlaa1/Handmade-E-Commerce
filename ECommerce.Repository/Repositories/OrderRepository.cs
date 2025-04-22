@@ -15,11 +15,24 @@ namespace ECommerce.Repository.Repositories
         public OrderRepository(ECommerceDbContext context) : base(context)
         {
         }
-  
+
+     
 
         public async Task<Order> GetOrderForUserAsync(int OrderId)
         {
-            var order = await _db.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).ThenInclude(OI=>OI.Product).Include(o => o.shippingCost).Include(s=>s.ShippingAddress).FirstAsync();
+            var order = await _db.Set<Order>()
+     .Where(o => o.Id == OrderId)
+     .Include(o => o.OrderItems)
+         .ThenInclude(oi => oi.Product)
+             .ThenInclude(p => p.ProductPhotos)
+     .Include(o => o.OrderItems)
+         .ThenInclude(oi => oi.Product)
+             .ThenInclude(p => p.Seller)
+     .Include(o => o.shippingCost)
+     .Include(o => o.ShippingAddress)
+      .AsNoTracking()
+     .FirstAsync();
+
             return order;
         }
 
@@ -27,6 +40,13 @@ namespace ECommerce.Repository.Repositories
         {
             var order = await _db.Set<Order>().Where(O => O.CustomerEmail == Email && O.IsDeleted == false).Include(o => o.shippingCost).Include(o => o.OrderItems).ToListAsync();
             return order;
+        }
+
+
+        public Task<OrderItem?> GetItemInOrderAsync(int OrderItemId)
+        {
+           var orderItem = _db.Set<OrderItem>().Where(o => o.Id == OrderItemId).FirstOrDefaultAsync();
+            return orderItem;
         }
     }
     

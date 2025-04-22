@@ -11,11 +11,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using ECommerce.DTOs.IdentityDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using ECommerce.Services.Utility;
 
 namespace ECommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = SD.CustomerRole)]
     public class UserController : ControllerBase
     {
        
@@ -46,7 +48,6 @@ namespace ECommerce.Controllers
             });
         }
 
-        [Authorize]
         [HttpPost("AddAddress")]
         public async Task<IActionResult> AddAddress( [FromBody] AddAddressDto dto)
         {
@@ -119,20 +120,20 @@ namespace ECommerce.Controllers
         }
 
         [HttpPost("UpdateUserData")]
-        public async Task<IActionResult> UpdateUserData(string email,UpdateUserData userdata )
+        public async Task<IActionResult> UpdateUserData(string email,[FromBody] UpdateUserData userdata )
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (user == null) return NotFound();
             user.UserName = userdata.UserName;
             user.PhoneNumber = userdata.Phone;
-            _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);
             await _unitOfWork.SaveAsync();
             return Ok();
         }
 
 
         [HttpPost("AddUserImage")]
-        public async Task<IActionResult> AddUserImage(AddPhotoDTO addPhoto)
+        public async Task<IActionResult> AddUserImage([FromForm]AddPhotoDTO addPhoto)
         {
 
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == addPhoto.Email);

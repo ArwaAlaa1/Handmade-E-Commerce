@@ -41,16 +41,25 @@ namespace ECommerce.Controllers
             {
                 var currentSale = p.Sales?.FirstOrDefault(s =>
                     s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
-               
+
+                decimal basePrice = p.Cost;
+                decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
+                decimal? discountedPrice = null;
+
+                if (currentSale != null)
+                {
+                    var discount = sellingPrice * currentSale.Percent / 100;
+                    discountedPrice = sellingPrice - discount;
+                }
+
                 return new
                 {
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    Price = p.Cost,
-                    DiscountedPrice = currentSale != null
-                        ? p.Cost - (p.Cost * currentSale.Percent / 100)
-                        : (decimal?)null,
+                    BasePrice = basePrice,
+                    SellingPrice = sellingPrice,
+                    DiscountedPrice = discountedPrice,
                     IsOnSale = currentSale != null,
                     SalePercent = currentSale?.Percent,
                     Category = new
@@ -96,17 +105,38 @@ namespace ECommerce.Controllers
             if (products == null || !products.Any())
                 return NotFound(new { message = $"No products found for category ID {categoryId}." });
 
-            var productList = products.Select(p => new
+
+            var productList = products.Select(p =>
             {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Cost,
-                Category = p.Category.Name,
-                Photos = p.ProductPhotos
-                          .Where(photo => !photo.IsDeleted)
-                          .Select(photo => new { Id = photo.Id, Url = photo.PhotoLink })
-                          .ToList()
+                var currentSale = p.Sales?.FirstOrDefault(s =>
+                    s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+
+                decimal basePrice = p.Cost;
+                decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
+                decimal? discountedPrice = null;
+
+                if (currentSale != null)
+                {
+                    var discount = sellingPrice * currentSale.Percent / 100;
+                    discountedPrice = sellingPrice - discount;
+                }
+
+                return new
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    BasePrice = basePrice,
+                    SellingPrice = sellingPrice,
+                    DiscountedPrice = discountedPrice,
+                    IsOnSale = currentSale != null,
+                    SalePercent = currentSale?.Percent,
+                    Category = p.Category.Name,
+                    Photos = p.ProductPhotos
+                              .Where(photo => !photo.IsDeleted)
+                              .Select(photo => new { Id = photo.Id, Url = photo.PhotoLink })
+                              .ToList()
+                };
             });
 
             return Ok(productList);
@@ -176,36 +206,54 @@ namespace ECommerce.Controllers
         {
             var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, null, null, null);
 
-            var activeOfferProducts = products.Where(p => p.Sales.Any(s =>
-                s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today)).Select(p => new
-                {
-                    Name = p.Name,
-                    Description = p.Description,
-                    Price = p.Cost,
-                    Category = new
-                    {
-                        Id = p.Category.Id,
-                        Name = p.Category.Name
-                    },
-                    Offer = p.Sales.Where(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today).Select(s => new
-                    {
-                        Id = s.Id,
-                        StartDate = s.StartDate,
-                        EndDate = s.EndDate,
-                        Discount = s.Percent
-                    }).ToList(),
-                    Photos = p.ProductPhotos.Select(p => new
-                    {
-                        Id = p.Id,
-                        Url = p.PhotoLink
-                    }).ToList(),
-                    Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
-                    Sizes = p.ProductSizes?.Select(s => new SizeDTO
-                    {
-                        Name = s.Size,
-                        ExtraCost = s.ExtraCost
-                    }).ToList() ?? new List<SizeDTO>()
-                });
+            var activeOfferProducts = products
+         .Where(p => p.Sales.Any(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
+         .Select(p =>
+         {
+             var currentSale = p.Sales.FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+
+             decimal basePrice = p.Cost;
+             decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
+             decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
+             decimal finalPrice = sellingPrice - discount;
+
+             return new
+             {
+                 Id = p.Id,
+                 Name = p.Name,
+                 Description = p.Description,
+                 BasePrice = basePrice,
+                 SellingPrice = sellingPrice,
+                 DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
+                 SalePercent = currentSale?.Percent,
+                 Category = new
+                 {
+                     Id = p.Category.Id,
+                     Name = p.Category.Name
+                 },
+                 Offer = new
+                 {
+                     Id = currentSale?.Id,
+                     StartDate = currentSale?.StartDate,
+                     EndDate = currentSale?.EndDate,
+                     Discount = currentSale?.Percent
+                 },
+                 Photos = p.ProductPhotos
+                     .Where(photo => !photo.IsDeleted)
+                     .Select(photo => new
+                     {
+                         Id = photo.Id,
+                         Url = photo.PhotoLink
+                     }).ToList(),
+                 Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+                 Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                 {
+                     Name = s.Size,
+                     ExtraCost = s.ExtraCost
+                 }).ToList() ?? new List<SizeDTO>()
+             };
+         });
+
 
             return Ok(activeOfferProducts);
         }
@@ -224,23 +272,41 @@ namespace ECommerce.Controllers
             if (category == null)
                 return NotFound(new { message = $"Category with ID {product.CategoryId} not found." });
 
+            var currentSale = product.Sales.FirstOrDefault(s =>
+                              s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+
+            decimal basePrice = product.Cost;
+            decimal sellingPrice = basePrice + (basePrice * product.AdminProfitPercentage / 100);
+            decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
+            decimal finalPrice = sellingPrice - discount;
             var productDetails = new
             {
+                Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
-                Price = product.Cost,
+                BasePrice = basePrice,
+                SellingPrice = sellingPrice,
+                DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
+                SalePercent = currentSale?.Percent,
                 Category = new
                 {
                     Id = product.Category.Id,
                     Name = product.Category.Name
                 },
-                Offer = product.Sales.Where(s => s.StartDate < DateTime.Now && s.EndDate > DateTime.Now).Select(s => new
+                //Offer = product.Sales.Where(s => s.StartDate < DateTime.Now && s.EndDate > DateTime.Now).Select(s => new
+                //{
+                //    Id = s.Id,
+                //    StartDate = s.StartDate,
+                //    EndDate = s.EndDate,
+                //    Discount = s.Percent
+                //}).ToList(),
+                Offer = currentSale != null ? new
                 {
-                    Id = s.Id,
-                    StartDate = s.StartDate,
-                    EndDate = s.EndDate,
-                    Discount = s.Percent
-                }).ToList(),
+                    Id = currentSale.Id,
+                    StartDate = currentSale.StartDate,
+                    EndDate = currentSale.EndDate,
+                    Discount = currentSale.Percent
+                } : null,
                 Photos = product.ProductPhotos.Select(p => new
                 {
                     Id = p.Id,
@@ -279,15 +345,19 @@ namespace ECommerce.Controllers
                 .Select(p =>
                 {
                     var currentSale = p.Sales.FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today && s.Percent >= discountPercentage);
+                    decimal basePrice = p.Cost;
+                    decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
+                    decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
+                    decimal finalPrice = sellingPrice - discount;
 
                     return new
                     {
                         Id = p.Id,
                         Name = p.Name,
-                        Price = p.Cost,
-                        DiscountedPrice = currentSale != null
-                            ? p.Cost - (p.Cost * currentSale.Percent / 100)
-                            : (decimal?)null
+                        BasePrice = basePrice,
+                        SellingPrice = sellingPrice,
+                        DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
+                        SalePercent = currentSale?.Percent
                     };
                 });
 

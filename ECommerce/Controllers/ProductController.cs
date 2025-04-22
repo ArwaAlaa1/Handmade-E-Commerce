@@ -67,6 +67,12 @@ namespace ECommerce.Controllers
                         Id = p.Category.Id,
                         Name = p.Category.Name
                     },
+                    Seller = new
+                    {
+                        Name = p.Seller.UserName,
+                        Email = p.Seller.Email,
+                        Photo = p.Seller.Photo
+                    },
 
                     Photos = p.ProductPhotos
                         .Where(photo => !photo.IsDeleted)
@@ -296,6 +302,12 @@ namespace ECommerce.Controllers
                     Id = product.Category.Id,
                     Name = product.Category.Name
                 },
+                Seller = new
+                {
+                    Name = product.Seller.UserName,
+                    Email = product.Seller.Email,
+                    Photo = product.Seller.Photo
+                },
                 //Offer = product.Sales.Where(s => s.StartDate < DateTime.Now && s.EndDate > DateTime.Now).Select(s => new
                 //{
                 //    Id = s.Id,
@@ -320,7 +332,7 @@ namespace ECommerce.Controllers
                 {
                     Name = s.Size,
                     ExtraCost = s.ExtraCost
-                }).ToList() ?? new List<SizeDTO>()
+                }).ToList() ?? new List<SizeDTO>(),
             };
 
             return Ok(productDetails);

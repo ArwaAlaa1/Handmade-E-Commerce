@@ -29,7 +29,10 @@ namespace ECommerce.Repository.Repositories
             var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category)
                                                                .Include(i => i.ProductPhotos)
                                                                .Include(p => p.ProductColors)
-                                                               .Include(p => p.ProductSizes).Include(p => p.Sales).AsQueryable();
+                                                               .Include(p => p.ProductSizes)
+                                                               .Include(p => p.Sales)
+                                                               .Include(p => p.Seller)
+                                                               .AsQueryable();
 
             if (categoryId.HasValue)
                 query = query.Where(p => p.CategoryId == categoryId.Value);
@@ -77,7 +80,9 @@ namespace ECommerce.Repository.Repositories
             var product = await _context.Products.Include(c => c.Category).Include(s => s.Sales)
                                                  .Include(i => i.ProductPhotos)
                                                  .Include(p=>p.ProductColors)
-                                                 .Include(p=>p.ProductSizes).FirstOrDefaultAsync( p => p.Id == id);
+                                                 .Include(p=>p.ProductSizes)
+                                                 .Include(p => p.Seller)
+                                                 .FirstOrDefaultAsync( p => p.Id == id);
             return product;
         }
 

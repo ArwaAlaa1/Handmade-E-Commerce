@@ -19,12 +19,59 @@
         </div>
     </div>
 </section>
-<button (click)="goToProducts()">روح للمنتجات</button>
+
 
 <!-- Cart -->
-<section class="section-cart padding-tb-50">
+<section class="section-cart padding-tb-60">
     <div class="container">
         <div class="row mb-minus-24">
+            <div class="col-lg-8 mb-24">
+                <div class="bb-cart-table" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>quality</th>
+                                <th>Total</th>
+                                <th>Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <a href="javascript:void(0)">
+                                        <div class="Product-cart">
+                                            <img src="assets/img/new-product/1.jpg" alt="new-product-1">
+                                            <span>Ground Nuts Oil Pack</span>
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="price">$15</span>
+                                </td>
+                                <!-- <td>
+                                    <div class="qty-plus-minus">
+                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
+                                    </div>
+                                </td> -->
+                                <td>
+                                    <span class="price">$15</span>
+                                </td>
+                                <td>
+                                    <div class="pro-remove">
+                                        <a >
+                                            <i class="ri-delete-bin-line"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                           
+                        </tbody>
+                    </table>
+                </div>                    
+                <a href="checkout.html" class="bb-btn-2 check-btn" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">Check Out</a>
+            </div>
             <div class="col-lg-4 mb-24">
                 <div class="bb-cart-sidebar-block" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
                     <div class="bb-sb-title">
@@ -91,168 +138,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8 mb-24">
-                <div class="bb-cart-table" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>quality</th>
-                                <th>Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/1.jpg" alt="new-product-1">
-                                            <span>Ground Nuts Oil Pack</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$15</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$15</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/2.jpg" alt="new-product-2">
-                                            <span>Organic Litchi Juice Pack</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$25</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$25</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/3.jpg" alt="new-product-3">
-                                            <span>Crunchy Banana Chips</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$12</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$12</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/4.jpg" alt="new-product-4">
-                                            <span>Crunchy Potato Chips</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$25</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$25</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/5.jpg" alt="new-product-5">
-                                            <span>Black Pepper Spice pack</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$32</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$32</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>                    
-                <a href="checkout.html" class="bb-btn-2 check-btn" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">Check Out</a>
-            </div>
+           
         </div>
     </div>
 </section>
-
 <!-- Related product -->
 <section class="section-related-product padding-tb-50">
     <div class="container">

@@ -4,79 +4,80 @@
 
 @{
     ViewData["Title"] = "Product Details";
+    var isAdmin = User.IsInRole("Admin");
 }
 <style>
     .carousel-item img {
-        border-radius: 8px;
-        margin: 0 auto;
+    border-radius: 8px;
+    margin: 0 auto;
     }
 
     .carousel-control-prev, .carousel-control-next {
-        width: 5%;
-        background: rgba(0, 0, 0, 0.3); 
-        border-radius: 50%; 
-        width: 35px; 
-        height: 35px; 
-        top: 50%;
-        transform: translateY(-50%);
-        transition: background 0.3s ease, transform 0.3s ease;
+    width: 5%;
+    background: rgba(0, 0, 0, 0.3); 
+    border-radius: 50%; 
+    width: 35px; 
+    height: 35px; 
+    top: 50%;
+    transform: translateY(-50%);
+    transition: background 0.3s ease, transform 0.3s ease;
     }
 
-        .carousel-control-prev:hover, .carousel-control-next:hover {
-            background: rgba(0, 0, 0, 0.6); 
-            transform: translateY(-50%) scale(1.1); 
-        }
+    .carousel-control-prev:hover, .carousel-control-next:hover {
+    background: rgba(0, 0, 0, 0.6); 
+    transform: translateY(-50%) scale(1.1); 
+    }
 
     .carousel-control-prev-icon, .carousel-control-next-icon {
-        background-image: none; 
-        width: 20px;
-        height: 20px;
-        display: inline-block;
-        position: relative;
+    background-image: none; 
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    position: relative;
     }
 
-        .carousel-control-prev-icon::before, .carousel-control-next-icon::before {
-            content: '';
-            display: block;
-            width: 20px;
-            height: 20px;
-            background-size: contain;
-            background-repeat: no-repeat;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
+    .carousel-control-prev-icon::before, .carousel-control-next-icon::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
 
-        .carousel-control-prev-icon::before {
-            background-image: url('data:image/svg+xml;charset=UTF8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="%23ffffff" viewBox="0 0 24 24"%3E%3Cpath d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/%3E%3C/svg%3E'); /* سهم أكبر وأنيق */
-        }
+    .carousel-control-prev-icon::before {
+    background-image: url('data:image/svg+xml;charset=UTF8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="%23ffffff" viewBox="0 0 24 24"%3E%3Cpath d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6z"/%3E%3C/svg%3E'); /* سهم أكبر وأنيق */
+    }
 
-        .carousel-control-next-icon::before {
-            background-image: url('data:image/svg+xml;charset=UTF8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="%23ffffff" viewBox="0 0 24 24"%3E%3Cpath d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/%3E%3C/svg%3E'); /* سهم أكبر وأنيق */
-        }
+    .carousel-control-next-icon::before {
+    background-image: url('data:image/svg+xml;charset=UTF8,%3Csvg xmlns="http://www.w3.org/2000/svg" fill="%23ffffff" viewBox="0 0 24 24"%3E%3Cpath d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/%3E%3C/svg%3E'); /* سهم أكبر وأنيق */
+    }
 
     .carousel-indicators button {
-        background-color: #888;
-        border-radius: 50%;
-        width: 10px;
-        height: 10px;
-        margin: 0 5px;
+    background-color: #888;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
     }
 
     .carousel-indicators .active {
-        background-color: #007bff;
+    background-color: #007bff;
     }
 
     .thumbnail {
-        cursor: pointer;
-        opacity: 0.7;
-        transition: opacity 0.3s ease;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
     }
 
-        .thumbnail:hover, .thumbnail.active {
-            opacity: 1;
-        }
+    .thumbnail:hover, .thumbnail.active {
+    opacity: 1;
+    }
 </style>
 
 <div class="card p-4 shadow rounded-3">
@@ -106,6 +107,43 @@
                 <span>@Model.Cost.ToString("C")</span>
             }
         </dd>
+
+        <!--  Selling Price -->
+        <dt class="col-sm-3">Selling Price</dt>
+        <dd class="col-sm-9">
+            <span class="fw-bold text-primary">@Model.SellingPrice.ToString("C")</span>
+        </dd>
+
+        <!--  Application Profit Percentage -->
+        @*      <dt class="col-sm-3">Application Profit Percentage</dt>
+        <dd class="col-sm-9">
+            @if (Model.AdminProfitPercentage.HasValue)
+            {
+                <span class="text-success fw-semibold">@Model.AdminProfitPercentage.Value.ToString("0.##")%</span>
+            }
+            else
+            {
+                <span class="text-muted">Not specified</span>
+            }
+        </dd> *@
+
+        <!--  Application Profit Percentage -->
+        <dt class="col-sm-3">
+            <span data-bs-toggle="tooltip" title="This is the profit percentage taken by the application from the selling price.">
+                App Profit Percentage
+            </span>
+        </dt>
+        <dd class="col-sm-9">
+            @if (Model.AdminProfitPercentage.HasValue)
+            {
+                <span class="text-success fw-semibold">@Model.AdminProfitPercentage.Value.ToString("0.##")%</span>
+            }
+            else
+            {
+                <span class="text-muted">Not specified</span>
+            }
+        </dd>
+
 
         <dt class="col-sm-3">Available Colors:</dt>
         <dd class="col-sm-9">
@@ -147,7 +185,7 @@
         <dt class="col-sm-3">Category</dt>
         <dd class="col-sm-9">@Model.CategoryName</dd>
 
-       @*  <dt class="col-sm-3">Photos</dt>
+        @*  <dt class="col-sm-3">Photos</dt>
         <dd class="col-sm-9">
             @foreach (var photo in Model.ExistingPhotoLinks)
             {
@@ -160,7 +198,7 @@
             {
                 @if (Model.ExistingPhotoLinks.Count == 1)
                 {
-                   
+
                     <div>
                         <img src="@Model.ExistingPhotoLinks[0]" class="d-block w-100" style="max-height: 200px; object-fit: contain;" alt="Product Photo">
                     </div>
@@ -221,17 +259,21 @@
     <div class="card mt-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Current Sale</h5>
+            @if (!isAdmin)
+            {
+                @if (Model.SaleId.HasValue)
+                {
 
-            @if (Model.SaleId.HasValue)
-            {
-                <div>
-                    <a asp-controller="Sale" asp-action="Edit" asp-route-id="@Model.SaleId" class="btn btn-warning btn-sm me-2">Edit Sale</a>
-                    <a asp-controller="Sale" asp-action="Delete" asp-route-id="@Model.SaleId" class="btn btn-danger btn-sm">Delete Sale</a>
-                </div>
-            }
-            else
-            {
-                <a asp-controller="Sale" asp-action="Create" asp-route-productId="@Model.Id" class="btn btn-success btn-sm">Add Sale</a>
+                    <div>
+                        <a asp-controller="Sale" asp-action="Edit" asp-route-id="@Model.SaleId" class="btn btn-warning btn-sm me-2">Edit Sale</a>
+                        <a asp-controller="Sale" asp-action="Delete" asp-route-id="@Model.SaleId" class="btn btn-danger btn-sm">Delete Sale</a>
+                    </div>
+                }
+
+                else
+                {
+                    <a asp-controller="Sale" asp-action="Create" asp-route-productId="@Model.Id" class="btn btn-success btn-sm">Add Sale</a>
+                }
             }
         </div>
 
@@ -253,3 +295,12 @@
 
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </div>
+
+@section Scripts {
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

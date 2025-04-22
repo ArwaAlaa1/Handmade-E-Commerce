@@ -1,0 +1,28 @@
+﻿@model ECommerce.DashBoard.ViewModels.AdminVM
+
+@{
+    ViewData["Title"] = "Admin - Profit Settings";
+   
+}
+
+<div class="row">
+    <div class="col-xl">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Admin - Profit Settings</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="UpdateProfit" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label for="ProfitPercentage" class="form-label">Profit Percentage</label>
+                        <input type="number" id="ProfitPercentage" name="Percentage" class="form-control" value="@Model.ProfitPercentage" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

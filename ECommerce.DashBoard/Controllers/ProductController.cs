@@ -5,6 +5,9 @@ using ECommerce.DashBoard.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using ECommerce.Services.Utility;
+using System.Security.Claims;
 
 namespace ECommerce.DashBoard.Controllers
 {
@@ -26,28 +29,71 @@ namespace ECommerce.DashBoard.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var products = await _unitOfWork.Repository<Product>()
-                .GetAllAsync(p => !p.Category.IsDeleted, includeProperties: "Category,Sales");
-
-            var productVMs = products.Select(p =>
+            if(User.IsInRole("Admin"))
             {
-                var activeSale = p.Sales?.FirstOrDefault(s =>
-                    s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
+               
+                var products = await _unitOfWork.Repository<Product>()
+                    .GetAllAsync(p => !p.Category.IsDeleted, includeProperties: "Category,Sales");
+                var profitSetting = await _unitOfWork.Repository<ProfitSetting>().GetAllAsync();
+                var profitPercentage = profitSetting.FirstOrDefault()?.Percentage ?? 0;
 
-                return new ProductListVM
+                ViewBag.AdminProfit = profitPercentage;
+
+                var productVMs = products.Select(p =>
                 {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Cost = p.Cost,
-                    DiscountedPrice = activeSale != null
-                        ? p.Cost * (1 - activeSale.Percent / 100m)
-                        : p.Cost,
-                    CategoryName = p.Category?.Name,
-                    IsOnSale = activeSale != null
-                };
-            }).ToList();
+                    var activeSale = p.Sales?.FirstOrDefault(s =>
+                        s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
 
-            return View(productVMs);
+                    return new ProductListVM
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Cost = p.Cost,
+                        SellingPrice = p.SellingPrice,
+                        DiscountedPrice = activeSale != null
+                            ? p.SellingPrice * (1 - activeSale.Percent / 100m)
+                            : p.SellingPrice,
+                        CategoryName = p.Category?.Name,
+                        IsOnSale = activeSale != null
+                    };
+                }).ToList();
+                return View(productVMs);
+            }
+            //var products = await _unitOfWork.Repository<Product>()
+            //    .GetAllAsync(p => !p.Category.IsDeleted, includeProperties: "Category,Sales");
+            else
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var userId = user.Id;
+                var products = await _unitOfWork.Repository<Product>()
+                   .GetAllAsync(p => p.SellerId == userId && !p.Category.IsDeleted, includeProperties: "Category,Sales");
+                var profitSetting = await _unitOfWork.Repository<ProfitSetting>().GetAllAsync();
+                var profitPercentage = profitSetting.FirstOrDefault()?.Percentage ?? 0;
+
+                ViewBag.AdminProfit = profitPercentage;
+
+                var productVMs = products.Select(p =>
+                {
+                    var activeSale = p.Sales?.FirstOrDefault(s =>
+                        s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
+
+                    return new ProductListVM
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Cost = p.Cost,
+                        SellingPrice = p.SellingPrice,
+                        DiscountedPrice = activeSale != null
+                            ? p.SellingPrice * (1 - activeSale.Percent / 100m)
+                            : p.SellingPrice,
+                        CategoryName = p.Category?.Name,
+                        IsOnSale = activeSale != null
+                    };
+                }).ToList();
+                return View(productVMs);
+            }
+
+           
         }
         public async Task<IActionResult> Details(int id)
         {
@@ -65,6 +111,8 @@ namespace ECommerce.DashBoard.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Cost = product.Cost,
+                AdminProfitPercentage = product.AdminProfitPercentage,
+                SellingPrice = product.SellingPrice,
                 CategoryName = product.Category?.Name,
                 CategoryId = product.CategoryId,
                 //handle colors and sizes
@@ -103,18 +151,25 @@ namespace ECommerce.DashBoard.Controllers
 
             return View(productVM);
         }
-
+        [Authorize(Roles =SD.SuplierRole)]
         public async Task<IActionResult> Create()
         {
             var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
+            var profitSetting = await _unitOfWork.Repository<ProfitSetting>().GetAllAsync();
+            var profitPercentage = profitSetting.FirstOrDefault()?.Percentage ?? 0;
+
+
+            ViewBag.AdminProfit = profitPercentage;
 
             var vm = new ProductVM
             {
                 Categories = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }),
+
             };
             return View(vm);
         }
 
+        [Authorize(Roles = SD.SuplierRole)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductVM vm)
@@ -143,6 +198,11 @@ namespace ECommerce.DashBoard.Controllers
                 ProductColors = new List<ProductColor>(),
                 ProductSizes = new List<ProductSize>()
             };
+            var profitSetting = await _unitOfWork.Repository<ProfitSetting>().GetAllAsync();
+            var profitPercentage = profitSetting.FirstOrDefault()?.Percentage ?? 0;
+
+            //handel profitPercentage
+            product.AdminProfitPercentage = profitPercentage;
 
 
             // Handle colors
@@ -216,20 +276,30 @@ namespace ECommerce.DashBoard.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
-
-
+        [Authorize(Roles = SD.SuplierRole)]
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await _unitOfWork.Repository<Product>()
-   .GetByIdWithIncludeAsync(id, "ProductColors,ProductSizes");
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            var product = await _unitOfWork.Repository<Product>()
+                                           .GetByIdWithIncludeAsync(id, "ProductColors,ProductSizes");
             if (product == null) return NotFound();
+            
+            if(product.SellerId != userid)
+            {
+                return RedirectToAction("Index");
+            }
+
 
             var photos = await _unitOfWork.Repository<ProductPhoto>()
                 .GetAllAsync(p => p.ProductId == product.Id && !p.IsDeleted);
 
             var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
+            var profitSetting = await _unitOfWork.Repository<ProfitSetting>().GetAllAsync();
+            var profitPercentage = profitSetting.FirstOrDefault()?.Percentage ?? 0;
+
+            //TempData["AdminProfit"] = profitPercentage;
+            ViewBag.AdminProfit = profitPercentage;
 
             var vm = new ProductVM
             {
@@ -238,6 +308,8 @@ namespace ECommerce.DashBoard.Controllers
                 Description = product.Description,
                 Cost = product.Cost,
                 CategoryId = product.CategoryId,
+                AdminProfitPercentage = profitPercentage,
+                SellingPrice = product.SellingPrice,
                 Categories = categories?.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }) ?? new List<SelectListItem>(),
                 Colors = product.ProductColors?.Select(pc => new ColorVM { Name = pc.Color }).ToList() ?? new List<ColorVM>(),
                 Sizes = product.ProductSizes?.Select(ps => new SizeVM { Name = ps.Size, ExtraCost = ps.ExtraCost }).ToList() ?? new List<SizeVM>(),
@@ -295,10 +367,13 @@ namespace ECommerce.DashBoard.Controllers
         //    return View(vm);
         //}
 
+        [Authorize(Roles =SD.SuplierRole)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ProductVM vm)
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return NotFound();
 
             if (!ModelState.IsValid)
             {
@@ -320,15 +395,16 @@ namespace ECommerce.DashBoard.Controllers
                     includeProperties: "ProductColors,ProductSizes"
                 );
             if (product == null) return NotFound();
-
-            var user = await _userManager.GetUserAsync(User);
-
+            if (product.SellerId != user.Id)
+            {
+                return RedirectToAction("Index");
+            }
             product.Name = vm.Name;
             product.Description = vm.Description;
             product.Cost = vm.Cost;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;
-
+            product.AdminProfitPercentage = vm.AdminProfitPercentage.Value;
 
             // Delete old ProductColors
             var oldColors = product.ProductColors.ToList();
@@ -502,11 +578,19 @@ namespace ECommerce.DashBoard.Controllers
         //    return RedirectToAction(nameof(Index));
         //}
 
-
+        [Authorize(Roles = SD.SuplierRole)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePhoto(int photoId, int productId)
         {
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
+            if (product == null)
+                return NotFound();
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (product.SellerId != userid)
+            {
+                return RedirectToAction("Index");
+            }
             var photo = await _unitOfWork.Repository<ProductPhoto>().GetByIdAsync(photoId);
             if (photo == null)
                 return NotFound();
@@ -525,24 +609,36 @@ namespace ECommerce.DashBoard.Controllers
             return RedirectToAction("Edit", new { id = productId });
         }
 
-
+        [Authorize(Roles = SD.SuplierRole)]
         public async Task<IActionResult> Delete(int id)
         {
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userid == null) return NotFound();
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(id);
-            if (product == null) return NotFound();
 
+            if (product == null) return NotFound();
+            if (product.SellerId != userid)
+            {
+                return RedirectToAction("Index");
+            }
             return View(product);
         }
-
+        [Authorize(Roles = SD.SuplierRole)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userid == null) return NotFound();
             // Load product with related Sales
             var product = await _unitOfWork.Repository<Product>()
                 .GetByIdWithIncludeAsync(id, "Sales");
 
             if (product == null) return NotFound();
+            if(product.SellerId != userid)
+            {
+                return RedirectToAction("Index");
+            }
 
             // delete related sales
             if (product.Sales != null && product.Sales.Any())

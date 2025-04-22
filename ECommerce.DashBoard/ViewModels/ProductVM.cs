@@ -18,6 +18,8 @@ namespace ECommerce.DashBoard.ViewModels
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
         public decimal Cost { get; set; }
+        public decimal? AdminProfitPercentage { get; set; }
+        public decimal SellingPrice { get; set; }
         public string? CategoryName { get; set; }
 
         [Required(ErrorMessage = "Please select a category.")]

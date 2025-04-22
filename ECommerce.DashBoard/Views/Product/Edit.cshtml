@@ -16,6 +16,18 @@
             </div>
 
             <div class="card-body">
+               @*  @if (TempData["AdminProfitPercentage"] != null)
+                {
+                    <div class="alert alert-warning">
+                        <strong>Note:</strong> The Admin Profit Percentage is <strong>@TempData["AdminProfitPercentage"]%</strong>. Make sure to consider this when updating the cost.
+                    </div>
+                } *@
+                @if (ViewBag.AdminProfit != null)
+                {
+                    <div class="alert alert-info">
+                        <strong>Note:</strong> Current admin profit percentage is <strong>@ViewBag.AdminProfit%</strong>.
+                    </div>
+                }
                 <form asp-action="Edit" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
                     <input type="hidden" asp-for="Id" />
@@ -35,6 +47,10 @@
                         <label asp-for="Cost" class="form-label"></label>
                         <input asp-for="Cost" class="form-control" />
                         <span asp-validation-for="Cost" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SellingPrice" class="form-label">Selling Price</label>
+                        <input asp-for="SellingPrice" class="form-control" readonly />
                     </div>
 
                     <div class="mb-3">
@@ -162,5 +178,28 @@
                 </div>`;
             document.getElementById('sizes-container').insertAdjacentHTML('beforeend', html);
         }
+          
+    </script>
+   @*  <script>
+       
+        document.querySelector('input[name="Cost"]').addEventListener('input', function() {
+            var cost = parseFloat(this.value);
+            var profitPercentage = parseFloat('@Model.AdminProfitPercentage');
+            var sellingPrice = cost + (cost * profitPercentage / 100);
+            document.querySelector('input[name="SellingPrice"]').value = sellingPrice.toFixed(2);
+        });
+    </script> *@
+
+    <script>
+       
+        var profitPercentage = parseFloat('@Model.AdminProfitPercentage');
+
+        document.querySelector('input[name="Cost"]').addEventListener('input', function() {
+            var cost = parseFloat(this.value);
+            if (!isNaN(cost)) {
+                var sellingPrice = cost + (cost * profitPercentage / 100);
+                document.querySelector('input[name="SellingPrice"]').value = sellingPrice.toFixed(2);
+            }
+        });
     </script>
 }

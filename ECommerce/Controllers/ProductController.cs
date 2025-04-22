@@ -57,7 +57,7 @@ namespace ECommerce.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    BasePrice = basePrice,
+                    //BasePrice = basePrice,
                     SellingPrice = sellingPrice,
                     DiscountedPrice = discountedPrice,
                     IsOnSale = currentSale != null,
@@ -126,7 +126,7 @@ namespace ECommerce.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    BasePrice = basePrice,
+                    //BasePrice = basePrice,
                     SellingPrice = sellingPrice,
                     DiscountedPrice = discountedPrice,
                     IsOnSale = currentSale != null,
@@ -147,22 +147,25 @@ namespace ECommerce.Controllers
         {
             if (pageSize <= 0 || pageIndex <= 0)
                 return BadRequest("Invalid pagination parameters. Both pageSize and pageIndex must be greater than 0.");
+
             if (categoryId.HasValue && categoryId <= 0)
                 return BadRequest("Invalid category ID. The category ID must be greater than 0.");
+
             if (maxPrice.HasValue && maxPrice <= 0)
                 return BadRequest("Invalid max price. The max price must be greater than 0.");
+
             if (minPrice.HasValue && minPrice <= 0)
                 return BadRequest("Invalid min price. The min price must be greater than 0.");
+
             if (minPrice.HasValue && maxPrice.HasValue && minPrice > maxPrice)
                 return BadRequest("Invalid price range. The min price must be less than or equal to the max price.");
-            if (categoryId <= 0)
-                return BadRequest("Invalid category ID. The category ID must be greater than 0.");
-            if (pageSize <= 0 || pageIndex <= 0)
-                return BadRequest("Invalid pagination parameters. Both pageSize and pageIndex must be greater than 0.");
-            var category = await _unitOfWork.Repository<Category>().GetByIdAsync(categoryId.Value);
-            if (category == null)
-                return NotFound(new { message = $"Category with ID {categoryId} not found." });
 
+            if (categoryId.HasValue)
+            {
+                var category = await _unitOfWork.Repository<Category>().GetByIdAsync(categoryId.Value);
+                if (category == null)
+                    return NotFound(new { message = $"Category with ID {categoryId} not found." });
+            }
             var products = await productRepository.GetProductsWithOffer(pageSize, pageIndex, categoryId, maxPrice, minPrice);
             if (products == null || !products.Any())
                 return NotFound(new { message = "No products found." });
@@ -172,7 +175,7 @@ namespace ECommerce.Controllers
             {
                 Name = p.Name,
                 Description = p.Description,
-                Price = p.Cost,
+                sellingPrice = p.SellingPrice,
                 Category = new
                 {
                     Id = p.Category.Id,
@@ -222,7 +225,7 @@ namespace ECommerce.Controllers
                  Id = p.Id,
                  Name = p.Name,
                  Description = p.Description,
-                 BasePrice = basePrice,
+                 //BasePrice = basePrice,
                  SellingPrice = sellingPrice,
                  DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                  SalePercent = currentSale?.Percent,
@@ -284,7 +287,7 @@ namespace ECommerce.Controllers
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
-                BasePrice = basePrice,
+                //BasePrice = basePrice,
                 SellingPrice = sellingPrice,
                 DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                 SalePercent = currentSale?.Percent,
@@ -354,7 +357,7 @@ namespace ECommerce.Controllers
                     {
                         Id = p.Id,
                         Name = p.Name,
-                        BasePrice = basePrice,
+                        //BasePrice = basePrice,
                         SellingPrice = sellingPrice,
                         DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                         SalePercent = currentSale?.Percent

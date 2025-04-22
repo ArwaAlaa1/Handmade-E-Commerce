@@ -43,12 +43,25 @@ namespace ECommerce.Core.Models
 
                 if (currentSale != null)
                 {
+                    var discount = SellingPrice * currentSale.Percent / 100;
+                    return SellingPrice - discount;
+                }
+
+                return SellingPrice;
+            }
+            /*get
+            {
+                var currentSale = Sales?.FirstOrDefault(s =>
+                    s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+
+                if (currentSale != null)
+                {
                     var discount = Cost * currentSale.Percent / 100;
                     return Cost - discount;
                 }
 
                 return Cost;
-            }
+            }*/
         }
 
         [NotMapped]

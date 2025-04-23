@@ -144,9 +144,13 @@ namespace ECommerce.DashBoard.Controllers
                 SalePercent = currentSale?.Percent,
                 SaleStartDate = currentSale?.StartDate,
                 SaleEndDate = currentSale?.EndDate,
+                
+                //DiscountedPrice = currentSale != null
+                //? product.SellingPrice * (1 - currentSale.Percent / 100m)
+                //: null
+
                 DiscountedPrice = currentSale != null
-                ? product.Cost - (product.Cost * currentSale.Percent / 100)
-                : null
+                ?product.DiscountedPrice:null
             };
 
             return View(productVM);

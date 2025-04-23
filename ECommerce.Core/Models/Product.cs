@@ -40,7 +40,7 @@ namespace ECommerce.Core.Models
             {
                 var currentSale = Sales?.FirstOrDefault(s =>
                     s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
-
+                
                 if (currentSale != null)
                 {
                     var discount = SellingPrice * currentSale.Percent / 100;

@@ -110,6 +110,7 @@ namespace ECommerce.DashBoard.Controllers
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
+                AdditionalDetails = product.AdditionalDetails,
                 Cost = product.Cost,
                 AdminProfitPercentage = product.AdminProfitPercentage,
                 SellingPrice = product.SellingPrice,
@@ -198,6 +199,7 @@ namespace ECommerce.DashBoard.Controllers
                 Description = vm.Description,
                 Cost = vm.Cost,
                 CategoryId = vm.CategoryId,
+                AdditionalDetails = vm.AdditionalDetails,
                 SellerId = user.Id,
                 ProductColors = new List<ProductColor>(),
                 ProductSizes = new List<ProductSize>()
@@ -312,6 +314,7 @@ namespace ECommerce.DashBoard.Controllers
                 Description = product.Description,
                 Cost = product.Cost,
                 CategoryId = product.CategoryId,
+                AdditionalDetails = product.AdditionalDetails,
                 AdminProfitPercentage = profitPercentage,
                 SellingPrice = product.SellingPrice,
                 Categories = categories?.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }) ?? new List<SelectListItem>(),
@@ -381,14 +384,7 @@ namespace ECommerce.DashBoard.Controllers
 
             if (!ModelState.IsValid)
             {
-                foreach (var key in ModelState.Keys)
-                {
-                    var state = ModelState[key];
-                    foreach (var error in state.Errors)
-                    {
-                        Console.WriteLine($"ModelState Error on '{key}': {error.ErrorMessage}");
-                    }
-                }
+               
                 var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
                 vm.Categories = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
                 return View(vm);
@@ -405,6 +401,7 @@ namespace ECommerce.DashBoard.Controllers
             }
             product.Name = vm.Name;
             product.Description = vm.Description;
+            product.AdditionalDetails = vm.AdditionalDetails;
             product.Cost = vm.Cost;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;

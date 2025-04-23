@@ -21,6 +21,8 @@ namespace ECommerce.DashBoard.ViewModels
         public decimal? AdminProfitPercentage { get; set; }
         public decimal SellingPrice { get; set; }
         public string? CategoryName { get; set; }
+        public string AdditionalDetails { get; set; }
+
 
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryId { get; set; }

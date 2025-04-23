@@ -2,186 +2,200 @@
 @model ProductVM
 
 @{
-    ViewData["Title"] = "Edit Product";
+	ViewData["Title"] = "Edit Product";
 }
-
+<head>
+	
+	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet" />
+</head>
 <div class="row">
-    <div class="col-xl">
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Edit Product</h5>
-                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
-                    <i class="bx bx-arrow-back me-1"></i> Back to List
-                </a>
-            </div>
+	<div class="col-xl">
+		<div class="card mb-4">
+			<div class="card-header d-flex justify-content-between align-items-center">
+				<h5 class="mb-0">Edit Product</h5>
+				<a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+					<i class="bx bx-arrow-back me-1"></i> Back to List
+				</a>
+			</div>
 
-            <div class="card-body">
-               @*  @if (TempData["AdminProfitPercentage"] != null)
+			<div class="card-body">
+				@*  @if (TempData["AdminProfitPercentage"] != null)
                 {
                     <div class="alert alert-warning">
                         <strong>Note:</strong> The Admin Profit Percentage is <strong>@TempData["AdminProfitPercentage"]%</strong>. Make sure to consider this when updating the cost.
                     </div>
                 } *@
-                @if (ViewBag.AdminProfit != null)
-                {
-                    <div class="alert alert-info">
-                        <strong>Note:</strong> Current admin profit percentage is <strong>@ViewBag.AdminProfit%</strong>.
-                    </div>
-                }
-                <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" asp-for="Id" />
+				@if (ViewBag.AdminProfit != null)
+				{
+					<div class="alert alert-info">
+						<strong>Note:</strong> Current admin profit percentage is <strong>@ViewBag.AdminProfit%</strong>.
+					</div>
+				}
+				<form asp-action="Edit" method="post" enctype="multipart/form-data">
+					@Html.AntiForgeryToken()
+					<input type="hidden" asp-for="Id" />
 
-                    <div class="mb-3">
-                        <label asp-for="Name" class="form-label"></label>
-                        <input asp-for="Name" class="form-control" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
+					<div class="mb-3">
+						<label asp-for="Name" class="form-label"></label>
+						<input asp-for="Name" class="form-control" />
+						<span asp-validation-for="Name" class="text-danger"></span>
+					</div>
 
-                    <div class="mb-3">
-                        <label asp-for="Description" class="form-label"></label>
-                        <textarea asp-for="Description" class="form-control"></textarea>
-                    </div>
+					<div class="mb-3">
+						<label asp-for="Description" class="form-label"></label>
+						<textarea asp-for="Description" class="form-control"></textarea>
+					</div>
 
-                    <div class="mb-3">
-                        <label asp-for="Cost" class="form-label"></label>
-                        <input asp-for="Cost" class="form-control" />
-                        <span asp-validation-for="Cost" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="SellingPrice" class="form-label">Selling Price</label>
-                        <input asp-for="SellingPrice" class="form-control" readonly />
-                    </div>
+					<div class="mb-3">
+						<label asp-for="Cost" class="form-label"></label>
+						<input asp-for="Cost" class="form-control" />
+						<span asp-validation-for="Cost" class="text-danger"></span>
+					</div>
+					<div class="mb-3">
+						<label asp-for="SellingPrice" class="form-label">Selling Price</label>
+						<input asp-for="SellingPrice" class="form-control" readonly />
+					</div>
 
-                    <div class="mb-3">
-                        <label asp-for="CategoryId" class="form-label">Category</label>
-                        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
-                        <span asp-validation-for="CategoryId" class="text-danger"></span>
-                    </div>
+					<div class="mb-3">
+						<label asp-for="CategoryId" class="form-label">Category</label>
+						<select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
+						<span asp-validation-for="CategoryId" class="text-danger"></span>
+					</div>
 
-                    <!-- Colors -->
-                    <div class="mb-3">
-                        <label class="form-label">Colors</label>
-                        <div id="colors-container">
-                            @for (int i = 0; i < Model.Colors.Count; i++)
-                            {
-                                <div class="input-group mb-2">
-                                    <input type="text" name="Colors[@i].Name" value="@Model.Colors[i].Name" class="form-control" placeholder="Color Name" />
-                                    <button type="button" class="btn btn-outline-danger" onclick="removeColor(this)">X</button>
-                                </div>
-                            }
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addColor()">+ Add Color</button>
-                    </div>
+					<!-- Colors -->
+					<div class="mb-3">
+						<label class="form-label">Colors</label>
+						<div id="colors-container">
+							@for (int i = 0; i < Model.Colors.Count; i++)
+							{
+								<div class="input-group mb-2">
+									<input type="text" name="Colors[@i].Name" value="@Model.Colors[i].Name" class="form-control" placeholder="Color Name" />
+									<button type="button" class="btn btn-outline-danger" onclick="removeColor(this)">X</button>
+								</div>
+							}
+						</div>
+						<button type="button" class="btn btn-sm btn-outline-primary" onclick="addColor()">+ Add Color</button>
+					</div>
 
-                    <!-- Sizes -->
-                    <div class="mb-3">
-                        <label class="form-label">Sizes</label>
-                        <div id="sizes-container">
-                            @for (int i = 0; i < Model.Sizes.Count; i++)
-                            {
-                                <div class="row g-2 mb-2">
-                                    <div class="col-md-6">
-                                        <input type="text" name="Sizes[@i].Name" value="@Model.Sizes[i].Name" class="form-control" placeholder="Size Name" />
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input type="number" name="Sizes[@i].ExtraCost" value="@Model.Sizes[i].ExtraCost" class="form-control" placeholder="Extra Cost" />
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeSize(this)">X</button>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSize()">+ Add Size</button>
-                    </div>
+					<!-- Sizes -->
+					<div class="mb-3">
+						<label class="form-label">Sizes</label>
+						<div id="sizes-container">
+							@for (int i = 0; i < Model.Sizes.Count; i++)
+							{
+								<div class="row g-2 mb-2">
+									<div class="col-md-6">
+										<input type="text" name="Sizes[@i].Name" value="@Model.Sizes[i].Name" class="form-control" placeholder="Size Name" />
+									</div>
+									<div class="col-md-4">
+										<input type="number" name="Sizes[@i].ExtraCost" value="@Model.Sizes[i].ExtraCost" class="form-control" placeholder="Extra Cost" />
+									</div>
+									<div class="col-md-2">
+										<button type="button" class="btn btn-outline-danger w-100" onclick="removeSize(this)">X</button>
+									</div>
+								</div>
+							}
+						</div>
+						<button type="button" class="btn btn-sm btn-outline-primary" onclick="addSize()">+ Add Size</button>
+					</div>
 
-                    <!-- Upload new photos -->
-                    <div class="mb-4">
-                        <label for="Photos" class="form-label">Upload New Photos</label>
-                        <input asp-for="Photos" type="file" multiple class="form-control" />
-                    </div>
+					<!-- Upload new photos -->
+					<div class="mb-4">
+						<label for="Photos" class="form-label">Upload New Photos</label>
+						<input asp-for="Photos" type="file" multiple class="form-control" />
+					</div>
 
-                    <div asp-validation-summary="All" class="text-danger"></div>
+					<div asp-validation-summary="All" class="text-danger"></div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bx bx-save me-1"></i> Save Changes
-                        </button>
-                        <a asp-action="Index" class="btn btn-secondary">
-                            <i class="bx bx-x me-1"></i> Cancel
-                        </a>
-                    </div>
-                </form>
+					<div class="d-flex justify-content-end gap-2">
+						<button type="submit" class="btn btn-primary">
+							<i class="bx bx-save me-1"></i> Save Changes
+						</button>
+						<a asp-action="Index" class="btn btn-secondary">
+							<i class="bx bx-x me-1"></i> Cancel
+						</a>
+					</div>
+				</form>
 
-                <!-- Show current photos & delete form OUTSIDE the edit form -->
-                @if (Model.ExistingPhotoLinksWithIds?.Count > 0)
-                {
-                    <hr />
-                    <h6>Existing Photos</h6>
-                    <div class="row">
-                        @foreach (var photo in Model.ExistingPhotoLinksWithIds)
-                        {
-                            <div class="col-md-2 mb-3 text-center">
-                                <img src="@photo.PhotoLink" class="img-thumbnail mb-2" style="max-width: 100%;" />
-                                <form asp-action="DeletePhoto" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="photoId" value="@photo.Id" />
-                                    <input type="hidden" name="productId" value="@Model.Id" />
-                                    <button type="submit" class="btn btn-sm btn-danger w-100">Delete</button>
-                                   
-                                </form>
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
+				<!-- Show current photos & delete form OUTSIDE the edit form -->
+				@if (Model.ExistingPhotoLinksWithIds?.Count > 0)
+				{
+					<hr />
+					<h6>Existing Photos</h6>
+					<form style="display:none;">
+						@Html.AntiForgeryToken()
+					</form>
+
+					<div class="row">
+						@foreach (var photo in Model.ExistingPhotoLinksWithIds)
+						{
+							<div class="col-auto mb-4 photo-box text-center" data-photo-id="@photo.Id">
+								<div class="border rounded p-2 shadow-sm d-flex flex-column align-items-center" style="width: 110px;">
+									<img src="@photo.PhotoLink" class="img-thumbnail mb-2 rounded"
+										 style="width: 100px; height: 100px; object-fit: cover;" />
+
+									<button type="button" class="btn btn-sm btn-danger w-100 btn-delete-photo"
+											data-photo-id="@photo.Id"
+											data-product-id="@Model.Id">
+										Delete
+									</button>
+								</div>
+							</div>
+
+						}
+					</div>
+
+				}
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
 
-    <script>
-        function removeColor(btn) {
-            btn.closest('.input-group').remove();
-        }
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        function addColor() {
-            const index = document.querySelectorAll('#colors-container .input-group').length;
-            const html = `
-                <div class="input-group mb-2">
-                    <input type="text" name="Colors[${index}].Name" class="form-control" placeholder="Color Name" />
-                    <button type="button" class="btn btn-outline-danger" onclick="removeColor(this)">X</button>
-                </div>`;
-            document.getElementById('colors-container').insertAdjacentHTML('beforeend', html);
-        }
+	<partial name="_ValidationScriptsPartial" />
 
-        function removeSize(btn) {
-            btn.closest('.row').remove();
-        }
+	<script>
+		function removeColor(btn) {
+			btn.closest('.input-group').remove();
+		}
 
-        function addSize() {
-            const index = document.querySelectorAll('#sizes-container .row').length;
-            const html = `
-                <div class="row g-2 mb-2">
-                    <div class="col-md-6">
-                        <input type="text" name="Sizes[${index}].Name" class="form-control" placeholder="Size Name" />
-                    </div>
-                    <div class="col-md-4">
-                        <input type="number" name="Sizes[${index}].ExtraCost" class="form-control" placeholder="Extra Cost" />
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-outline-danger w-100" onclick="removeSize(this)">X</button>
-                    </div>
-                </div>`;
-            document.getElementById('sizes-container').insertAdjacentHTML('beforeend', html);
-        }
-          
-    </script>
-   @*  <script>
-       
+		function addColor() {
+			const index = document.querySelectorAll('#colors-container .input-group').length;
+			const html = `
+				<div class="input-group mb-2">
+					<input type="text" name="Colors[${index}].Name" class="form-control" placeholder="Color Name" />
+					<button type="button" class="btn btn-outline-danger" onclick="removeColor(this)">X</button>
+				</div>`;
+			document.getElementById('colors-container').insertAdjacentHTML('beforeend', html);
+		}
+
+		function removeSize(btn) {
+			btn.closest('.row').remove();
+		}
+
+		function addSize() {
+			const index = document.querySelectorAll('#sizes-container .row').length;
+			const html = `
+				<div class="row g-2 mb-2">
+					<div class="col-md-6">
+						<input type="text" name="Sizes[${index}].Name" class="form-control" placeholder="Size Name" />
+					</div>
+					<div class="col-md-4">
+						<input type="number" name="Sizes[${index}].ExtraCost" class="form-control" placeholder="Extra Cost" />
+					</div>
+					<div class="col-md-2">
+						<button type="button" class="btn btn-outline-danger w-100" onclick="removeSize(this)">X</button>
+					</div>
+				</div>`;
+			document.getElementById('sizes-container').insertAdjacentHTML('beforeend', html);
+		}
+
+	</script>
+	@*  <script>
+
         document.querySelector('input[name="Cost"]').addEventListener('input', function() {
             var cost = parseFloat(this.value);
             var profitPercentage = parseFloat('@Model.AdminProfitPercentage');
@@ -190,16 +204,99 @@
         });
     </script> *@
 
-    <script>
-       
-        var profitPercentage = parseFloat('@Model.AdminProfitPercentage');
+	<script>
 
-        document.querySelector('input[name="Cost"]').addEventListener('input', function() {
-            var cost = parseFloat(this.value);
-            if (!isNaN(cost)) {
-                var sellingPrice = cost + (cost * profitPercentage / 100);
-                document.querySelector('input[name="SellingPrice"]').value = sellingPrice.toFixed(2);
-            }
-        });
-    </script>
+		var profitPercentage = parseFloat('@Model.AdminProfitPercentage');
+
+		document.querySelector('input[name="Cost"]').addEventListener('input', function() {
+			var cost = parseFloat(this.value);
+			if (!isNaN(cost)) {
+				var sellingPrice = cost + (cost * profitPercentage / 100);
+				document.querySelector('input[name="SellingPrice"]').value = sellingPrice.toFixed(2);
+			}
+		});
+	</script>
+
+	<script>
+				$(document).ready(function () {
+			$('.btn-delete-photo').click(function (e) {
+				e.preventDefault();
+
+				var button = $(this);
+				var photoId = button.data('photo-id');
+				var productId = button.data('product-id');
+				var token = $('input[name="__RequestVerificationToken"]').val();
+
+				if (!photoId || !productId || !token) {
+					Swal.fire({
+						title: 'Error!',
+						text: 'Missing necessary data to delete the photo.',
+						icon: 'error',
+						width: '400px'
+					});
+					return;
+				}
+
+				Swal.fire({
+					title: 'Are you sure?',
+					text: "You won't be able to recover this photo!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#6c757d',
+					confirmButtonText: 'Yes, delete it!',
+					cancelButtonText: 'Cancel',
+					width: '400px',
+					showClass: {
+						popup: 'animate__animated animate__fadeInDown animate__faster'
+					},
+					hideClass: {
+						popup: 'animate__animated animate__fadeOutUp animate__faster'
+					}
+				}).then((result) => {
+					if (result.isConfirmed) {
+						$.ajax({
+							url: '@Url.Action("DeletePhoto", "Product")',
+							type: 'POST',
+							data: {
+								__RequestVerificationToken: token,
+								photoId: photoId,
+								productId: productId
+							},
+							success: function (response) {
+								if (response.success) {
+									button.closest('.photo-box').fadeOut(300, function () {
+										$(this).remove();
+									});
+
+									Swal.fire({
+										title: 'Deleted!',
+										text: 'The photo has been deleted successfully.',
+										icon: 'success',
+										width: '400px'
+									});
+								} else {
+									Swal.fire({
+										title: 'Error!',
+										text: response.message || 'An error occurred while deleting.',
+										icon: 'error',
+										width: '400px'
+									});
+								}
+							},
+							error: function () {
+								Swal.fire({
+									title: 'Connection Failed',
+									text: 'An error occurred while connecting to the server.',
+									icon: 'error',
+									width: '400px'
+								});
+							}
+						});
+					}
+				});
+			});
+		});
+
+	</script>
 }

@@ -578,37 +578,6 @@ namespace ECommerce.DashBoard.Controllers
         //    return RedirectToAction(nameof(Index));
         //}
 
-        /*[Authorize(Roles = SD.SuplierRole)]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeletePhoto(int photoId, int productId)
-        {
-            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
-            if (product == null)
-                return NotFound();
-            var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (product.SellerId != userid)
-            {
-                return RedirectToAction("Index");
-            }
-            var photo = await _unitOfWork.Repository<ProductPhoto>().GetByIdAsync(photoId);
-            if (photo == null)
-                return NotFound();
-
-            // Remove from file system
-            var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, photo.PhotoLink.TrimStart('/'));
-            if (System.IO.File.Exists(fullPath))
-            {
-                System.IO.File.Delete(fullPath);
-            }
-
-            // Remove from database
-            _unitOfWork.Repository<ProductPhoto>().Delete(photo);
-            await _unitOfWork.SaveAsync();
-
-            return RedirectToAction("Edit", new { id = productId });
-        }*/
-
         [Authorize(Roles = SD.SuplierRole)]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -635,7 +604,6 @@ namespace ECommerce.DashBoard.Controllers
 
             return Json(new { success = true, photoId });
         }
-
 
         [Authorize(Roles = SD.SuplierRole)]
         public async Task<IActionResult> Delete(int id)

@@ -17,14 +17,30 @@ namespace ECommerce.Controllers
             _cartRepository = cartRepository;
         }
 
-        [HttpGet("{cartId}")]
-        public async Task<IActionResult> GetCart(string cartId)
+        [HttpGet]
+        public async Task<IActionResult> GetCart(string? cartId)
         {
-            var cart = await _cartRepository.GetCartAsync(cartId);
-            if (cart == null)
+            var userId = User.Identity.IsAuthenticated
+                ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                : null;
+            var cart =new Cart();
+            if (userId !=null)
             {
-                return Ok(new Cart(cartId));
+                cart = await _cartRepository.GetCartAsync($"cart:{userId}");
+                if (cart == null)
+                {
+                    return Ok(new Cart(cartId));
+                }
             }
+            else
+            {
+                cart = await _cartRepository.GetCartAsync(cartId);
+                if (cart == null)
+                {
+                    return Ok(new Cart(cartId));
+                }
+            }
+           
             return Ok(cart);
         }
 

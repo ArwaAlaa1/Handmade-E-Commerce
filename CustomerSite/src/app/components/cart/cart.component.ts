@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-cart',
@@ -10,58 +11,41 @@ import { CartService } from '../../services/cart.service';
   styleUrl: './cart.component.css'
 })
 export class CartComponent {
+  cartData: any = {};
+ token: string = '';
+ userData: any = null;
+  imageBaseUrl: string = `https://handmadee-commerce.runasp.net/images//`;
   isLogin: boolean = false;
-   constructor(private _AuthService : AuthService,private cartService: CartService) {
-    this._AuthService.userData.subscribe({
-      next: (data) => {
-        if (data) {
-          this.isLogin = true;
-          var uaerdata=_AuthService.loadUserData();
-          console.log(uaerdata);
-          this.getCartById(data.userId);
-          console.log(data.userId);
-          console.log("succes");
-        }
-        else
-        {
-          this.isLogin = false;
-          console.log("fail");
-        }
-      }
-    });
+   constructor(private _cookie:CookieService,private cartService: CartService,private _auth: AuthService) {
+  
     }
   
     ngOnInit(): void {
-      console.log('CartComponent loaded');
-
-      this._AuthService.userData.subscribe({
-        next: (data) => {
-          if (data) {
-            this.isLogin = true;
-            var uaerdata=this._AuthService.loadUserData();
-            console.log(uaerdata);
-            this.getCartById(data.userId);
-            console.log(data.userId);
-            console.log("succes");
-          }
-          else
-          {
-            this.isLogin = false;
-            console.log("fail");
-          }
+      const storedData = this._auth.userData
+      .subscribe({
+        next: (response) => {
+          this.userData = response;
+          console.log(this.userData);
+        },
+        error: (error) => {
         }
       });
-    }
-  getCartById(cartId: number) {
-    this.cartService.getCartById(cartId).subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-      error: (error) => {
-        console.error(error);
+         
+      if (this.userData) {
+        this.token = this.userData.token;
+        this.isLogin = true;
+        this.cartService.getCartById().subscribe({
+          next: (res) => {
+            console.log('Cart data:', res);
+            this.cartData = res;
+          },
+          error: (err) => console.error('Error loading cart:', err)
+        });
       }
-    });
+              
+          
+        
+
   }
-  
 
 }

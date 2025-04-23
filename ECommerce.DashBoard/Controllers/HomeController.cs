@@ -30,7 +30,7 @@ namespace ECommerce.DashBoard.Controllers
         }
 
 
-
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var products = await _unitOfWork.Repository<Product>()

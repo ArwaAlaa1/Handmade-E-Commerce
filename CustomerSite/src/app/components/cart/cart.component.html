@@ -1,511 +1,87 @@
-   <!-- Breadcrumb -->
-   <section class="section-breadcrumb margin-b-50">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="row bb-breadcrumb-inner">
-                    <div class="col-md-6 col-sm-12">
-                        <h2 class="bb-breadcrumb-title">Cart</h2>
-                    </div>
-                    <div class="col-md-6 col-sm-12">
-                        <ul class="bb-breadcrumb-list">
-                            <li class="bb-breadcrumb-item"><a href="index-2.html">Home</a></li>
-                            <li><i class="ri-arrow-right-double-fill"></i></li>
-                            <li class="bb-breadcrumb-item active">Cart</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-<button (click)="goToProducts()">روح للمنتجات</button>
 
-<!-- Cart -->
-<section class="section-cart padding-tb-50">
-    <div class="container">
-        <div class="row mb-minus-24">
-            <div class="col-lg-4 mb-24">
-                <div class="bb-cart-sidebar-block" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                    <div class="bb-sb-title">
-                        <h3>Summary</h3>
-                    </div>
-                    <div class="bb-sb-blok-contact">
-                        <form action="#" method="post">
-                            <div class="input-box">
-                                <label>Country *</label>
-                                <div class="custom-select">
-                                    <select>
-                                        <option value="option1">Country 1</option>
-                                        <option value="option2">Country 2</option>
-                                        <option value="option3">Country 3</option>
-                                        <option value="option4">Country 4</option>
-                                        <option value="option5">Country 5</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="input-box">
-                                <label>State/Province *</label>
-                                <div class="custom-select">
-                                    <select>
-                                        <option value="option1">Please Select a region, state</option>
-                                        <option value="option2">Region/State 1</option>
-                                        <option value="option3">Region/State 2</option>
-                                        <option value="option4">Region/State 3</option>
-                                        <option value="option5">Region/State 4</option>
-                                        <option value="option6">Region/State 5</option>
-                                        <option value="option7">Region/State 6</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="input-box">
-                                <label for="Zip-code">Zip/Postal Code *</label>
-                                <input type="text" placeholder="Zip/Postal Code" id="Zip-code">
-                            </div>
-                        </form>
-                        <div class="bb-cart-summary">
-                            <div class="inner-summary">
-                                <ul>
-                                    <li><span class="text-left">Sub-Total</span><span class="text-right">$80.00</span></li>
-                                    <li><span class="text-left">Delivery Charges</span><span class="text-right">$80.00</span></li>
-                                    <li>
-                                        <span class="text-left">Coupon Discount</span>
-                                        <span class="text-right"><a class="bb-coupon drop-coupon">Apply Coupon</a></span>
-                                    </li>
-                                    <li>
-                                        <div class="coupon-down-box">
-                                            <form method="post">
-                                                <input class="bb-coupon" type="text" placeholder="Enter Your coupon Code" name="bb-coupon" required>
-                                                <button class="bb-btn-2" type="submit">Apply</button>
-                                            </form>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="summary-total">
-                                <ul>
-                                    <li><span class="text-left">Total Amount</span><span class="text-right">$80.00</span></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-8 mb-24">
-                <div class="bb-cart-table" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>quality</th>
-                                <th>Total</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/1.jpg" alt="new-product-1">
-                                            <span>Ground Nuts Oil Pack</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$15</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$15</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/2.jpg" alt="new-product-2">
-                                            <span>Organic Litchi Juice Pack</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$25</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$25</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/3.jpg" alt="new-product-3">
-                                            <span>Crunchy Banana Chips</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$12</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$12</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/4.jpg" alt="new-product-4">
-                                            <span>Crunchy Potato Chips</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$25</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$25</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <a href="javascript:void(0)">
-                                        <div class="Product-cart">
-                                            <img src="assets/img/new-product/5.jpg" alt="new-product-5">
-                                            <span>Black Pepper Spice pack</span>
-                                        </div>
-                                    </a>
-                                </td>
-                                <td>
-                                    <span class="price">$32</span>
-                                </td>
-                                <td>
-                                    <div class="qty-plus-minus">
-                                        <input class="qty-input" type="text" name="bb-qtybtn" value="1">
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="price">$32</span>
-                                </td>
-                                <td>
-                                    <div class="pro-remove">
-                                        <a href="javascript:void(0)">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>                    
-                <a href="checkout.html" class="bb-btn-2 check-btn" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">Check Out</a>
-            </div>
-        </div>
+<div class="container py-5">
+  <div class="row">
+    <!-- Cart Section -->
+    <div class="col-md-7">
+      <div class="table-responsive border rounded-4 p-3">
+        <table class="table align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Product</th>
+              <th>Price</th>
+              <th>Quality</th>
+              <th>Total</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of cartData.cartItems; track $index) {
+                <tr>
+                  <td class="d-flex align-items-center gap-3">
+                    <img [src]="imageBaseUrl + item.photoUrl" alt="Product" width="60" height="60" class="rounded">
+                    <a href="#" class="text-decoration-none">{{ item.productName }}</a>
+                  </td>
+                  <td>{{ item.price }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>${{ item.price * item.quantity }}</td>
+                  <td><i class="bi bi-trash text-danger cursor-pointer"></i></td>
+                </tr>
+              }
+              
+          </tbody>
+        </table>
+       
+      </div>
+      <button class="bb-btn-2 mt-3">Check Out</button>
     </div>
-</section>
 
-<!-- Related product -->
-<section class="section-related-product padding-tb-50">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="section-title bb-center" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                    <div class="section-detail ">
-                        <h2 class="bb-title">New <span>Arrivals</span></h2>
-                        <p>Browse The Collection of Top Products.</p>
-                    </div>
-                    <!-- <div id="dealend" class="dealend-timer"></div> -->
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="bb-deal-slider">
-                    <div class="bb-deal-block owl-carousel">
-                        <div class="bb-deal-card" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                            <div class="bb-pro-box">
-                                <div class="bb-pro-img">
-                                    <span class="flags">
-                                        <span>New</span>
-                                    </span>
-                                    <a href="javascript:void(0)">
-                                        <div class="inner-img">
-                                            <img class="main-img" src="assets/img/product/1.jpg" alt="product-1">
-                                            <img class="hover-img" src="assets/img/product/back-1.jpg" alt="product-1">
-                                        </div>
-                                    </a>
-                                    <ul class="bb-pro-actions">
-                                        <li class="bb-btn-group">
-                                            <a href="javascript:void(0)">
-                                                <i class="ri-heart-line"></i>
-                                            </a>
-                                        </li>
-                                        <li class="bb-btn-group">
-                                            <a href="javascript:void(0)"
-                                                data-link-action="quickview" title="Quick view" data-bs-toggle="modal"
-                                                data-bs-target="#bry_quickview_modal">
-                                                <i class="ri-eye-line"></i>
-                                            </a>
-                                        </li>
-                                        <li class="bb-btn-group">
-                                            <a href="compare.html">
-                                                <i class="ri-repeat-line"></i>
-                                            </a>
-                                        </li>
-                                        <li  class="bb-btn-group">
-                                            <a href="javascript:void(0)">
-                                                <i class="ri-shopping-bag-4-line"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="bb-pro-contact">
-                                    <div class="bb-pro-subtitle">
-                                        <a href="shop-left-sidebar-col-3.html">Chocolates</a>
-                                        <span class="bb-pro-rating">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-line"></i>
-                                        </span>
-                                    </div>
-                                    <h4 class="bb-pro-title"><a href="product-left-sidebar.html">Mixed Fruits Chocolates Pack</a>
-                                    </h4>
-                                    <div class="bb-price">
-                                        <div class="inner-price">
-                                            <span class="new-price">$25</span>
-                                            <span class="old-price">$30</span>
-                                        </div>
-                                        <span class="last-items">1 Pack</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bb-deal-card" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
-                            <div class="bb-pro-box">
-                                <div class="bb-pro-img">
-                                    <span class="flags">
-                                        <span>Hot</span>
-                                    </span>
-                                    <a href="javascript:void(0)">
-                                        <div class="inner-img">
-                                            <img class="main-img" src="assets/img/product/2.jpg" alt="product-2">
-                                            <img class="hover-img" src="assets/img/product/back-2.jpg" alt="product-2">
-                                        </div>
-                                    </a>
-                                    <ul class="bb-pro-actions">
-                                        <li class="bb-btn-group">
-                                            <a href="javascript:void(0)">
-                                                <i class="ri-heart-line"></i>
-                                            </a>
-                                        </li>
-                                        <li class="bb-btn-group">
-                                            <a href="javascript:void(0)"
-                                                data-link-action="quickview" title="Quick view" data-bs-toggle="modal"
-                                                data-bs-target="#bry_quickview_modal">
-                                                <i class="ri-eye-line"></i>
-                                            </a>
-                                        </li>
-                                        <li class="bb-btn-group">
-                                            <a href="compare.html">
-                                                <i class="ri-repeat-line"></i>
-                                            </a>
-                                        </li>
-                                        <li  class="bb-btn-group">
-                                            <a href="javascript:void(0)">
-                                                <i class="ri-shopping-bag-4-line"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="bb-pro-contact">
-                                    <div class="bb-pro-subtitle">
-                                        <a href="shop-left-sidebar-col-3.html">Juice</a>
-                                        <span class="bb-pro-rating">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-line"></i>
-                                        </span>
-                                    </div>
-                                    <h4 class="bb-pro-title"><a href="product-left-sidebar.html">Organic Apple Juice Pack</a></h4>
-                                    <div class="bb-price">
-                                        <div class="inner-price">
-                                            <span class="new-price">$15</span>
-                                            <span class="item-left">3 Left</span>
-                                        </div>
-                                        <span class="last-items">100 ml</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bb-deal-card" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
-                            <div class="bb-pro-box">
-                                <div class="bb-pro-img">
-                                    <a href="javascript:void(0)">
-                                        <div class="inner-img">
-                                            <img class="main-img" src="assets/img/product/3.jpg" alt="product-3">
-                                            <img class="hover-img" src="assets/img/product/back-3.jpg" alt="product-3">
-                                        </div>
-                                    </a>
-                                    <ul class="bb-pro-actions">
-                                        <li class="bb-btn-group">
-                                            <a href="javascript:void(0)">
-                                                <i class="ri-heart-line"></i>
-                                            </a>
-                                        </li>
-                                        <li class="bb-btn-group">
-                                            <a href="javascript:void(0)"
-                                                data-link-action="quickview" title="Quick view" data-bs-toggle="modal"
-                                                data-bs-target="#bry_quickview_modal">
-                                                <i class="ri-eye-line"></i>
-                                            </a>
-                                        </li>
-                                        <li class="bb-btn-group">
-                                            <a href="compare.html">
-                                                <i class="ri-repeat-line"></i>
-                                            </a>
-                                        </li>
-                                        <li  class="bb-btn-group">
-                                            <a href="javascript:void(0)">
-                                                <i class="ri-shopping-bag-4-line"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="bb-pro-contact">
-                                    <div class="bb-pro-subtitle">
-                                        <a href="shop-left-sidebar-col-3.html">Juice</a>
-                                        <span class="bb-pro-rating">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-line"></i>
-                                        </span>
-                                    </div>
-                                    <h4 class="bb-pro-title"><a href="product-left-sidebar.html">Mixed Almond nuts juice Pack</a>
-                                    </h4>
-                                    <div class="bb-price">
-                                        <div class="inner-price">
-                                            <span class="new-price">$32</span>
-                                            <span class="old-price">$39</span>
-                                        </div>
-                                        <span class="last-items">250 g</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bb-deal-card" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="800">
-                            <div class="bb-pro-box">
-                                <div class="bb-pro-img">
-                                    <span class="flags">
-                                        <span>Sale</span>
-                                    </span>
-                                    <a href="javascript:void(0)">
-                                        <div class="inner-img">
-                                            <img class="main-img" src="assets/img/product/4.jpg" alt="product-4">
-                                            <img class="hover-img" src="assets/img/product/back-4.jpg" alt="product-4">
-                                        </div>
-                                    </a>
-                                    <ul class="bb-pro-actions">
-                                        <li class="bb-btn-group">
-                                            <a href="javascript:void(0)">
-                                                <i class="ri-heart-line"></i>
-                                            </a>
-                                        </li>
-                                        <li class="bb-btn-group">
-                                            <a href="javascript:void(0)"
-                                                data-link-action="quickview" title="Quick view" data-bs-toggle="modal"
-                                                data-bs-target="#bry_quickview_modal">
-                                                <i class="ri-eye-line"></i>
-                                            </a>
-                                        </li>
-                                        <li class="bb-btn-group">
-                                            <a href="compare.html">
-                                                <i class="ri-repeat-line"></i>
-                                            </a>
-                                        </li>
-                                        <li  class="bb-btn-group">
-                                            <a href="javascript:void(0)">
-                                                <i class="ri-shopping-bag-4-line"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="bb-pro-contact">
-                                    <div class="bb-pro-subtitle">
-                                        <a href="shop-left-sidebar-col-3.html">Fruits</a>
-                                        <span class="bb-pro-rating">
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-fill"></i>
-                                            <i class="ri-star-line"></i>
-                                        </span>
-                                    </div>
-                                    <h4 class="bb-pro-title"><a href="product-left-sidebar.html">Fresh Mango Slice Juice</a></h4>
-                                    <div class="bb-price">
-                                        <div class="inner-price">
-                                            <span class="new-price">$25</span>
-                                            <span class="item-left">Out Of Stock</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Summary Section -->
+    <div class="col-md-5">
+      <div class="bg-light p-4 rounded shadow-sm">
+        <h5 class="fw-bold mb-4">Summary</h5>
+
+        <div class="mb-3">
+          <label class="form-label">Country *</label>
+          <select class="form-select">
+            <option>Country 1</option>
+            <option>Country 2</option>
+          </select>
         </div>
+
+        <div class="mb-3">
+          <label class="form-label">State/Province *</label>
+          <select class="form-select">
+            <option>Please Select a region, state</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Zip/Postal Code *</label>
+          <input type="text" class="form-control" placeholder="Zip/Postal Code">
+        </div>
+
+        <div class="d-flex justify-content-between mb-2">
+          <span>Sub-Total</span>
+          <span>$80.00</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Delivery Charges</span>
+          <span>$80.00</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span>Coupon Discount</span>
+          <a href="#" class="text-danger text-decoration-none">Apply Coupon</a>
+        </div>
+
+        <hr>
+        <div class="d-flex justify-content-between fw-bold">
+          <span>Total Amount</span>
+          <span>$80.00</span>
+        </div>
+      </div>
     </div>
-</section>
+  </div>
+</div>
+
+<!-- Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">

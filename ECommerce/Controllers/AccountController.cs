@@ -2,6 +2,7 @@
 using ECommerce.Core.Services.Contract;
 using ECommerce.Core.Services.Contract.SendEmail;
 using ECommerce.DTOs.IdentityDtos;
+using ECommerce.Services.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -39,18 +40,23 @@ namespace ECommerce.Controllers
                 DisplayName = registerDto.DisplayName,
                 PhoneNumber = registerDto.PhoneNumber,
             };
+            
+           
             var result = await _userManager.CreateAsync(user, registerDto.Password);
+
             if (!result.Succeeded) return BadRequest(result.Errors);
+            else
+                _userManager.AddToRoleAsync(user, SD.CustomerRole).Wait();
             var token = await _authService.CreateTokenAsync(user);
             var tokene = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var confirmationLink = Url.Action(
-                "ConfirmEmail", // Action method name
-                "Account",      // Controller name
+                "ConfirmEmail", 
+                "Account",      
                 new { userId = user.Id, token = tokene },
-                protocol: HttpContext.Request.Scheme); // Generate full URL
+                protocol: HttpContext.Request.Scheme); 
 
-            // Send the confirmation link to the user's email
+           
             await _emailProvider.SendConfirmAccount(user.Email, confirmationLink);
             return Ok(new UserDto()
             {

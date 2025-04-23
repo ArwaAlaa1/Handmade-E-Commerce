@@ -1,8 +1,65 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using ECommerce.DashBoard.ViewModels
+@model DashboardReportVM
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5>Total Products</h5>
+                <h3>@Model.TotalProducts</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5>Total Sales</h5>
+                <h3>@Model.TotalSales</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5>Active Sales</h5>
+                <h3>@Model.ActiveSales</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5>Total Revenue</h5>
+                <h3>@Model.TotalRevenue.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
 </div>
+
+<h4>Top 5 Selling Products</h4>
+<table class="table table-striped">
+    <thead>
+        <tr><th>Product</th><th>Quantity Sold</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.TopProducts)
+        {
+            <tr><td>@item.ProductName</td><td>@item.QuantitySold</td></tr>
+        }
+    </tbody>
+</table>
+
+<h4>Popular Categories</h4>
+<table class="table table-striped">
+    <thead>
+        <tr><th>Category</th><th>Number of Products</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var cat in Model.PopularCategories)
+        {
+            <tr><td>@cat.CategoryName</td><td>@cat.ProductCount</td></tr>
+        }
+    </tbody>
+</table>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

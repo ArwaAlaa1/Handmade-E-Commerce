@@ -3,13 +3,12 @@ import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
+  selector: 'app-offers',
   imports: [CommonModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  templateUrl: './offers.component.html',
+  styleUrl: './offers.component.css'
 })
-export class HomeComponent implements OnInit {
+export class OffersComponent implements OnInit {
 
   isLoading = true;
 
@@ -31,7 +30,7 @@ export class HomeComponent implements OnInit {
 
     this.isLoading = true;
 
-    this._productService.getAllProduct(
+    this._productService.getProductinOffer(
       10,
       1,
       this.filters.categoryId,
@@ -41,7 +40,6 @@ export class HomeComponent implements OnInit {
         next: (response) => {
           this.allProducts = response.products;
           console.log(response);
-
           this.isLoading = false;
       },
       error: (error) => {

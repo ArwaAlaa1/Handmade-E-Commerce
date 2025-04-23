@@ -33,6 +33,8 @@ namespace ECommerce.Controllers
             if (minPrice.HasValue && maxPrice.HasValue && minPrice > maxPrice)
                 return BadRequest("Invalid price range. The min price must be less than or equal to the max price.");
 
+            var totalCount = await productRepository.GetFilteredProductsCount(categoryId, maxPrice, minPrice);
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
             var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, categoryId, maxPrice, minPrice);
             if (products == null || !products.Any())
                 return NotFound(new { message = "No products found." });
@@ -92,7 +94,13 @@ namespace ECommerce.Controllers
                 };
             });
 
-            return Ok(allProducts);
+            //return Ok(allProducts);
+            return Ok(new
+            {
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                Products = allProducts
+            });
         }
 
         [HttpGet("GetProductsByCategory")]
@@ -106,6 +114,8 @@ namespace ECommerce.Controllers
             var category = await _unitOfWork.Repository<Category>().GetByIdAsync(categoryId);
             if (category == null)
                 return NotFound(new { message = $"Category with ID {categoryId} not found." });
+            var totalCount = await productRepository.GetFilteredProductsCount(categoryId, null, null);
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
             var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, categoryId, null, null);
             if (products == null || !products.Any())
@@ -145,7 +155,12 @@ namespace ECommerce.Controllers
                 };
             });
 
-            return Ok(productList);
+            return Ok(new
+            {
+                TotalCount=totalCount,
+                TotalPage =totalPages,
+                Products=productList
+            });
         }
 
         [HttpGet("GetAllWithOffers")]
@@ -172,6 +187,9 @@ namespace ECommerce.Controllers
                 if (category == null)
                     return NotFound(new { message = $"Category with ID {categoryId} not found." });
             }
+
+            var totalCount = await productRepository.GetProductsWithOfferCount(categoryId, maxPrice, minPrice);
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
             var products = await productRepository.GetProductsWithOffer(pageSize, pageIndex, categoryId, maxPrice, minPrice);
             if (products == null || !products.Any())
                 return NotFound(new { message = "No products found." });
@@ -207,64 +225,139 @@ namespace ECommerce.Controllers
                 }).ToList() ?? new List<SizeDTO>()
             });
 
-            return Ok(allProducts);
+            return Ok(new
+            {
+                TotalCount=totalCount,
+                TotalPage=totalPages,
+                Products=allProducts
+            });
         }
-        
-        [HttpGet("GetProductsWithActiveOffers")]
+
+        /*[HttpGet("GetProductsWithActiveOffers")]
         public async Task<IActionResult> GetProductsWithActiveOffers(int pageSize, int pageIndex)
         {
             var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, null, null, null);
 
-            var activeOfferProducts = products
-         .Where(p => p.Sales.Any(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
-         .Select(p =>
-         {
-             var currentSale = p.Sales.FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+             var activeOfferProducts = products
+          .Where(p => p.Sales.Any(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
+          .Select(p =>
+          {
+              var currentSale = p.Sales.FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
 
-             decimal basePrice = p.Cost;
-             decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
-             decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
-             decimal finalPrice = sellingPrice - discount;
+              decimal basePrice = p.Cost;
+              decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
+              decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
+              decimal finalPrice = sellingPrice - discount;
 
-             return new
-             {
-                 Id = p.Id,
-                 Name = p.Name,
-                 Description = p.Description,
-                 //BasePrice = basePrice,
-                 SellingPrice = sellingPrice,
-                 DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
-                 SalePercent = currentSale?.Percent,
-                 Category = new
-                 {
-                     Id = p.Category.Id,
-                     Name = p.Category.Name
-                 },
-                 Offer = new
-                 {
-                     Id = currentSale?.Id,
-                     StartDate = currentSale?.StartDate,
-                     EndDate = currentSale?.EndDate,
-                     Discount = currentSale?.Percent
-                 },
-                 Photos = p.ProductPhotos
-                     .Where(photo => !photo.IsDeleted)
-                     .Select(photo => new
-                     {
-                         Id = photo.Id,
-                         Url = photo.PhotoLink
-                     }).ToList(),
-                 Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
-                 Sizes = p.ProductSizes?.Select(s => new SizeDTO
-                 {
-                     Name = s.Size,
-                     ExtraCost = s.ExtraCost
-                 }).ToList() ?? new List<SizeDTO>()
-             };
-         });
+              return new
+              {
+                  Id = p.Id,
+                  Name = p.Name,
+                  Description = p.Description,
+                  //BasePrice = basePrice,
+                  SellingPrice = sellingPrice,
+                  DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
+                  SalePercent = currentSale?.Percent,
+                  Category = new
+                  {
+                      Id = p.Category.Id,
+                      Name = p.Category.Name
+                  },
+                  Offer = new
+                  {
+                      Id = currentSale?.Id,
+                      StartDate = currentSale?.StartDate,
+                      EndDate = currentSale?.EndDate,
+                      Discount = currentSale?.Percent
+                  },
+                  Photos = p.ProductPhotos
+                      .Where(photo => !photo.IsDeleted)
+                      .Select(photo => new
+                      {
+                          Id = photo.Id,
+                          Url = photo.PhotoLink
+                      }).ToList(),
+                  Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+                  Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                  {
+                      Name = s.Size,
+                      ExtraCost = s.ExtraCost
+                  }).ToList() ?? new List<SizeDTO>()
+              };
+          });
+
+           
+            return Ok(new
+            {
+                Products = activeOfferProducts
+            });
 
 
-            return Ok(activeOfferProducts);
+        }*/
+
+        [HttpGet("GetProductsWithActiveOffers")]
+        public async Task<IActionResult> GetProductsWithActiveOffers(int pageSize, int pageIndex)
+        {
+            
+            var products = await productRepository.GetProductsWithFilters( pageSize,pageIndex, null, null, null);
+            var activeOfferQuery = products
+                .Where(p => p.Sales.Any(s => s.StartDate.Date <= DateTime.Today && s.EndDate.Date >= DateTime.Today));
+            
+            int totalCount = activeOfferQuery.Count();
+            int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            var pagedProducts = activeOfferQuery
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Select(p =>
+                {
+                    var currentSale = p.Sales
+                        .FirstOrDefault(s => s.StartDate.Date <= DateTime.Today && s.EndDate.Date >= DateTime.Today);
+
+                    decimal basePrice = p.Cost;
+                    decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
+                    decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
+                    decimal finalPrice = sellingPrice - discount;
+
+                    return new
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Description = p.Description,
+                        SellingPrice = sellingPrice,
+                        DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
+                        SalePercent = currentSale?.Percent,
+                        Category = new
+                        {
+                            Id = p.Category.Id,
+                            Name = p.Category.Name
+                        },
+                        Offer = currentSale == null ? null : new
+                        {
+                            Id = currentSale.Id,
+                            StartDate = currentSale.StartDate,
+                            EndDate = currentSale.EndDate,
+                            Discount = currentSale.Percent
+                        },
+                        Photos = p.ProductPhotos
+                            .Where(photo => !photo.IsDeleted)
+                            .Select(photo => new { photo.Id, Url = photo.PhotoLink }).ToList(),
+                        Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+                        Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                        {
+                            Name = s.Size,
+                            ExtraCost = s.ExtraCost
+                        }).ToList() ?? new List<SizeDTO>()
+                    };
+                }).ToList();
+
+           
+            return Ok(new
+            {
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                Products = pagedProducts
+            });
         }
 
         [HttpGet("GetProductByIdWithOffer/{id}")]
@@ -338,8 +431,8 @@ namespace ECommerce.Controllers
             return Ok(productDetails);
         }
 
-        [HttpGet("GetProductsByDiscountPercentage")]
-        public async Task<IActionResult> GetProductsByDiscountPercentage(int discountPercentage, int pageSize, int pageIndex)
+        [HttpGet("GetProductsByDiscountPercentage0")]
+        public async Task<IActionResult> GetProductsByDiscountPercentage0(int discountPercentage, int pageSize, int pageIndex)
         {
 
             if (discountPercentage < 0 || discountPercentage > 100)
@@ -355,11 +448,92 @@ namespace ECommerce.Controllers
 
 
             var discountedProducts = products
+               .Where(p => p.Sales
+                   .Any(s => s.Percent == discountPercentage && !p.IsDeleted && s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
+               .Select(p =>
+               {
+                   var currentSale = p.Sales
+                       .FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today && s.Percent == discountPercentage);
+                   decimal basePrice = p.Cost;
+                   decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
+                   decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
+                   decimal finalPrice = sellingPrice - discount;
+
+                   return new
+                   {
+                       Id = p.Id,
+                       Name = p.Name,
+                       Description = p.Description,
+                       SellingPrice = sellingPrice,
+                       DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
+                       SalePercent = currentSale?.Percent,
+                       Category = new
+                       {
+                           Id = p.Category.Id,
+                           Name = p.Category.Name
+                       },
+                       Offer = new
+                       {
+                           Id = currentSale?.Id,
+                           StartDate = currentSale?.StartDate,
+                           EndDate = currentSale?.EndDate,
+                           Discount = currentSale?.Percent
+                       },
+                       Photos = p.ProductPhotos
+                           .Where(photo => !photo.IsDeleted)
+                           .Select(photo => new { photo.Id, Url = photo.PhotoLink }).ToList(),
+                       Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+                       Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                       {
+                           Name = s.Size,
+                           ExtraCost = s.ExtraCost
+                       }).ToList() ?? new List<SizeDTO>()
+                   };
+               }).ToList();
+
+
+            if (!discountedProducts.Any())
+                return NotFound(new { message = $"No products found with a discount of {discountPercentage}% or more." });
+            var totalCount = discountedProducts.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var pagedProducts = discountedProducts
+               .Skip((pageIndex - 1) * pageSize)
+               .Take(pageSize)
+               .ToList();
+            return Ok(new
+            {
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                Products = pagedProducts
+            });
+        }
+
+       
+
+        [HttpGet("GetProductsByDiscountPercentage")]
+        public async Task<IActionResult> GetProductsByDiscountPercentage(int discountPercentage, int pageSize, int pageIndex)
+        {
+            if (discountPercentage < 0 || discountPercentage > 100)
+                return BadRequest("Invalid discount percentage. It must be between 0 and 100.");
+            if (pageSize <= 0 || pageIndex <= 0)
+                return BadRequest("Invalid pagination parameters. Both pageSize and pageIndex must be greater than 0.");
+
+            
+            var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, null, null, null);
+
+            
+            if (products == null || !products.Any())
+                return NotFound(new { message = "No products found." });
+
+            
+            var discountedProducts = products
                 .Where(p => p.Sales
-                    .Any(s => s.Percent >= discountPercentage && !p.IsDeleted && s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
+                    .Any(s => s.Percent == discountPercentage && !p.IsDeleted && s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
                 .Select(p =>
                 {
-                    var currentSale = p.Sales.FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today && s.Percent >= discountPercentage);
+                    var currentSale = p.Sales
+                        .FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today && s.Percent == discountPercentage);
                     decimal basePrice = p.Cost;
                     decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
                     decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
@@ -369,19 +543,58 @@ namespace ECommerce.Controllers
                     {
                         Id = p.Id,
                         Name = p.Name,
-                        //BasePrice = basePrice,
+                        Description = p.Description,
                         SellingPrice = sellingPrice,
                         DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
-                        SalePercent = currentSale?.Percent
+                        SalePercent = currentSale?.Percent,
+                        Category = new
+                        {
+                            Id = p.Category.Id,
+                            Name = p.Category.Name
+                        },
+                        Offer = new
+                        {
+                            Id = currentSale?.Id,
+                            StartDate = currentSale?.StartDate,
+                            EndDate = currentSale?.EndDate,
+                            Discount = currentSale?.Percent
+                        },
+                        Photos = p.ProductPhotos
+                            .Where(photo => !photo.IsDeleted)
+                            .Select(photo => new { photo.Id, Url = photo.PhotoLink }).ToList(),
+                        Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+                        Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                        {
+                            Name = s.Size,
+                            ExtraCost = s.ExtraCost
+                        }).ToList() ?? new List<SizeDTO>()
                     };
-                });
+                }).ToList();
 
-
+            // التحقق من وجود منتجات بعد الفلتر
             if (!discountedProducts.Any())
-                return NotFound(new { message = $"No products found with a discount of {discountPercentage}% or more." });
+                return NotFound(new { message = $"No products found with a discount of {discountPercentage}%." });
 
-            return Ok(discountedProducts);
+            // حساب إجمالي المنتجات والصفحات
+            var totalCount = discountedProducts.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            // تقسيم المنتجات للصفحات المطلوبة
+            var pagedProducts = discountedProducts
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // إرجاع النتيجة
+            return Ok(new
+            {
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                Products = pagedProducts
+            });
         }
+
+
 
     }
 }

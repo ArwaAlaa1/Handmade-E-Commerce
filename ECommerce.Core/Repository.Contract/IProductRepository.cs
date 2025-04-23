@@ -17,5 +17,8 @@ namespace ECommerce.Core.Repository.Contract
 
         Task<Product> GetProductByIDWithOffer(int id);
 
+        Task<int> GetFilteredProductsCount(int? categoryId, int? maxPrice, int? minPrice);
+        Task<int> GetProductsWithOfferCount(int? categoryId, int? maxPrice, int? minPrice);
+
     }
 }

@@ -86,5 +86,44 @@ namespace ECommerce.Repository.Repositories
             return product;
         }
 
+        public async Task<int> GetFilteredProductsCount(int? categoryId, int? maxPrice, int? minPrice)
+        {
+            var query = _context.Products
+                                .Where(p => !p.IsDeleted);
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Cost >= minPrice.Value);
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Cost <= maxPrice.Value);
+            return await query.CountAsync();
+        }
+
+        public  async Task<int> GetProductsWithOfferCount(int? categoryId, int? maxPrice, int? minPrice)
+        {
+            var query = _context.Products
+         .Include(p => p.Sales)
+         .AsQueryable();
+
+
+            //query = query.Where(p => p.Sales.Any(s => s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now));
+            query = query.Where(p => p.Sales.Any(s => !s.IsDeleted)); 
+
+
+
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+           
+            if (minPrice.HasValue)
+                query = query.Where(p => (p.Cost + (p.Cost * p.AdminProfitPercentage / 100)) >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(p => (p.Cost + (p.Cost * p.AdminProfitPercentage / 100)) <= maxPrice.Value);
+
+           
+            return await query.CountAsync();
+
+        }
     }
 }

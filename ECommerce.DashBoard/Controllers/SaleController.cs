@@ -23,20 +23,25 @@ namespace ECommerce.DashBoard.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if(User.IsInRole(SD.AdminRole))
+            if (User.IsInRole(SD.AdminRole))
             {
-                var sales = await _unitOfWork.Repository<Sale>().GetAllAsync(includeProperties: "Product");
+                var sales = await _unitOfWork.Repository<Sale>()
+                    .GetAllAsync(
+                        s => s.EndDate >= DateTime.Now,  // Filter out expired sales
+                        includeProperties: "Product"
+                    );
                 return View(sales);
             }
             else
             {
                 var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                var tradersale = await _unitOfWork.Repository<Sale>()
-                    .GetAllAsync(s => s.Product.SellerId == userid, includeProperties: "Product");
-
-                return View(tradersale);
+                var traderSales = await _unitOfWork.Repository<Sale>()
+                    .GetAllAsync(
+                        s => s.Product.SellerId == userid && s.EndDate >= DateTime.Now,
+                        includeProperties: "Product"
+                    );
+                return View(traderSales);
             }
-            
         }
 
         // GET: Sale/Create

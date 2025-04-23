@@ -1,1 +1,194 @@
-<p>edit-address works!</p>
+<!-- Edit Address Form -->
+<section class="section-register padding-tb-50">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div
+          class="section-title bb-center"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          <div class="section-detail text-center mb-4">
+            <h2 class="bb-title"><span>Edit Address</span></h2>
+            <p>Edit your shipping address details below</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div
+          class="bb-register"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          <div class="col-12">
+            <form [formGroup]="editAddressForm" (ngSubmit)="onSubmit()">
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>Full Name*</label>
+                <input
+                  type="text"
+                  autocomplete="on"
+                  formControlName="fullName"
+                  placeholder="Enter your full name"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      editAddressForm.get('fullName')?.invalid &&
+                      editAddressForm.get('fullName')?.touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    editAddressForm.get('fullName')?.invalid &&
+                    editAddressForm.get('fullName')?.touched
+                  "
+                >
+                  Full Name is required.
+                </div>
+              </div>
+
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>Phone Number*</label>
+                <input
+                  type="text"
+                  autocomplete="on"
+                  formControlName="phoneNumber"
+                  placeholder="Enter your phone number"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      editAddressForm.get('phoneNumber')?.invalid &&
+                      editAddressForm.get('phoneNumber')?.touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    editAddressForm.get('phoneNumber')?.invalid &&
+                    editAddressForm.get('phoneNumber')?.touched
+                  "
+                >
+                  Phone Number is required.
+                </div>
+              </div>
+
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>Region*</label>
+                <input
+                  type="text"
+                  autocomplete="on"
+                  formControlName="region"
+                  placeholder="Enter your region"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      editAddressForm.get('region')?.invalid &&
+                      editAddressForm.get('region')?.touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    editAddressForm.get('region')?.invalid &&
+                    editAddressForm.get('region')?.touched
+                  "
+                >
+                  Region is required.
+                </div>
+              </div>
+
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>City*</label>
+                <input
+                  type="text"
+                  autocomplete="on"
+                  formControlName="city"
+                  placeholder="Enter your city"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      editAddressForm.get('city')?.invalid &&
+                      editAddressForm.get('city')?.touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    editAddressForm.get('city')?.invalid &&
+                    editAddressForm.get('city')?.touched
+                  "
+                >
+                  City is required.
+                </div>
+              </div>
+
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>Country*</label>
+                <input
+                  type="text"
+                  autocomplete="on"
+                  formControlName="country"
+                  placeholder="Enter your country"
+                  class="form-control"
+                  [ngClass]="{
+                    'is-invalid':
+                      editAddressForm.get('country')?.invalid &&
+                      editAddressForm.get('country')?.touched
+                  }"
+                />
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    editAddressForm.get('country')?.invalid &&
+                    editAddressForm.get('country')?.touched
+                  "
+                >
+                  Country is required.
+                </div>
+              </div>
+
+              <div class="bb-register-wrap bb-register-width-50">
+                <label>Address Details*</label>
+                <textarea
+                  formControlName="addressDetails"
+                  placeholder="Enter your address details"
+                  class="form-control"
+                  rows="3"
+                  type="text"
+                  autocomplete="on"
+                  [ngClass]="{
+                    'is-invalid':
+                      editAddressForm.get('addressDetails')?.invalid &&
+                      editAddressForm.get('addressDetails')?.touched
+                  }"
+                ></textarea>
+                <div
+                  class="invalid-feedback"
+                  *ngIf="
+                    editAddressForm.get('addressDetails')?.invalid &&
+                    editAddressForm.get('addressDetails')?.touched
+                  "
+                >
+                  Address Details are required.
+                </div>
+              </div>
+
+              <div class="bb-register-button">
+                <button class="bb-btn-2 w-100" type="submit">
+                  <span *ngIf="isLoading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                  </span>
+                  <span *ngIf="!isLoading">Update Address</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Edit Address Form -->

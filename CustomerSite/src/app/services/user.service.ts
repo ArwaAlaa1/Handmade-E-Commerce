@@ -41,18 +41,33 @@ export class UserService {
   getUserProfile(): Observable<any>
   {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this._HttpClient.get(`${environment.baseURL}User/GetUser/${this.email}`, { headers });
+    return this._HttpClient.get(`${environment.baseURL}User/GetUser`, { headers : this.getAuthHeaders() });
   }
 
   EditProfile( credentials: { userName: string, phone: string }): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this._HttpClient.post(`${environment.baseURL}User/UpdateUserData?email=${this.email}`, credentials, { headers });
+    return this._HttpClient.put(`${environment.baseURL}User/UpdateUserData`, credentials, { headers : this.getAuthHeaders()});
   }
 
-  ChangePassword( credentials: { oldPassword: string, newPassword: string, confirmPassword: string }): Observable<any> {
+  AddImage(formData: any): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this._HttpClient.post(`${environment.baseURL}Account/change_password`, credentials, { headers: this.getAuthHeaders() });
+    return this._HttpClient.post(`${environment.baseURL}User/AddUserImage`, formData ,
+      { responseType: 'text', headers : this.getAuthHeaders() } );
   }
 
+  AddAddress( credentials: { fullName: string, phoneNumber: string, region: string, city: string, country: string, addressDetails: string }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.post(`${environment.baseURL}User/AddAddress`, credentials, { headers: this.getAuthHeaders() });
+  }
+
+  EditAddress( id : number, credentials: { fullName: string, phoneNumber: string, region: string, city: string, country: string, addressDetails: string }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.put(`${environment.baseURL}User/UpdateAddress?id=${id}`, credentials, { headers : this.getAuthHeaders() });
+  }
+
+  getAddress(id: number): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.get(`${environment.baseURL}User/GetAddress?id=${id}`, { headers : this.getAuthHeaders() });
+  }
 
 }

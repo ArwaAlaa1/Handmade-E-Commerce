@@ -27,12 +27,15 @@ export class EditProfileComponent implements OnInit {
   }
 
     ngOnInit(): void {
-      this._userService.getUserProfile()
-      .subscribe({
-        next: (response) => {
-          this.userData = response;
+      this._userService.getUserProfile().subscribe({
+        next: (user) => {
+          this.editForm.patchValue({
+            userName: user.userName,
+            phone: user.phoneNumber,
+          });
         },
         error: (error) => {
+          console.error('Error loading data:', error);
         }
       });
     }
@@ -61,8 +64,6 @@ export class EditProfileComponent implements OnInit {
       },
       error: (error) => {
         this.isLoading = false;
-        console.log(error);
-
         this.errorMessage = error.error.message;
       }
     });

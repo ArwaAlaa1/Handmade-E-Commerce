@@ -1,1 +1,65 @@
-<p>add-image works!</p>
+<section class="section-login padding-tb-50">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div
+          class="section-title bb-center"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          <div class="section-detail">
+            <h2 class="bb-title">Add <span>Profile Photo</span></h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+        <div
+          class="bb-login-contact"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="400"
+        >
+          <div *ngIf="errorMessage" class="text-center alert alert-danger">
+            {{ errorMessage }}
+          </div>
+          <form [formGroup]="addImageForm" (ngSubmit)="onSubmit()">
+            <div class="bb-login-wrap">
+              <label for="photo">Profile Photo*</label>
+              <input
+                type="file"
+                id="photo"
+                name="photo"
+                formControlName="photo"
+                placeholder="Enter Your Profile Photo"
+                class="form-control"
+                accept=".jpg, .png"
+                (change)="onFileSelected($event)"
+              />
+              <div
+                *ngIf="f['photo'].invalid && f['photo'].touched"
+                class="invalid-feedback"
+              >
+                <div *ngIf="f['photo'].errors?.['photo']">
+                  profile photo is required.
+                </div>
+                <div *ngIf="f['photo'].errors?.['invalidImageType']">
+                  Only .png and .jpg images are allowed!
+                </div>
+              </div>
+            </div>
+
+            <div class="bb-login-button">
+              <button class="bb-btn-2 w-100" type="submit">
+                <span *ngIf="isLoading">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </span>
+                <span *ngIf="!isLoading">Add Photo</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

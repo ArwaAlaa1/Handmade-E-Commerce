@@ -11,7 +11,8 @@ import { CommonModule } from '@angular/common';
 export class ProfileComponent implements OnInit {
 
   userData : any = {};
-  imageBaseUrl: string = `https://handmadee-commerce.runasp.net/images//`;
+  // imageBaseUrl: string = `https://handmadee-commerce.runasp.net/images//`;
+  imageBaseUrl: string = `https://localhost:44360/images//`;
 
   constructor(public _userService: UserService) { }
 

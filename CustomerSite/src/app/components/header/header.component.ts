@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth.service';
 export class HeaderComponent implements OnInit {
 
   isLogin: boolean = false;
-
+  userName: string = ''
   constructor(private _AuthService : AuthService) {
   }
 
@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit {
       next: (data) => {
         if (data) {
           this.isLogin = true;
+          this.userName = data.displayName
         }
         else
         {

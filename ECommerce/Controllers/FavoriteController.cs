@@ -1,5 +1,9 @@
 ﻿using ECommerce.Core;
+using ECommerce.Core.Models;
+using ECommerce.Services.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -11,26 +15,32 @@ namespace ECommerce.Controllers
     {
 
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<AppUser> _userManager;
 
-        public FavoriteController(IUnitOfWork unitOfWork)
+        public FavoriteController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
-       
 
-        [HttpPost("AddFavoriteToUser")]
-        public ActionResult AddFavorite(string userid,int productId)
+
+        [Authorize(Roles =SD.CustomerRole)]
+        [HttpPost("AddFavoriteToUser/{productId}")]
+        public ActionResult AddFavorite( int productId)
         {
-            var product=_unitOfWork.Favorites.AddFavoriteproducttoUser(productId, userid);
+            var userId = _userManager.GetUserId(User);
+            var product=_unitOfWork.Favorites.AddFavoriteproducttoUser(productId, userId);
             return Ok(product);
         }
 
-        [HttpDelete("DeleteFavorite/{userid}/{productId}")]
-        public async Task<ActionResult> DeleteFavorite(string userid,int productid) 
+        [Authorize(Roles = SD.CustomerRole)]
+        [HttpDelete("DeleteFavorite/{productId}")]
+        public async Task<ActionResult> DeleteFavorite( int productId) 
         {
-            if (string.IsNullOrEmpty(userid) || productid <= 0)
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId) || productId <= 0)
                 return BadRequest("User ID or Product ID cannot be null or empty.");
-            bool resut= await _unitOfWork.Favorites.RemoveFavoriteproducttoUser(productid,userid);
+            bool resut= await _unitOfWork.Favorites.RemoveFavoriteproducttoUser(productId, userId);
             if (resut)
             {
                 return Ok("Deleted Succesfully");

@@ -28,7 +28,7 @@ export class AuthService {
     };
 
     this._CookieService.set('userData', JSON.stringify(userData), {
-      expires: 7,
+      expires: 2,
       path: '/',
     });
 

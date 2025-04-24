@@ -48,6 +48,28 @@ export class HomeComponent implements OnInit {
         this.isLoading = false;
       }
     });
-
   }
+
+  toggleFavorite(product: any) {
+    product.IsFavorite = !product.IsFavorite;
+  }
+
+  addToFavorite(productId: number) {
+    this._productService.addToFav(productId).subscribe(() => {
+      const product = this.allProducts.find(c => c.id === productId);
+      if (product) {
+        product.IsFavorite = true;
+      }
+    });
+  }
+
+  deleteFromFavorite(productId : number) {
+    this._productService.deleteFromFav(productId).subscribe(() => {
+      const product = this.allProducts.find(c => c.id === productId);
+      if (product) {
+        product.IsFavorite = false;
+      }
+    });
+  }
+
 }

@@ -20,12 +20,15 @@ namespace ECommerce.Repository
 
         public IReviewRepository Reviews { get; private set; }
         public IFavoriteRepository Favorites { get; private set; }
-      
-        public UnitOfWork(ECommerceDbContext db)
+
+        public UnitOfWork(ECommerceDbContext db,
+                   IReviewRepository reviewRepository,
+                   IFavoriteRepository favoriteRepository)
         {
             _db = db;
+            Reviews = reviewRepository;
+            Favorites = favoriteRepository;
             _repositories = new Hashtable();
-            //Favorites = new FavoriteRepository( db);
         }
 
         public IGenericRepository<T> Repository<T>() where T : BaseEntity

@@ -1,5 +1,6 @@
 ﻿using ECommerce.Core;
 using ECommerce.Core.Models;
+using ECommerce.Repository.Repositories;
 using ECommerce.Services.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,18 +27,27 @@ namespace ECommerce.Controllers
 
         [Authorize(Roles =SD.CustomerRole)]
         [HttpPost("AddFavoriteToUser/{productId}")]
-        public ActionResult AddFavorite( int productId)
+        public async Task<ActionResult> AddFavorite(int productId)
         {
             var userId = _userManager.GetUserId(User);
-            var product=_unitOfWork.Favorites.AddFavoriteproducttoUser(productId, userId);
+
+            if(User.Identity.IsAuthenticated == false)
+            {
+                return Unauthorized("User is not authenticated.");
+            }
+            var product=await _unitOfWork.Favorites.AddFavoriteproducttoUser(productId, userId);
             return Ok(product);
         }
 
         [Authorize(Roles = SD.CustomerRole)]
         [HttpDelete("DeleteFavorite/{productId}")]
-        public async Task<ActionResult> DeleteFavorite( int productId) 
+        public async Task<ActionResult> DeleteFavorite(int productId) 
         {
-            var userId = _userManager.GetUserId(User);
+            var userId =  _userManager.GetUserId(User);
+            if (User.Identity.IsAuthenticated == false)
+            {
+                return Unauthorized("User is not authenticated.");
+            }
             if (string.IsNullOrEmpty(userId) || productId <= 0)
                 return BadRequest("User ID or Product ID cannot be null or empty.");
             bool resut= await _unitOfWork.Favorites.RemoveFavoriteproducttoUser(productId, userId);

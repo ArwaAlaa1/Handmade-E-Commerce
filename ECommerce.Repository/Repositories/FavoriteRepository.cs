@@ -13,18 +13,18 @@ namespace ECommerce.Repository.Repositories
     public class FavoriteRepository : GenericRepository<Favorite>, IFavoriteRepository
     {
         private readonly ECommerceDbContext _db;
-        private readonly UnitOfWork _unitOfWork;
-        public FavoriteRepository(ECommerceDbContext db, UnitOfWork unitOfWork) : base(db)
+       
+        public FavoriteRepository(ECommerceDbContext db) : base(db)
         {
             _db = db;
-            _unitOfWork = unitOfWork;
+           
         }
 
         public async Task<Product> AddFavoriteproducttoUser(int productid, string userid)
         {
-            productid = Convert.ToInt32(userid);
             var product = _db.Products.FirstOrDefault(p => p.Id == productid);
             var user=_db.Users.FirstOrDefault(p => p.Id == userid);
+            
             if (product == null || user == null)
             {
                 return new Product() { };
@@ -36,10 +36,13 @@ namespace ECommerce.Repository.Repositories
                     UserId = user.Id
                 };
             _db.Favorites.Add(favorite);
-               await _unitOfWork.SaveAsync();
+               await _db.SaveChangesAsync();
                return product;
-            
+
+           
         }
+        
+
         public async Task<bool> RemoveFavoriteproducttoUser(int productid, string userid)
         {
             var favorite= await _db.Favorites.FirstOrDefaultAsync(f => f.ProductId == productid && f.UserId == userid);
@@ -47,7 +50,7 @@ namespace ECommerce.Repository.Repositories
             {
 
                 _db.Favorites.Remove(favorite);
-                await _unitOfWork.SaveAsync();
+                await _db.SaveChangesAsync();
                 return true;
             }
             return false;

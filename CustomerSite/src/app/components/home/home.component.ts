@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,7 @@ import { CommonModule } from '@angular/common';
 export class HomeComponent implements OnInit {
 
   isLoading = true;
-
+  imageBaseUrl:string = environment.baseImageURL;
   allProducts: any[] = [];
 
   filters = {

@@ -76,6 +76,7 @@ namespace ECommerce.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
+                    AdditionalDetails = p.AdditionalDetails,
                     //BasePrice = basePrice,
                     SellingPrice = sellingPrice,
                     DiscountedPrice = discountedPrice,
@@ -173,6 +174,7 @@ namespace ECommerce.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
+                    AdditionalDetails = p.AdditionalDetails,
                     //BasePrice = basePrice,
                     SellingPrice = sellingPrice,
                     DiscountedPrice = discountedPrice,
@@ -244,6 +246,7 @@ namespace ECommerce.Controllers
             {
                 Name = p.Name,
                 Description = p.Description,
+                AdditionalDetails = p.AdditionalDetails,
                 sellingPrice = p.SellingPrice,
                 IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
                 Category = new
@@ -278,68 +281,6 @@ namespace ECommerce.Controllers
                 Products = allProducts
             });
         }
-
-        /*[HttpGet("GetProductsWithActiveOffers")]
-        public async Task<IActionResult> GetProductsWithActiveOffers(int pageSize, int pageIndex)
-        {
-            var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, null, null, null);
-
-             var activeOfferProducts = products
-          .Where(p => p.Sales.Any(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
-          .Select(p =>
-          {
-              var currentSale = p.Sales.FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
-
-              decimal basePrice = p.Cost;
-              decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
-              decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
-              decimal finalPrice = sellingPrice - discount;
-
-              return new
-              {
-                  Id = p.Id,
-                  Name = p.Name,
-                  Description = p.Description,
-                  //BasePrice = basePrice,
-                  SellingPrice = sellingPrice,
-                  DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
-                  SalePercent = currentSale?.Percent,
-                  Category = new
-                  {
-                      Id = p.Category.Id,
-                      Name = p.Category.Name
-                  },
-                  Offer = new
-                  {
-                      Id = currentSale?.Id,
-                      StartDate = currentSale?.StartDate,
-                      EndDate = currentSale?.EndDate,
-                      Discount = currentSale?.Percent
-                  },
-                  Photos = p.ProductPhotos
-                      .Where(photo => !photo.IsDeleted)
-                      .Select(photo => new
-                      {
-                          Id = photo.Id,
-                          Url = photo.PhotoLink
-                      }).ToList(),
-                  Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
-                  Sizes = p.ProductSizes?.Select(s => new SizeDTO
-                  {
-                      Name = s.Size,
-                      ExtraCost = s.ExtraCost
-                  }).ToList() ?? new List<SizeDTO>()
-              };
-          });
-
-           
-            return Ok(new
-            {
-                Products = activeOfferProducts
-            });
-
-
-        }*/
 
         [HttpGet("GetProductsWithActiveOffers")]
         public async Task<IActionResult> GetProductsWithActiveOffers(int pageSize, int pageIndex)
@@ -383,6 +324,7 @@ namespace ECommerce.Controllers
                         Id = p.Id,
                         Name = p.Name,
                         Description = p.Description,
+                        AdditionalDetails = p.AdditionalDetails,
                         SellingPrice = sellingPrice,
                         DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                         SalePercent = currentSale?.Percent,
@@ -459,6 +401,7 @@ namespace ECommerce.Controllers
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
+                AdditionalDetails = p.AdditionalDetails,
                 //BasePrice = basePrice,
                 SellingPrice = sellingPrice,
                 DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
@@ -550,6 +493,7 @@ namespace ECommerce.Controllers
                         Id = p.Id,
                         Name = p.Name,
                         Description = p.Description,
+                        AdditionalDetails = p.AdditionalDetails,
                         SellingPrice = sellingPrice,
                         DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                         SalePercent = currentSale?.Percent,
@@ -578,21 +522,21 @@ namespace ECommerce.Controllers
                     };
                 }).ToList();
 
-            // التحقق من وجود منتجات بعد الفلتر
+            
             if (!discountedProducts.Any())
                 return NotFound(new { message = $"No products found with a discount of {discountPercentage}%." });
 
-            // حساب إجمالي المنتجات والصفحات
+            
             var totalCount = discountedProducts.Count;
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-            // تقسيم المنتجات للصفحات المطلوبة
+            
             var pagedProducts = discountedProducts
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .ToList();
 
-            // إرجاع النتيجة
+            
             return Ok(new
             {
                 TotalCount = totalCount,

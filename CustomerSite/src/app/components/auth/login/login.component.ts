@@ -52,8 +52,7 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         this._authService.saveUserData(response);
         this.isLoading = false;
-        // this._router.navigate(['/home']);
-        window.location.href = '/home';
+        this._router.navigate(['/home']);
       },
       error: (error) => {
         this.isLoading = false;

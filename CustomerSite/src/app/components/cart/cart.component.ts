@@ -17,9 +17,9 @@ export class CartComponent {
   imageBaseUrl: string = `https://handmadee-commerce.runasp.net/images//`;
   isLogin: boolean = false;
    constructor(private _cookie:CookieService,private cartService: CartService,private _auth: AuthService) {
-  
+
     }
-  
+
     ngOnInit(): void {
       const storedData = this._auth.userData
       .subscribe({
@@ -30,7 +30,7 @@ export class CartComponent {
         error: (error) => {
         }
       });
-         
+
       if (this.userData) {
         this.token = this.userData.token;
         this.isLogin = true;
@@ -42,9 +42,9 @@ export class CartComponent {
           error: (err) => console.error('Error loading cart:', err)
         });
       }
-              
-          
-        
+
+
+
 
   }
 

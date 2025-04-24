@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -32,7 +33,8 @@ export class RegisterComponent {
     this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
-    constructor(private authService: AuthService) {
+    constructor(private authService: AuthService ,
+      private _Router : Router) {
     }
 
   passwordStrengthValidator(): ValidatorFn {
@@ -73,7 +75,7 @@ export class RegisterComponent {
       next: () => {
         this.isLoading = false;
         window.alert('Registration Successful! Please confirm your email before logging in.');
-        window.location.href = '/login';
+        this._Router.navigate([`login`]);
       },
       error: (error) => {
         this.isLoading = false;

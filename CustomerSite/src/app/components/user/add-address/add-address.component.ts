@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { AuthService } from '../../../services/auth.service';
+import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-address',
@@ -23,7 +23,7 @@ export class AddAddressComponent {
   errorMessage: string = '';
   isLoading: boolean = false;
 
-    constructor(private _userService: UserService) {
+    constructor(private _userService: UserService, private _router : Router) {
     }
 
   get f() {
@@ -46,7 +46,7 @@ export class AddAddressComponent {
       next: (response) => {
         this.isLoading = false;
         window.alert('Address added successfully!');
-        window.location.href = '/profile';
+        this._router.navigate([`/profile`])
       },
       error: (error) => {
         this.isLoading = false;

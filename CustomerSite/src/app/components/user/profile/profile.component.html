@@ -28,13 +28,13 @@
     </div>
 
     <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
-      <a class="btn btn-outline-warning" href="/editprofile">
+      <a class="btn btn-outline-warning" routerLink="/editprofile">
         <i class="bi bi-image"></i> Update Personal Data
       </a>
-      <a class="btn btn-outline-primary" href="/addimage">
+      <a class="btn btn-outline-primary" routerLink="/addimage">
         <i class="bi bi-image"></i> Update Profile Image
       </a>
-      <a class="btn btn-outline-success" href="/addAddrrss">
+      <a class="btn btn-outline-success" routerLink="/addAddrrss">
         <i class="bi bi-plus-circle"></i> Add New Address
       </a>
     </div>
@@ -65,7 +65,7 @@
             </p>
             <a
               class="btn btn-outline-warning"
-              href="/editAddress/{{ addr.id }}"
+              routerLink="/editAddress/{{ addr.id }}"
             >
               <i class="bi bi-pencil-square"></i> Edit Address
             </a>

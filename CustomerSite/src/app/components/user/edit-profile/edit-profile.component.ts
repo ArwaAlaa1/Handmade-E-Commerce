@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class EditProfileComponent implements OnInit {
   isLoading: boolean = false;
   userData: any = {};
 
-  constructor(private _userService: UserService) {
+  constructor(private _userService: UserService, private _Router : Router) {
   }
 
     ngOnInit(): void {
@@ -60,7 +60,7 @@ export class EditProfileComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         window.alert('Profile updated successfully');
-        window.location.href = '/profile';
+        this._Router.navigate(['/profile']);
       },
       error: (error) => {
         this.isLoading = false;

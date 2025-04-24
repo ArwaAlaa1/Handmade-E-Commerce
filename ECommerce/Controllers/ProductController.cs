@@ -401,7 +401,7 @@ namespace ECommerce.Controllers
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
-                AdditionalDetails = p.AdditionalDetails,
+                AdditionalDetails = product.AdditionalDetails,
                 //BasePrice = basePrice,
                 SellingPrice = sellingPrice,
                 DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,

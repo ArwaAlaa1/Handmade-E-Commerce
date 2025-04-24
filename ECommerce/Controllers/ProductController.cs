@@ -3,6 +3,9 @@ using ECommerce.Core;
 using Microsoft.AspNetCore.Mvc;
 using ECommerce.DTOs;
 using ECommerce.Core.Repository.Contract;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
+using ECommerce.Repository.Repositories;
 
 namespace ECommerce.Controllers
 {
@@ -12,11 +15,13 @@ namespace ECommerce.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IProductRepository productRepository;
+        private readonly UserManager<AppUser> userManager;
 
-        public ProductsController(IUnitOfWork unitOfWork, IProductRepository productRepository)
+        public ProductsController(IUnitOfWork unitOfWork, IProductRepository productRepository, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             this.productRepository = productRepository;
+            this.userManager = userManager;
         }
 
         [HttpGet("GetAllWithFilter")]
@@ -32,6 +37,18 @@ namespace ECommerce.Controllers
                 return BadRequest("Invalid min price. The min price must be greater than 0.");
             if (minPrice.HasValue && maxPrice.HasValue && minPrice > maxPrice)
                 return BadRequest("Invalid price range. The min price must be less than or equal to the max price.");
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var favoriteProductIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var favoriteProducts = await _unitOfWork.Favorites.GetAllAsync(f => f.UserId == userId);
+
+                if (favoriteProducts?.Any() == true)
+                {
+                    favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
+                }
+            }
 
             var totalCount = await productRepository.GetFilteredProductsCount(categoryId, maxPrice, minPrice);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
@@ -64,6 +81,7 @@ namespace ECommerce.Controllers
                     DiscountedPrice = discountedPrice,
                     IsOnSale = currentSale != null,
                     SalePercent = currentSale?.Percent,
+                    IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
                     Category = new
                     {
                         Id = p.Category.Id,
@@ -114,6 +132,19 @@ namespace ECommerce.Controllers
             var category = await _unitOfWork.Repository<Category>().GetByIdAsync(categoryId);
             if (category == null)
                 return NotFound(new { message = $"Category with ID {categoryId} not found." });
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var favoriteProductIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var favoriteProducts = await _unitOfWork.Favorites.GetAllAsync(f => f.UserId == userId);
+
+                if (favoriteProducts?.Any() == true)
+                {
+                    favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
+                }
+            }
             var totalCount = await productRepository.GetFilteredProductsCount(categoryId, null, null);
             var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
@@ -147,6 +178,7 @@ namespace ECommerce.Controllers
                     DiscountedPrice = discountedPrice,
                     IsOnSale = currentSale != null,
                     SalePercent = currentSale?.Percent,
+                    IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
                     Category = p.Category.Name,
                     Photos = p.ProductPhotos
                               .Where(photo => !photo.IsDeleted)
@@ -157,9 +189,9 @@ namespace ECommerce.Controllers
 
             return Ok(new
             {
-                TotalCount=totalCount,
-                TotalPage =totalPages,
-                Products=productList
+                TotalCount = totalCount,
+                TotalPage = totalPages,
+                Products = productList
             });
         }
 
@@ -188,6 +220,19 @@ namespace ECommerce.Controllers
                     return NotFound(new { message = $"Category with ID {categoryId} not found." });
             }
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var favoriteProductIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var favoriteProducts = await _unitOfWork.Favorites.GetAllAsync(f => f.UserId == userId);
+
+                if (favoriteProducts?.Any() == true)
+                {
+                    favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
+                }
+            }
+
             var totalCount = await productRepository.GetProductsWithOfferCount(categoryId, maxPrice, minPrice);
             var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
             var products = await productRepository.GetProductsWithOffer(pageSize, pageIndex, categoryId, maxPrice, minPrice);
@@ -200,6 +245,7 @@ namespace ECommerce.Controllers
                 Name = p.Name,
                 Description = p.Description,
                 sellingPrice = p.SellingPrice,
+                IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
                 Category = new
                 {
                     Id = p.Category.Id,
@@ -227,9 +273,9 @@ namespace ECommerce.Controllers
 
             return Ok(new
             {
-                TotalCount=totalCount,
-                TotalPage=totalPages,
-                Products=allProducts
+                TotalCount = totalCount,
+                TotalPage = totalPages,
+                Products = allProducts
             });
         }
 
@@ -298,11 +344,24 @@ namespace ECommerce.Controllers
         [HttpGet("GetProductsWithActiveOffers")]
         public async Task<IActionResult> GetProductsWithActiveOffers(int pageSize, int pageIndex)
         {
-            
-            var products = await productRepository.GetProductsWithFilters( pageSize,pageIndex, null, null, null);
+
+            var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, null, null, null);
             var activeOfferQuery = products
                 .Where(p => p.Sales.Any(s => s.StartDate.Date <= DateTime.Today && s.EndDate.Date >= DateTime.Today));
-            
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var favoriteProductIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var favoriteProducts = await _unitOfWork.Favorites.GetAllAsync(f => f.UserId == userId);
+
+                if (favoriteProducts?.Any() == true)
+                {
+                    favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
+                }
+            }
+
             int totalCount = activeOfferQuery.Count();
             int totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
@@ -327,6 +386,7 @@ namespace ECommerce.Controllers
                         SellingPrice = sellingPrice,
                         DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                         SalePercent = currentSale?.Percent,
+                        IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
                         Category = new
                         {
                             Id = p.Category.Id,
@@ -351,7 +411,7 @@ namespace ECommerce.Controllers
                     };
                 }).ToList();
 
-           
+
             return Ok(new
             {
                 TotalCount = totalCount,
@@ -374,6 +434,19 @@ namespace ECommerce.Controllers
             if (category == null)
                 return NotFound(new { message = $"Category with ID {product.CategoryId} not found." });
 
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var favoriteProductIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var favoriteProducts = await _unitOfWork.Favorites.GetAllAsync(f => f.UserId == userId);
+
+                if (favoriteProducts?.Any() == true)
+                {
+                    favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
+                }
+            }
+
             var currentSale = product.Sales.FirstOrDefault(s =>
                               s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
 
@@ -390,6 +463,7 @@ namespace ECommerce.Controllers
                 SellingPrice = sellingPrice,
                 DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                 SalePercent = currentSale?.Percent,
+                IsFavorite = userId != null && favoriteProductIds.Contains(product.Id),
                 Category = new
                 {
                     Id = product.Category.Id,
@@ -430,87 +504,7 @@ namespace ECommerce.Controllers
 
             return Ok(productDetails);
         }
-
-        [HttpGet("GetProductsByDiscountPercentage0")]
-        public async Task<IActionResult> GetProductsByDiscountPercentage0(int discountPercentage, int pageSize, int pageIndex)
-        {
-
-            if (discountPercentage < 0 || discountPercentage > 100)
-                return BadRequest("Invalid discount percentage. It must be between 0 and 100.");
-            if (pageSize <= 0 || pageIndex <= 0)
-                return BadRequest("Invalid pagination parameters. Both pageSize and pageIndex must be greater than 0.");
-
-
-            var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, null, null, null);
-
-            if (products == null || !products.Any())
-                return NotFound(new { message = "No products found." });
-
-
-            var discountedProducts = products
-               .Where(p => p.Sales
-                   .Any(s => s.Percent == discountPercentage && !p.IsDeleted && s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
-               .Select(p =>
-               {
-                   var currentSale = p.Sales
-                       .FirstOrDefault(s => s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today && s.Percent == discountPercentage);
-                   decimal basePrice = p.Cost;
-                   decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
-                   decimal discount = currentSale != null ? (sellingPrice * currentSale.Percent / 100) : 0;
-                   decimal finalPrice = sellingPrice - discount;
-
-                   return new
-                   {
-                       Id = p.Id,
-                       Name = p.Name,
-                       Description = p.Description,
-                       SellingPrice = sellingPrice,
-                       DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
-                       SalePercent = currentSale?.Percent,
-                       Category = new
-                       {
-                           Id = p.Category.Id,
-                           Name = p.Category.Name
-                       },
-                       Offer = new
-                       {
-                           Id = currentSale?.Id,
-                           StartDate = currentSale?.StartDate,
-                           EndDate = currentSale?.EndDate,
-                           Discount = currentSale?.Percent
-                       },
-                       Photos = p.ProductPhotos
-                           .Where(photo => !photo.IsDeleted)
-                           .Select(photo => new { photo.Id, Url = photo.PhotoLink }).ToList(),
-                       Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
-                       Sizes = p.ProductSizes?.Select(s => new SizeDTO
-                       {
-                           Name = s.Size,
-                           ExtraCost = s.ExtraCost
-                       }).ToList() ?? new List<SizeDTO>()
-                   };
-               }).ToList();
-
-
-            if (!discountedProducts.Any())
-                return NotFound(new { message = $"No products found with a discount of {discountPercentage}% or more." });
-            var totalCount = discountedProducts.Count;
-            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
-
-            var pagedProducts = discountedProducts
-               .Skip((pageIndex - 1) * pageSize)
-               .Take(pageSize)
-               .ToList();
-            return Ok(new
-            {
-                TotalCount = totalCount,
-                TotalPages = totalPages,
-                Products = pagedProducts
-            });
-        }
-
        
-
         [HttpGet("GetProductsByDiscountPercentage")]
         public async Task<IActionResult> GetProductsByDiscountPercentage(int discountPercentage, int pageSize, int pageIndex)
         {
@@ -519,14 +513,26 @@ namespace ECommerce.Controllers
             if (pageSize <= 0 || pageIndex <= 0)
                 return BadRequest("Invalid pagination parameters. Both pageSize and pageIndex must be greater than 0.");
 
-            
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var favoriteProductIds = new List<int>();
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var favoriteProducts = await _unitOfWork.Favorites.GetAllAsync(f => f.UserId == userId);
+
+                if (favoriteProducts?.Any() == true)
+                {
+                    favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
+                }
+            }
+          
             var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, null, null, null);
 
-            
+
             if (products == null || !products.Any())
                 return NotFound(new { message = "No products found." });
 
-            
+
             var discountedProducts = products
                 .Where(p => p.Sales
                     .Any(s => s.Percent == discountPercentage && !p.IsDeleted && s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today))
@@ -547,6 +553,7 @@ namespace ECommerce.Controllers
                         SellingPrice = sellingPrice,
                         DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                         SalePercent = currentSale?.Percent,
+                        IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
                         Category = new
                         {
                             Id = p.Category.Id,

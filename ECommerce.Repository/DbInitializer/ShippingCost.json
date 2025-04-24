@@ -1,0 +1,167 @@
+[
+  {
+    "Name": "Sharqia",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Zagazig",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Port Said",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Ismailia",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Suez",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "New Valley",
+    "Cost": 90,
+    "DeliveryTime": "4-5 days"
+  },
+  {
+    "Name": "Sharm El-Sheikh",
+    "Cost": 90,
+    "DeliveryTime": "4-5 days"
+  },
+  {
+    "Name": "Hurghada",
+    "Cost": 90,
+    "DeliveryTime": "4-5 days"
+  },
+  {
+    "Name": "Fayoum",
+    "Cost": 80,
+    "DeliveryTime": "3-4 days"
+  },
+  {
+    "Name": "Beni Suef",
+    "Cost": 80,
+    "DeliveryTime": "3-4 days"
+  },
+  {
+    "Name": "Minya",
+    "Cost": 80,
+    "DeliveryTime": "3-4 days"
+  },
+  {
+    "Name": "Assiut",
+    "Cost": 80,
+    "DeliveryTime": "3-4 days"
+  },
+  {
+    "Name": "Sohag",
+    "Cost": 80,
+    "DeliveryTime": "3-4 days"
+  },
+  {
+    "Name": "Qena",
+    "Cost": 80,
+    "DeliveryTime": "3-4 days"
+  },
+  {
+    "Name": "Luxor",
+    "Cost": 85,
+    "DeliveryTime": "3-4 days"
+  },
+  {
+    "Name": "Aswan",
+    "Cost": 85,
+    "DeliveryTime": "3-4 days"
+  },
+  {
+    "Name": "Cairo / Giza",
+    "Cost": 50,
+    "DeliveryTime": "1-2 days"
+  },
+  {
+    "Name": "New Cities",
+    "Cost": 50,
+    "DeliveryTime": "1-2 days"
+  },
+  {
+    "Name": "Sheikh Zayed / October",
+    "Cost": 50,
+    "DeliveryTime": "1-2 days"
+  },
+  {
+    "Name": "Gardens (October / Haram)",
+    "Cost": 50,
+    "DeliveryTime": "1-2 days"
+  },
+  {
+    "Name": "Badr / Madinaty / Shorouk",
+    "Cost": 50,
+    "DeliveryTime": "1-2 days"
+  },
+  {
+    "Name": "10th of Ramadan",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Alexandria",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Marsa Matrouh",
+    "Cost": 90,
+    "DeliveryTime": "4-5 days"
+  },
+  {
+    "Name": "Siwa",
+    "Cost": 100,
+    "DeliveryTime": "4-5 days"
+  },
+  {
+    "Name": "Menoufia",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Dakahlia",
+    "Cost": 75,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Tanta",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Damanhour",
+    "Cost": 75,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Beheira",
+    "Cost": 75,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Mansoura",
+    "Cost": 70,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Damietta",
+    "Cost": 75,
+    "DeliveryTime": "2-3 days"
+  },
+  {
+    "Name": "Kafr El-Sheikh",
+    "Cost": 75,
+    "DeliveryTime": "2-3 days"
+  }
+]

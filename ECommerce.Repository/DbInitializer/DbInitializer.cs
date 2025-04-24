@@ -2,6 +2,9 @@
 using ECommerce.DashBoard.Data;
 using Microsoft.AspNetCore.Identity;
 using ECommerce.Services.Utility;
+using ECommerce.Core.Models.Order;
+using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace ECommerce.Repository.DbInitializer
 {
@@ -22,6 +25,24 @@ namespace ECommerce.Repository.DbInitializer
         {
             try
             {
+                if (_dbcontext.ShippingCosts.Count()==0)
+                {
+                    if (_dbcontext.ShippingCosts.Count() == 0)
+                    {
+                        var costs = File.ReadAllText(".././ECommerce.Repository/DbInitializer/ShippingCost.json");
+                        var methods = JsonSerializer.Deserialize<List<ShippingCost>>(costs);
+                        if (methods.Count() > 0)
+                        {
+                            foreach (var item in methods)
+                            {
+                                _dbcontext.Set<ShippingCost>().Add(item);
+                            }
+                             _dbcontext.SaveChanges();
+
+                        }
+                    }
+                }
+
                 if (_dbcontext.Roles.Any())
                 {
                     _roleManager.CreateAsync(new IdentityRole(SD.AdminRole)).GetAwaiter().GetResult();

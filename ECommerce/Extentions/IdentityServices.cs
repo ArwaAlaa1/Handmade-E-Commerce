@@ -13,7 +13,11 @@ namespace ECommerce.Extentions
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddIdentity<AppUser, IdentityRole>()
+            services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            })
+
                .AddEntityFrameworkStores<ECommerceDbContext>()
                .AddDefaultTokenProviders();
             services.AddScoped<IAuthService, AuthService>();

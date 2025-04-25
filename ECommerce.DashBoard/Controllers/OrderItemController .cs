@@ -1,4 +1,5 @@
-﻿using ECommerce.Core;
+﻿using System.Linq;
+using ECommerce.Core;
 using ECommerce.Core.Models;
 using ECommerce.Core.Models.Order;
 using ECommerce.DashBoard.ViewModels;
@@ -17,7 +18,6 @@ namespace ECommerce.DashBoard.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<OrderItemController> _logger;
         private readonly UserManager<AppUser> _userManager;
-
         public OrderItemController(IUnitOfWork unitOfWork, ILogger<OrderItemController> logger, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
@@ -42,46 +42,28 @@ namespace ECommerce.DashBoard.Controllers
                     includeProperties: "OrderItems,shippingCost,OrderItems.Product"
                 );
 
-            if (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
-            {
-                allOrders = allOrders
-                    .Where(o => o.Status.ToString().ToLower() == status.ToLower())
-                    .ToList();
-            }
-           /* //var traderOrderStatus =OrderStatus.Pending;
-            //foreach (var order in allOrders)
+            //if (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
             //{
-
-            //    //var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-            //    var allInProgress = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.InProgress || oi.OrderItemStatus == ItemStatus.Cancelled);
-            //    var anyPending = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Pending);
-            //    var allReady = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready || oi.OrderItemStatus == ItemStatus.Cancelled);
-
-            //    if (allInProgress)
-            //        traderOrderStatus = OrderStatus.InProgress;
-            //    else if (anyPending)
-            //        traderOrderStatus = OrderStatus.Pending;
-            //    else if(allReady)
-            //        traderOrderStatus = OrderStatus.Ready;
-
-            //    await _unitOfWork.SaveAsync();
-            //}*/
-           
+            //    allOrders = allOrders
+            //        .Where(o => o.Status.ToString().ToLower() == status.ToLower())
+            //        .ToList();
+            //}
+          
             var orderListVM = allOrders.Select(o =>
             {
                 var traderOrderItems = o.OrderItems.Where(oi => oi.TraderId == userId).ToList();
                 var totalAmount = o.OrderItems
                     .Where(oi => oi.TraderId == userId && oi.Product != null)
-                    .Sum(oi => oi.Quantity * oi.Product.Cost);
+                    .Sum(oi => oi.Quantity * oi.Product.SellingPrice);
 
                 var shippingCost = o.shippingCost?.Cost ?? 0;
                 var traderOrderStatus = OrderStatus.Pending;
-                //var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-                var allInProgress = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.InProgress);
+
+                var allInProgress = traderOrderItems.All(oi => oi.OrderItemStatus == ItemStatus.InProgress);
 
                 var anyPending = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
 
-                var allReady = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Ready);
+                var allReady = traderOrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
 
                 var allCancelled = traderOrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Cancelled);
 
@@ -93,6 +75,8 @@ namespace ECommerce.DashBoard.Controllers
                     traderOrderStatus = OrderStatus.Ready;
                 else if (allCancelled)
                     traderOrderStatus = OrderStatus.Cancelled;
+                else
+                    traderOrderStatus = OrderStatus.Pending;
                 return new OrderListVM
                 {
                     OrderId = o.Id,
@@ -102,6 +86,13 @@ namespace ECommerce.DashBoard.Controllers
                     Status = traderOrderStatus
                 };
             }).ToList();
+
+            if (status.ToLower() != "all")
+            {
+                orderListVM = orderListVM
+                    .Where(vm => vm.Status.ToString().ToLower() == status.ToLower())
+                    .ToList();
+            }
 
             return View(orderListVM);
         }
@@ -149,46 +140,55 @@ namespace ECommerce.DashBoard.Controllers
                 _logger.LogWarning("User is not authenticated.");
                 return Unauthorized();
             }
-            var allOrders = await _unitOfWork.Repository<Core.Models.Order.Order>()
-               .GetByIdAsync(orderId);
-
-            //var orderItem = await _unitOfWork.Repository<OrderItem>()
-            //    .GetFirstOrDefaultAsync(o => o.Id == orderItemId);
-
-          
-
 
             var order = await _unitOfWork.Repository<Core.Models.Order.Order>()
-                .GetByIdWithIncludeAsync( orderId,"OrderItems");
+                .GetByIdWithIncludeAsync(orderId, "OrderItems"); /*"OrderItems,OrderItems.Product"*/
+            if (order == null)
+            {
+                _logger.LogWarning($"Order not found for OrderId: {orderId}");
+                return NotFound();
+            }
 
-            var items=order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-
+            var items = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
+            if (!items.Any())
+            {
+                _logger.LogWarning($"No order items found for TraderId: {userId} in OrderId: {orderId}");
+                return NotFound();
+            }
+            //if (items.Any(i => i.Product == null))
+            //{
+            //    _logger.LogError($"Null product found in OrderId: {orderId} for TraderId: {userId}");
+            //    return BadRequest("Some order items have missing products.");
+            //}
             foreach (var item in items)
             {
-                if (item == null)
-                    return NotFound();
-
-                if (item.OrderItemStatus== ItemStatus.Pending)
+                if (item.OrderItemStatus == ItemStatus.Pending)
                 {
                     item.OrderItemStatus = ItemStatus.InProgress;
-                    await _unitOfWork.SaveAsync();
                 }
             }
-            //if (order != null)
-            //{
-            //   // var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-            //    var allReady = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
-            //    var anyPending = order.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
+            var allInProgress = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.InProgress);
 
-            //    if (allReady)
-            //        order.Status = OrderStatus.Ready;
-            //    else if (anyPending)
-            //        order.Status = OrderStatus.Pending;
-            //    else
-            //        order.Status = OrderStatus.InProgress;
+            var anyPending = order.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
 
-            //    await _unitOfWork.SaveAsync();
-            //}
+            var allReady = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
+
+            var allCancelled = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Cancelled);
+
+            if (allCancelled)
+                order.Status = OrderStatus.Cancelled;
+            else if (allReady)
+                order.Status = OrderStatus.Ready;
+            else if (allInProgress)
+                order.Status = OrderStatus.InProgress;
+            else if (order.OrderItems.Any(o => o.OrderItemStatus == ItemStatus.InProgress) && order.OrderItems.Any(o=>o.OrderItemStatus == ItemStatus.Ready))
+                order.Status = OrderStatus.InProgress;
+            else if (anyPending)
+                order.Status = OrderStatus.Pending;
+            else
+                order.Status = OrderStatus.Pending;
+
+            await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Redirecting to ViewOrderItems with orderId: {order.Id}");
             return RedirectToAction("ViewOrderItems", new { orderId = order.Id });
@@ -206,25 +206,58 @@ namespace ECommerce.DashBoard.Controllers
                 _logger.LogWarning("User is not authenticated.");
                 return Unauthorized();
             }
-          
+
 
             var order = await _unitOfWork.Repository<Core.Models.Order.Order>()
-                .GetByIdWithIncludeAsync(orderId, "OrderItems");
+                .GetByIdWithIncludeAsync(orderId, "OrderItems"); /*"OrderItems,OrderItems.Product"*/
+            if (order == null)
+            {
+                _logger.LogWarning($"Order not found for OrderId: {orderId}");
+                return NotFound();
+            }
 
             var items = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-
+            if (!items.Any())
+            {
+                _logger.LogWarning($"No order items found for TraderId: {userId} in OrderId: {orderId}");
+                return NotFound();
+            }
+            //if (items.Any(i => i.Product == null))
+            //{
+            //    _logger.LogError($"Null product found in OrderId: {orderId} for TraderId: {userId}");
+            //    return BadRequest("Some order items have missing products.");
+            //}
             foreach (var item in items)
             {
-                if (item == null)
-                    return NotFound();
-
                 if (item.OrderItemStatus == ItemStatus.InProgress)
                 {
                     item.OrderItemStatus = ItemStatus.Ready;
-                    await _unitOfWork.SaveAsync();
                 }
             }
-           
+
+            var allInProgress = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.InProgress);
+
+            var anyPending = order.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
+
+            var allReady = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
+
+            var allCancelled = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Cancelled);
+
+            if (allCancelled)
+                order.Status = OrderStatus.Cancelled;
+            else if (allReady)
+                order.Status = OrderStatus.Ready;
+            else if (allInProgress)
+                order.Status = OrderStatus.InProgress;
+            else if (order.OrderItems.Any(o => o.OrderItemStatus == ItemStatus.InProgress) && order.OrderItems.Any(o => o.OrderItemStatus == ItemStatus.Ready))
+                order.Status = OrderStatus.InProgress;
+            else if (anyPending)
+                order.Status = OrderStatus.Pending;
+            else
+                order.Status = OrderStatus.Pending;
+
+            await _unitOfWork.SaveAsync();
+
 
             _logger.LogInformation($"Redirecting to ViewOrderItems with orderId: {order.Id}");
             return RedirectToAction("ViewOrderItems", new { orderId = order.Id });
@@ -267,6 +300,7 @@ namespace ECommerce.DashBoard.Controllers
 
             return View(viewModel);
         }
+
         [HttpPost]
         public async Task<IActionResult> Edit(OrderItemEditVM model)
         {
@@ -293,42 +327,50 @@ namespace ECommerce.DashBoard.Controllers
                 if (orderItem.Product == null)
                 {
                     _logger.LogError("Product is null for OrderItemId: " + model.OrderItemId);
+                    return BadRequest("Product not found for the order item.");
                 }
 
                
                 orderItem.OrderItemStatus = model.OrderItemStatus.Value;
-                await _unitOfWork.SaveAsync();
+                //await _unitOfWork.SaveAsync();
 
                
                 var order = await _unitOfWork.Repository<Core.Models.Order.Order>()
                     .GetFirstOrDefaultAsync(o => o.Id == orderItem.OrderId, includeProperties: "OrderItems");
 
-                if (order != null)
+                if (order == null)
                 {
-                   
-                    var traderOrderItems = order.OrderItems.Where(oi => oi.TraderId == userId).ToList();
-
-                   
-                    var allReady = traderOrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
-
-                   
-                    var anyPending = traderOrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
-
-                   
-                    if (allReady)
-                        order.Status = OrderStatus.Ready;
-                    else if (anyPending)
-                        order.Status = OrderStatus.Pending;
-                    else
-                        order.Status = OrderStatus.InProgress;
-
-                    await _unitOfWork.SaveAsync();
+                    _logger.LogWarning($"Order not found for OrderId: {orderItem.OrderId}");
+                    return NotFound();
                 }
+                var allInProgress = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.InProgress);
 
-                return RedirectToAction("ViewOrderItems", new { orderId = orderItem.OrderId });
+                var anyPending = order.OrderItems.Any(oi => oi.OrderItemStatus == ItemStatus.Pending);
+
+                var allReady = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Ready);
+
+                var allCancelled = order.OrderItems.All(oi => oi.OrderItemStatus == ItemStatus.Cancelled);
+
+                if (allCancelled)
+                    order.Status = OrderStatus.Cancelled;
+                else if (allReady)
+                    order.Status = OrderStatus.Ready;
+                else if (allInProgress)
+                    order.Status = OrderStatus.InProgress;
+                else if (order.OrderItems.Any(o => o.OrderItemStatus == ItemStatus.InProgress) && order.OrderItems.Any(o => o.OrderItemStatus == ItemStatus.Ready))
+                    order.Status = OrderStatus.InProgress;
+                else if (anyPending)
+                    order.Status = OrderStatus.Pending;
+                else
+                    order.Status = OrderStatus.Pending;
+
+                await _unitOfWork.SaveAsync();
+
+                    return RedirectToAction("ViewOrderItems", new { orderId = orderItem.OrderId });
+               
             }
 
-           
+
             foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
             {
                 _logger.LogError($"ModelState Error: {error.ErrorMessage}");

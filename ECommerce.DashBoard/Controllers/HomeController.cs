@@ -36,7 +36,7 @@ namespace ECommerce.DashBoard.Controllers
             var products = await _unitOfWork.Repository<Product>()
                 .GetAllAsync(includeProperties: "Category");
             var sales = await _unitOfWork.Repository<Sale>().GetAllAsync();
-            var orders = await _unitOfWork.Repository<OrderItem>().GetAllAsync(); // If you have an Order table
+            var orders = await _unitOfWork.Repository<OrderItem>().GetAllAsync(includeProperties: "Product"); // If you have an Order table
 
             var topProducts = orders
                 .GroupBy(o => o.Product.Name)

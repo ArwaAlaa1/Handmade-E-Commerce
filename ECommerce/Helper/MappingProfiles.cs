@@ -49,29 +49,14 @@ namespace ECommerce.Helper
                 .ForMember(dest => dest.PriceAfterSale, opt => opt.MapFrom(src => src.Product.DiscountedPrice))
                 .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Product.ProductPhotos.FirstOrDefault().PhotoLink)).ReverseMap();
 
-          //  CreateMap<OrderItem, OrderItemReturnDto>()
-          //     .ForMember(dest => dest.ItemId, opt => opt.MapFrom(src => src.Id))
-          //      .ForMember(dest => dest.ItemType, opt => opt.MapFrom(src =>
-          //            src.ProductItem.ItemType.GetType().GetMember(src.ProductItem.ItemType.ToString())
-          //                .FirstOrDefault()
-          //                .GetCustomAttribute<EnumMemberAttribute>().Value))
-          //       .ForMember(dest => dest.OrderItemStatus, opt => opt.MapFrom(src =>
-          //            src.OrderItemStatus.GetType().GetMember(src.OrderItemStatus.ToString())
-          //                .FirstOrDefault()
-          //                .GetCustomAttribute<EnumMemberAttribute>().Value))
-          //       .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductItem.ProductId))
-          //     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProductItem.Name))
-          //     .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.ProductItem.Price))
-          //     .ForMember(dest => dest.PriceAfterSale, opt => opt.MapFrom(src => src.ProductItem.PriceAfterSale))
-          //     .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.ProductItem.Photo))
-          //      .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
-          //      .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.ProductItem.Color))
-          //.ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.ProductItem.Size))
-          //.ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.ProductItem.Text))
-          //.ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.ProductItem.Date))
-          //.ForMember(dest => dest.FilePdf, opt => opt.MapFrom(src => src.ProductItem.FilePdf)).ReverseMap();
-
-
+        
+            
+            CreateMap<ShippingCost,ShippingCostDto>()
+                .ForMember(dest=>dest.Id,opt=>opt.MapFrom(src=>src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                 .ForMember(dest => dest.DeliveryTime, opt => opt.MapFrom(src => src.DeliveryTime))
+                  .ForMember(dest => dest.Cost, opt => opt.MapFrom(src => src.Cost))
+                .ReverseMap();
         }
     }
 }

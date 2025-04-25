@@ -1,9 +1,13 @@
-﻿using ECommerce.Core;
+﻿using System.Security.Claims;
+using ECommerce.Core;
+using ECommerce.Core.Models;
 using ECommerce.Core.Models.Order;
 using ECommerce.DashBoard.ViewModels;
 using ECommerce.Services.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace ECommerce.DashBoard.Controllers
@@ -12,10 +16,12 @@ namespace ECommerce.DashBoard.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<OrderController> _logger;
-        public OrderController(IUnitOfWork unitOfWork, ILogger<OrderController> logger)
+        private readonly UserManager<AppUser> userManager;
+        public OrderController(IUnitOfWork unitOfWork, ILogger<OrderController> logger, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
+            this.userManager = userManager;
         }
 
         [Authorize(Roles = SD.AdminRole)]
@@ -93,13 +99,18 @@ namespace ECommerce.DashBoard.Controllers
             {
                 _logger.LogWarning($"Null product found in OrderId: {id}");
             }
+
+            var traderIds = order.OrderItems.Select(oi => oi.TraderId).Distinct().ToList();
+            var traders = await userManager.Users
+                .Where(u => traderIds.Contains(u.Id))
+                .ToDictionaryAsync(u => u.Id, u => u.UserName);
             var orderVM = new OrderDetailsVM
             {
                 OrderId = order.Id,
                 CustomerEmail = order.CustomerEmail,
                 TotalAmount = order.OrderItems
-                    .Where(oi => oi.Product != null)
-                    .Sum(oi => oi.Product.SellingPrice * oi.Quantity) + (order.shippingCost?.Cost ?? 0),
+            .Where(oi => oi.Product != null)
+            .Sum(oi => oi.Product.SellingPrice * oi.Quantity) + (order.shippingCost?.Cost ?? 0),
                 OrderDate = order.OrderDate,
                 Status = order.Status,
                 ShippingCost = order.shippingCost?.Cost ?? 0,
@@ -108,7 +119,12 @@ namespace ECommerce.DashBoard.Controllers
                     ProductName = oi.Product?.Name,
                     Quantity = oi.Quantity,
                     ProductCost = oi.Product?.SellingPrice ?? 0,
-                    TotalCost = (oi.Product?.SellingPrice ?? 0) * oi.Quantity
+                    TotalCost =(oi.Product?.SellingPrice ?? 0) * oi.Quantity ,
+                    TraderName = traders.GetValueOrDefault(oi.TraderId, "Unknown Trader"),
+                    OrderItemStatus = oi.OrderItemStatus,
+                    CustomizeInfo = oi.CustomizeInfo,
+                    Color = oi.Color,
+                    Size = oi.Size
                 }).ToList()
             };
 

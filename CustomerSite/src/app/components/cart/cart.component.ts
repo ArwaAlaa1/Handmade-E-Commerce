@@ -1,3 +1,4 @@
+import { environment } from './../../../environments/environment.development';
 import { ShippingService } from './../../services/shipping.service';
 import { ChangeDetectorRef, Component, NgModule } from '@angular/core';
 import { Router } from '@angular/router';
@@ -19,7 +20,8 @@ export class CartComponent {
   cartData: Cart= {} as Cart;
  token: string = '';
  userData: any = null;
-  imageBaseUrl: string = `https://handmadee-commerce.runasp.net/images//`;
+  // imageBaseUrl: string = `https://handmadee-commerce.runasp.net/images//`;
+  imageBaseUrl: string = `${environment.baseImageURL}images/`;
   isLogin: boolean = false;
   // deliveryCost: number = 0;
    constructor(private _shipCost:ShippingService,private cdr: ChangeDetectorRef,private _cookie:CookieService,private cartService: CartService,private _auth: AuthService) {
@@ -74,13 +76,14 @@ export class CartComponent {
         console.log('Item removed:', res);
         this.cartData = res;
 
-        this.cartService.getCartById().subscribe({
-          next: (res) => {
-            console.log('Cart data:', res);
-            this.cartData = res;
-          },
-          error: (err) => console.error('Error loading cart:', err)
-        });
+        // this.cartData.cartItems = this.cartData.cartItems.filter((item: any) => item.itemId !== itemId);
+        // this.cartService.getCartById().subscribe({
+        //   next: (res) => {
+        //     console.log('Cart data:', res);
+        //     this.cartData = res;
+        //   },
+        //   error: (err) => console.error('Error loading cart:', err)
+        // });
        
      
         this.cartData.cartItems = [...this.cartData.cartItems];

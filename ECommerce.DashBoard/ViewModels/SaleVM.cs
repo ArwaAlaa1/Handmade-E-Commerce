@@ -12,10 +12,10 @@ namespace ECommerce.DashBoard.ViewModels
         [Required, Range(1, 100)]
         public int Percent { get; set; }
 
-        [Required, DataType(DataType.Date)]
+        [Required, DataType(DataType.DateTime)]
         public DateTime StartDate { get; set; }
 
-        [Required, DataType(DataType.Date)]
+        [Required, DataType(DataType.DateTime)]
         public DateTime EndDate { get; set; }
 
         [Required]

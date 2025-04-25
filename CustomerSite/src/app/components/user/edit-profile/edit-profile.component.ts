@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 
 @Component({
@@ -23,16 +23,19 @@ export class EditProfileComponent implements OnInit {
   isLoading: boolean = false;
   userData: any = {};
 
-  constructor(private _userService: UserService) {
+  constructor(private _userService: UserService, private _Router : Router) {
   }
 
     ngOnInit(): void {
-      this._userService.getUserProfile()
-      .subscribe({
-        next: (response) => {
-          this.userData = response;
+      this._userService.getUserProfile().subscribe({
+        next: (user) => {
+          this.editForm.patchValue({
+            userName: user.userName,
+            phone: user.phoneNumber,
+          });
         },
         error: (error) => {
+          console.error('Error loading data:', error);
         }
       });
     }
@@ -57,12 +60,10 @@ export class EditProfileComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         window.alert('Profile updated successfully');
-        window.location.href = '/profile';
+        this._Router.navigate(['/profile']);
       },
       error: (error) => {
         this.isLoading = false;
-        console.log(error);
-
         this.errorMessage = error.error.message;
       }
     });

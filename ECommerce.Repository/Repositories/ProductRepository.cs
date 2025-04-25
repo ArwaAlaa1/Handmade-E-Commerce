@@ -29,7 +29,10 @@ namespace ECommerce.Repository.Repositories
             var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category)
                                                                .Include(i => i.ProductPhotos)
                                                                .Include(p => p.ProductColors)
-                                                               .Include(p => p.ProductSizes).Include(p => p.Sales).AsQueryable();
+                                                               .Include(p => p.ProductSizes)
+                                                               .Include(p => p.Sales)
+                                                               .Include(p => p.Seller)
+                                                               .AsQueryable();
 
             if (categoryId.HasValue)
                 query = query.Where(p => p.CategoryId == categoryId.Value);
@@ -77,9 +80,50 @@ namespace ECommerce.Repository.Repositories
             var product = await _context.Products.Include(c => c.Category).Include(s => s.Sales)
                                                  .Include(i => i.ProductPhotos)
                                                  .Include(p=>p.ProductColors)
-                                                 .Include(p=>p.ProductSizes).FirstOrDefaultAsync( p => p.Id == id);
+                                                 .Include(p=>p.ProductSizes)
+                                                 .Include(p => p.Seller)
+                                                 .FirstOrDefaultAsync( p => p.Id == id);
             return product;
         }
 
+        public async Task<int> GetFilteredProductsCount(int? categoryId, int? maxPrice, int? minPrice)
+        {
+            var query = _context.Products
+                                .Where(p => !p.IsDeleted);
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Cost >= minPrice.Value);
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Cost <= maxPrice.Value);
+            return await query.CountAsync();
+        }
+
+        public  async Task<int> GetProductsWithOfferCount(int? categoryId, int? maxPrice, int? minPrice)
+        {
+            var query = _context.Products
+         .Include(p => p.Sales)
+         .AsQueryable();
+
+
+            //query = query.Where(p => p.Sales.Any(s => s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now));
+            query = query.Where(p => p.Sales.Any(s => !s.IsDeleted)); 
+
+
+
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+           
+            if (minPrice.HasValue)
+                query = query.Where(p => (p.Cost + (p.Cost * p.AdminProfitPercentage / 100)) >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(p => (p.Cost + (p.Cost * p.AdminProfitPercentage / 100)) <= maxPrice.Value);
+
+           
+            return await query.CountAsync();
+
+        }
     }
 }

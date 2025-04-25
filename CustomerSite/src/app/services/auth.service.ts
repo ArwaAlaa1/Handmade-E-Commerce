@@ -22,13 +22,11 @@ export class AuthService {
       token: response.token,
       userId: response.userId,
       displayName: response.displayName,
-      userName: response.userName,
-      email: response.email,
       image: response.image,
     };
 
     this._CookieService.set('userData', JSON.stringify(userData), {
-      expires: 7,
+      expires: 2,
       path: '/',
     });
 

@@ -32,10 +32,14 @@ namespace ECommerce.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        [HttpGet("GetUser/{email}")]
-        public async Task<IActionResult> GetUser(string email)
+        [HttpGet("GetUser")]
+        public async Task<IActionResult> GetUser()
         {
-            var user = await _userManager.Users.Include(x => x.Address).FirstOrDefaultAsync(u => u.Email == email);
+            var userId = _userManager.GetUserId(User);
+            var user = await _userManager.Users
+                .Include(u => u.Address)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
             if (user == null) return NotFound();
 
             return Ok(new
@@ -44,9 +48,11 @@ namespace ECommerce.Controllers
                 user.UserName,
                 user.Email,
                 user.Photo,
-                user.Address,
+                user.PhoneNumber,
+                Address = user.Address ?? new List<Address>()
             });
         }
+
 
         [HttpPost("AddAddress")]
         public async Task<IActionResult> AddAddress( [FromBody] AddAddressDto dto)
@@ -97,9 +103,9 @@ namespace ECommerce.Controllers
         }
 
         [HttpGet("GetAllAddress")]
-        public async Task<IActionResult> GetAllAddress(string email)
+        public async Task<IActionResult> GetAllAddress()
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
 
             var address = await _unitOfWork.Repository<Address>()
@@ -119,10 +125,10 @@ namespace ECommerce.Controllers
             return Ok(address);
         }
 
-        [HttpPost("UpdateUserData")]
-        public async Task<IActionResult> UpdateUserData(string email,[FromBody] UpdateUserData userdata )
+        [HttpPut("UpdateUserData")]
+        public async Task<IActionResult> UpdateUserData( [FromBody] UpdateUserData userdata )
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
             user.UserName = userdata.UserName;
             user.PhoneNumber = userdata.Phone;
@@ -136,7 +142,7 @@ namespace ECommerce.Controllers
         public async Task<IActionResult> AddUserImage([FromForm]AddPhotoDTO addPhoto)
         {
 
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == addPhoto.Email);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound();
             if (addPhoto.Photo == null || addPhoto.Photo.Length == 0)
             {

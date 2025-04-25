@@ -385,6 +385,9 @@ namespace ECommerce.Repository.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AdditionalDetails")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("AdminProfitPercentage")
                         .HasColumnType("decimal(18,2)");
 

@@ -13,6 +13,8 @@ namespace ECommerce.Core.Models
 
         public string Description { get; set; }
         public decimal Cost { get; set; }
+        public string? AdditionalDetails { get; set; }
+
         public decimal AdminProfitPercentage { get; set; }
         public string? SellerId { get; set;}
         public AppUser? Seller { get; set; }
@@ -20,6 +22,7 @@ namespace ECommerce.Core.Models
         // Foreign key
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
+
 
         public virtual ICollection<ProductPhoto> ProductPhotos { get; set; } = new List<ProductPhoto>();
 
@@ -40,6 +43,19 @@ namespace ECommerce.Core.Models
             {
                 var currentSale = Sales?.FirstOrDefault(s =>
                     s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+                
+                if (currentSale != null)
+                {
+                    var discount = SellingPrice * currentSale.Percent / 100;
+                    return SellingPrice - discount;
+                }
+
+                return SellingPrice;
+            }
+            /*get
+            {
+                var currentSale = Sales?.FirstOrDefault(s =>
+                    s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
 
                 if (currentSale != null)
                 {
@@ -48,7 +64,7 @@ namespace ECommerce.Core.Models
                 }
 
                 return Cost;
-            }
+            }*/
         }
 
         [NotMapped]

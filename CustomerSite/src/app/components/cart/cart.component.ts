@@ -25,7 +25,7 @@ export class CartComponent {
    constructor(private _shipCost:ShippingService,private cdr: ChangeDetectorRef,private _cookie:CookieService,private cartService: CartService,private _auth: AuthService) {
   
     }
-  
+
     ngOnInit(): void {
       const storedData = this._auth.userData
       .subscribe({
@@ -36,7 +36,7 @@ export class CartComponent {
         error: (error) => {
         }
       });
-         
+
       if (this.userData) {
         this.token = this.userData.token;
         this.isLogin = true;

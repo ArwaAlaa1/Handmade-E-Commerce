@@ -113,7 +113,8 @@
 }
 
 .bg-primary {
-  background-color: #696cff !important;
+      background-color: #696cff !important;
+/*    background-color: #22303e !important;*/
 }
 
 a.bg-primary:hover, a.bg-primary:focus {
@@ -121,12 +122,14 @@ a.bg-primary:hover, a.bg-primary:focus {
 }
 
 .dropdown-notifications-item:not(.mark-as-read) .dropdown-notifications-read span {
-  background-color: #696cff;
+      background-color: #696cff;
+/*    background-color: #22303e;*/
 }
 
 .bg-label-primary {
-  background-color: #e7e7ff !important;
-  color: #696cff !important;
+    background-color: #e7e7ff !important;
+      color: #696cff !important;
+/*    color: #22303e !important;*/
 }
 
 .border-label-primary {
@@ -140,22 +143,25 @@ a.bg-primary:hover, a.bg-primary:focus {
 .page-item .page-link:hover, .page-item .page-link:focus,
 .pagination li > a:not(.page-link):hover,
 .pagination li > a:not(.page-link):focus {
-  background-color: rgba(105, 108, 255, 0.16);
-  color: #696cff;
+    background-color: rgba(105, 108, 255, 0.16);
+      color: #696cff;
+/*    color: #22303e;*/
 }
 
 .page-item.active .page-link,
 .pagination li.active > a:not(.page-link) {
   box-shadow: 0 0.125rem 0.25rem 0 rgba(105, 108, 255, 0.4);
 }
-.page-item.active .page-link, .page-item.active .page-link:hover, .page-item.active .page-link:focus,
-.pagination li.active > a:not(.page-link),
-.pagination li.active > a:not(.page-link):hover,
-.pagination li.active > a:not(.page-link):focus {
-  border-color: #696cff;
-  background-color: #696cff;
-  color: #fff;
-}
+    .page-item.active .page-link, .page-item.active .page-link:hover, .page-item.active .page-link:focus,
+    .pagination li.active > a:not(.page-link),
+    .pagination li.active > a:not(.page-link):hover,
+    .pagination li.active > a:not(.page-link):focus {
+          border-color: #696cff;
+/*        border-color: #22303e;*/
+                background-color: #696cff;
+/*        background-color: #22303e;*/
+        color: #fff;
+    }
 
 .progress-bar {
   background-color: #696cff;
@@ -164,38 +170,47 @@ a.bg-primary:hover, a.bg-primary:focus {
 }
 
 .list-group-item-primary {
-  border-color: #696cff;
-  background-color: #e7e7ff;
-  color: #696cff !important;
+      border-color: #696cff;
+/*    border-color: #22303e;*/
+    background-color: #e7e7ff;
+        color: #696cff !important;
+/*    color: #22303e !important;*/
 }
 
 a.list-group-item-primary,
 button.list-group-item-primary {
-  color: #696cff;
+    color: #696cff;
+/*    color: #22303e;*/
 }
-a.list-group-item-primary:hover, a.list-group-item-primary:focus,
-button.list-group-item-primary:hover,
-button.list-group-item-primary:focus {
-  border-color: #696cff;
-  background-color: #d9d9f0;
-  color: #696cff;
-}
-a.list-group-item-primary.active,
-button.list-group-item-primary.active {
-  border-color: #696cff !important;
-  background-color: #696cff !important;
-  color: #fff !important;
-}
+    a.list-group-item-primary:hover, a.list-group-item-primary:focus,
+    button.list-group-item-primary:hover,
+    button.list-group-item-primary:focus {
+                border-color: #696cff;
+/*        border-color: #22303e;*/
+        background-color: #d9d9f0;
+                color: #696cff;
+/*        color: #22303e;*/
+    }
+    a.list-group-item-primary.active,
+    button.list-group-item-primary.active {
+          border-color: #696cff !important;
+/*        border-color: #22303e !important;*/
+                background-color: #696cff !important;
+/*        background-color: #22303e !important;*/
+        color: #fff !important;
+    }
 
 .list-group-item.active, .list-group-item.active:hover, .list-group-item.active:focus {
-  background-color: #e7e7ff;
-  color: #696cff;
+    background-color: #e7e7ff;
+      color: #696cff;
+/*    color: #22303e;*/
 }
 
 .alert-primary {
-  background-color: #e7e7ff;
-  border-color: #e7e7ff;
-  color: #696cff;
+    background-color: #e7e7ff;
+    border-color: #e7e7ff;
+      color: #696cff;
+/*    color: #22303e;*/
 }
 .alert-primary .btn-close {
   background-image: url("data:image/svg+xml,%3Csvg width='150px' height='151px' viewBox='0 0 150 151' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cdefs%3E%3Cpolygon id='path-1' points='131.251657 0 74.9933705 56.25 18.7483426 0 0 18.75 56.2450278 75 0 131.25 18.7483426 150 74.9933705 93.75 131.251657 150 150 131.25 93.7549722 75 150 18.75'%3E%3C/polygon%3E%3C/defs%3E%3Cg id='🎨-%5BSetup%5D:-Colors-&amp;-Shadows' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Artboard' transform='translate(-225.000000, -250.000000)'%3E%3Cg id='Icon-Color' transform='translate(225.000000, 250.500000)'%3E%3Cuse fill='%23696cff' xlink:href='%23path-1'%3E%3C/use%3E%3Cuse fill-opacity='0.5' fill='%23696cff' xlink:href='%23path-1'%3E%3C/use%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");

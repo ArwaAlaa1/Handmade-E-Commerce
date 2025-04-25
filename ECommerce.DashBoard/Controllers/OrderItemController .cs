@@ -48,7 +48,7 @@ namespace ECommerce.DashBoard.Controllers
                     .Where(o => o.Status.ToString().ToLower() == status.ToLower())
                     .ToList();
             }
-            //var traderOrderStatus =OrderStatus.Pending;
+           /* //var traderOrderStatus =OrderStatus.Pending;
             //foreach (var order in allOrders)
             //{
 
@@ -65,7 +65,7 @@ namespace ECommerce.DashBoard.Controllers
             //        traderOrderStatus = OrderStatus.Ready;
 
             //    await _unitOfWork.SaveAsync();
-            //}
+            //}*/
            
             var orderListVM = allOrders.Select(o =>
             {

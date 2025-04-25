@@ -39,8 +39,8 @@
                         <tr>
                             <td>@sale.Product?.Name</td>
                             <td class="text-success fw-bold">@sale.Percent %</td>
-                            <td>@sale.StartDate.ToShortDateString()</td>
-                            <td>@sale.EndDate.ToShortDateString()</td>
+                            <td>@sale.StartDate.ToString("g")</td>
+                            <td>@sale.EndDate.ToString("g")</td>
                            @if(!isAdmin){
                                 <td>
 

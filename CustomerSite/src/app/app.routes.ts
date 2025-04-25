@@ -11,13 +11,22 @@ import { ChangePasswordComponent } from './components/auth/change-password/chang
 import { CartComponent } from './components/cart/cart.component';
 import { ProfileComponent } from './components/user/profile/profile.component';
 import { EditProfileComponent } from './components/user/edit-profile/edit-profile.component';
+import { AddImageComponent } from './components/user/add-image/add-image.component';
+import { AddAddressComponent } from './components/user/add-address/add-address.component';
+import { EditAddressComponent } from './components/user/edit-address/edit-address.component';
+import { OffersComponent } from './components/offers/offers.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path:'home', component:HomeComponent, title:'Home Page'},
+  {path:'offer', component:OffersComponent, title:'Offer Page'},
+
 
   {path:'profile', canActivate:[AuthGuard], component:ProfileComponent, title:'Profile Page'},
   {path:'editprofile', canActivate:[AuthGuard], component:EditProfileComponent, title:'Edit Profile Page'},
+  {path:'addimage', canActivate:[AuthGuard], component:AddImageComponent, title:'Add Profile Image Page'},
+  {path:'addAddrrss', canActivate:[AuthGuard], component:AddAddressComponent, title:'Add Address Page'},
+  {path:'editAddress/:id', canActivate:[AuthGuard], component:EditAddressComponent, title:'Edit Address Page'},
 
   {path:'register', component:RegisterComponent, title:'Register Page'},
   {path:'login', component:LoginComponent, title:'Login Page'},

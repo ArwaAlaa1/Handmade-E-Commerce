@@ -92,10 +92,18 @@
 
         <dt class="col-sm-3">Price</dt>
         <dd class="col-sm-9">
+            <span >
+                @Model.Cost.ToString("C")
+            </span>
+        </dd>
+
+        <!--  Selling Price -->
+        <dt class="col-sm-3">Selling Price</dt>
+        <dd class="col-sm-9">
             @if (Model.DiscountedPrice.HasValue)
             {
                 <span class="text-decoration-line-through text-muted me-2">
-                    @Model.Cost.ToString("C")
+                    @Model.SellingPrice.ToString("C")
                 </span>
                 <span class="text-success fw-bold me-2">
                     @Model.DiscountedPrice.Value.ToString("C")
@@ -104,14 +112,9 @@
             }
             else
             {
-                <span>@Model.Cost.ToString("C")</span>
+                <span>@Model.SellingPrice.ToString("C")</span>
             }
-        </dd>
-
-        <!--  Selling Price -->
-        <dt class="col-sm-3">Selling Price</dt>
-        <dd class="col-sm-9">
-            <span class="fw-bold text-primary">@Model.SellingPrice.ToString("C")</span>
+            @* <span class="fw-bold text-primary">@Model.SellingPrice.ToString("C")</span> *@
         </dd>
 
         <!--  Application Profit Percentage -->
@@ -184,6 +187,9 @@
 
         <dt class="col-sm-3">Category</dt>
         <dd class="col-sm-9">@Model.CategoryName</dd>
+
+        <dt class="col-sm-3">Additional details</dt>
+        <dd class="col-sm-9">@Model.AdditionalDetails</dd>
 
         @*  <dt class="col-sm-3">Photos</dt>
         <dd class="col-sm-9">

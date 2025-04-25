@@ -13,10 +13,10 @@ namespace ECommerce.Core.Models
         [Range(1, 100)]
         public int Percent { get; set; }
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime StartDate { get; set; }
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.DateTime)]
         public DateTime EndDate { get; set; }
 
         // Foreign key

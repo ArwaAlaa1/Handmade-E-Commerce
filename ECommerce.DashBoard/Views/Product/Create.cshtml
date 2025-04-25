@@ -70,6 +70,16 @@
                         <span asp-validation-for="CategoryId" class="text-danger"></span>
                     </div>
 
+
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="AdditionalDetails"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-detail"></i></span>
+                            <textarea asp-for="AdditionalDetails" class="form-control" placeholder="Additional details"></textarea>
+                        </div>
+                    </div>
+
+
                     <!-- Colors -->
                     <h5>Add Colors</h5>
                     <div id="colorContainer"></div>

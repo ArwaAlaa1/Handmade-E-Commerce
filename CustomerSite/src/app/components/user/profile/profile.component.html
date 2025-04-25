@@ -3,7 +3,16 @@
     <div class="row g-3 align-items-center">
       <div class="col-auto">
         <img
+          *ngIf="userData.photo"
           [src]="imageBaseUrl + userData.photo"
+          alt="User Photo"
+          class="rounded-circle border shadow-sm"
+          width="120"
+          height="120"
+        />
+        <img
+          *ngIf="!userData.photo"
+          src="../../../../assets/img/ava.jpeg"
           alt="User Photo"
           class="rounded-circle border shadow-sm"
           width="120"
@@ -17,12 +26,27 @@
         </p>
       </div>
     </div>
+
+    <div class="mt-4 d-flex justify-content-center gap-3 flex-wrap">
+      <a class="btn btn-outline-warning" routerLink="/editprofile">
+        <i class="bi bi-image"></i> Update Personal Data
+      </a>
+      <a class="btn btn-outline-primary" routerLink="/addimage">
+        <i class="bi bi-image"></i> Update Profile Image
+      </a>
+      <a class="btn btn-outline-success" routerLink="/addAddrrss">
+        <i class="bi bi-plus-circle"></i> Add New Address
+      </a>
+    </div>
   </div>
 
   <div class="mb-4">
     <h4 class="mb-3">Addresses</h4>
     <div class="row">
-      <div class="col-md-6 mb-3" *ngFor="let addr of userData.address">
+      <div
+        class="col-md-6 mb-3 text-center fa-2x"
+        *ngFor="let addr of userData.address"
+      >
         <div class="card h-100 shadow-sm">
           <div class="card-body">
             <h5 class="card-title">{{ addr.fullName }}</h5>
@@ -39,10 +63,16 @@
             <p class="card-text">
               <strong>Details:</strong> {{ addr.addressDetails }}
             </p>
+            <a
+              class="btn btn-outline-warning"
+              routerLink="/editAddress/{{ addr.id }}"
+            >
+              <i class="bi bi-pencil-square"></i> Edit Address
+            </a>
           </div>
         </div>
       </div>
-      <p *ngIf="userData.address?.length === 0">No addresses found.</p>
     </div>
+    <p *ngIf="userData.address?.length == null">No addresses found.</p>
   </div>
 </div>

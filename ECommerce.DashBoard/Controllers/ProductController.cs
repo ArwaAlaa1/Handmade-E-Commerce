@@ -110,6 +110,7 @@ namespace ECommerce.DashBoard.Controllers
                 Id = product.Id,
                 Name = product.Name,
                 Description = product.Description,
+                AdditionalDetails = product.AdditionalDetails,
                 Cost = product.Cost,
                 AdminProfitPercentage = product.AdminProfitPercentage,
                 SellingPrice = product.SellingPrice,
@@ -144,9 +145,13 @@ namespace ECommerce.DashBoard.Controllers
                 SalePercent = currentSale?.Percent,
                 SaleStartDate = currentSale?.StartDate,
                 SaleEndDate = currentSale?.EndDate,
+                
+                //DiscountedPrice = currentSale != null
+                //? product.SellingPrice * (1 - currentSale.Percent / 100m)
+                //: null
+
                 DiscountedPrice = currentSale != null
-                ? product.Cost - (product.Cost * currentSale.Percent / 100)
-                : null
+                ?product.DiscountedPrice:null
             };
 
             return View(productVM);
@@ -194,6 +199,7 @@ namespace ECommerce.DashBoard.Controllers
                 Description = vm.Description,
                 Cost = vm.Cost,
                 CategoryId = vm.CategoryId,
+                AdditionalDetails = vm.AdditionalDetails,
                 SellerId = user.Id,
                 ProductColors = new List<ProductColor>(),
                 ProductSizes = new List<ProductSize>()
@@ -308,6 +314,7 @@ namespace ECommerce.DashBoard.Controllers
                 Description = product.Description,
                 Cost = product.Cost,
                 CategoryId = product.CategoryId,
+                AdditionalDetails = product.AdditionalDetails,
                 AdminProfitPercentage = profitPercentage,
                 SellingPrice = product.SellingPrice,
                 Categories = categories?.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name }) ?? new List<SelectListItem>(),
@@ -377,14 +384,7 @@ namespace ECommerce.DashBoard.Controllers
 
             if (!ModelState.IsValid)
             {
-                foreach (var key in ModelState.Keys)
-                {
-                    var state = ModelState[key];
-                    foreach (var error in state.Errors)
-                    {
-                        Console.WriteLine($"ModelState Error on '{key}': {error.ErrorMessage}");
-                    }
-                }
+               
                 var categories = await _unitOfWork.Repository<Category>().GetAllAsync();
                 vm.Categories = categories.Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name });
                 return View(vm);
@@ -401,6 +401,7 @@ namespace ECommerce.DashBoard.Controllers
             }
             product.Name = vm.Name;
             product.Description = vm.Description;
+            product.AdditionalDetails = vm.AdditionalDetails;
             product.Cost = vm.Cost;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;
@@ -584,29 +585,25 @@ namespace ECommerce.DashBoard.Controllers
         public async Task<IActionResult> DeletePhoto(int photoId, int productId)
         {
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
-            if (product == null)
-                return NotFound();
+            if (product == null) return Json(new { success = false, message = "Product not found" });
+
             var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (product.SellerId != userid)
-            {
-                return RedirectToAction("Index");
-            }
-            var photo = await _unitOfWork.Repository<ProductPhoto>().GetByIdAsync(photoId);
-            if (photo == null)
-                return NotFound();
+                return Json(new { success = false, message = "Unauthorized" });
 
-            // Remove from file system
+            var photo = await _unitOfWork.Repository<ProductPhoto>().GetByIdAsync(photoId);
+            if (photo == null) return Json(new { success = false, message = "Photo not found" });
+
             var fullPath = Path.Combine(_webHostEnvironment.WebRootPath, photo.PhotoLink.TrimStart('/'));
             if (System.IO.File.Exists(fullPath))
             {
                 System.IO.File.Delete(fullPath);
             }
 
-            // Remove from database
             _unitOfWork.Repository<ProductPhoto>().Delete(photo);
             await _unitOfWork.SaveAsync();
 
-            return RedirectToAction("Edit", new { id = productId });
+            return Json(new { success = true, photoId });
         }
 
         [Authorize(Roles = SD.SuplierRole)]

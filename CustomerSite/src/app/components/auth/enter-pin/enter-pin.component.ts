@@ -54,8 +54,7 @@ export class EnterPinComponent implements OnInit {
     this._authService.Verify_Pin( this.email, pinData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        // this._Router.navigate([`/resetpassword/${this.email}`]);
-        window.location.href = `/resetpassword/${this.email}`;
+        this._Router.navigate([`/resetpassword/${this.email}`]);
       },
       error: (error) => {
         this.isLoading = false;

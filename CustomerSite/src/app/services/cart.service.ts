@@ -1,3 +1,4 @@
+import { Cart } from './../interfaces/cart';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -42,6 +43,16 @@ export class CartService {
     // const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     return this.http.get(`${this.baseUrl}`, { headers:this.getAuthHeaders()});
+  }
+
+  removeItemFromCart(cart:Cart): Observable<any> {
+    // const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+    if  (this.token) {
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization': `Bearer ${this.token}` });
+      return this.http.post(`${this.baseUrl}/UpdateCart`,cart, { headers });
+    }
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(`${this.baseUrl}/UpdateCart`,cart, { headers });
   }
  
 }

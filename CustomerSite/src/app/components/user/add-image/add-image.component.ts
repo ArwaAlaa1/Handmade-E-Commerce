@@ -78,8 +78,7 @@ export class AddImageComponent implements OnInit {
           console.log(response);
 
           window.alert('Your Photo added Successfully.');
-          // this._Router.navigate(['/profile']);
-          window.location.href = '/profile';
+          this._Router.navigate(['/profile']);
       },
       error: (error) => {
         if (error.error) {

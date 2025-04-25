@@ -1,0 +1,18 @@
+.quantity-selector {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 1rem;
+    padding: 0.25rem 0.75rem;
+    gap: 1rem;
+    font-size: 1.25rem;
+    user-select: none;
+    min-width: 100px;
+    justify-content: center;
+  }
+  
+  .quantity-selector span {
+    cursor: pointer;
+    color: #555;
+  }
+  

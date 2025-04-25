@@ -2,6 +2,7 @@
 {
     public class CartItem
     {
+        public string ItemId { get; set; } = Guid.NewGuid().ToString();
         public int ProductId { get; set; }
         public string ProductName { get; set; }
         public string SellerName { get; set; }
@@ -12,10 +13,7 @@
         public string? Color { get; set; }
         public string? Size { get; set; }
         public decimal Price { get; set; }
-        public int  ActiveSale { get; set; }
+        public int ActiveSale { get; set; }
         public int Quantity { get; set; }
-
-
-
     }
 }

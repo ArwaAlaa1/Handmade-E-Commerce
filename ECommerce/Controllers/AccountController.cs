@@ -95,7 +95,8 @@ namespace ECommerce.Controllers
             {
                 DisplayName = user.DisplayName,
                 Email = user.Email,
-                Token = await _authService.CreateTokenAsync(user)
+                Token = await _authService.CreateTokenAsync(user),
+                Image = user.Photo
             });
         }
 

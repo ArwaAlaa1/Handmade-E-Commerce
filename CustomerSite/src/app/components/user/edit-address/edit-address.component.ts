@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
 
@@ -26,7 +26,7 @@ export class EditAddressComponent implements OnInit {
   addressdata: any = {};
   Id: number = 0;
 
-  constructor(private _userService: UserService, private _route : ActivatedRoute) {
+  constructor(private _userService: UserService, private _route : ActivatedRoute , private _Router : Router) {
     this.Id = this._route.snapshot.params['id'];
   }
 
@@ -70,7 +70,7 @@ export class EditAddressComponent implements OnInit {
         this.isLoading = false;
 
         window.alert('Address updated successfully!');
-        window.location.href = '/profile';
+        this._Router.navigate([`/profile`])
       },
       error: (error) => {
         this.isLoading = false;

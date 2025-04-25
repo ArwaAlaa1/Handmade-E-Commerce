@@ -89,8 +89,7 @@ export class ChangePasswordComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         window.alert(`${response.message}`);
-        // this._Router.navigate([`/home`]);
-        window.location.href = '/home';
+        this._Router.navigate([`/home`]);
       },
       error: (error) => {
         this.isLoading = false;

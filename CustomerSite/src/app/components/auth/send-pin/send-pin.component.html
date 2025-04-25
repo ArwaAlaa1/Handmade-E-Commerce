@@ -1,62 +1,54 @@
-<section class="section-login padding-tb-50">
+<section class="py-5">
   <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div
-          class="section-title bb-center"
-          data-aos="fade-up"
-          data-aos-duration="1000"
-          data-aos-delay="200"
-        >
-          <div class="section-detail">
-            <h2 class="bb-title">Send <span>PIN Code</span></h2>
-          </div>
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-md-8">
+        <div class="text-center mb-4">
+          <h2 class="fw-bold">
+            Send <span class="text-primary">PIN Code</span>
+          </h2>
         </div>
-      </div>
-      <div class="col-12">
-        <div
-          class="bb-login-contact"
-          data-aos="fade-up"
-          data-aos-duration="1000"
-          data-aos-delay="400"
-        >
-          <div *ngIf="errorMessage" class="text-center alert alert-danger">
-            {{ errorMessage }}
-          </div>
-          <form [formGroup]="sendPinCodeForm" (ngSubmit)="onSubmit()">
-            <div class="bb-login-wrap">
-              <label for="email">Email*</label>
-              <input
-                type="email"
-                autocomplete="on"
-                id="email"
-                name="email"
-                formControlName="email"
-                placeholder="Enter Your Email"
-                [ngClass]="{
-                  'is-invalid': f['email'].invalid && f['email'].touched
-                }"
-              />
-              <div
-                *ngIf="f['email'].invalid && f['email'].touched"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f['email'].errors?.['required']">
-                  Email is required.
-                </div>
-                <div *ngIf="f['email'].errors?.['email']">
-                  Please enter a valid email address.
-                </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger text-center">
+          {{ errorMessage }}
+        </div>
+
+        <form [formGroup]="sendPinCodeForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email*</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              formControlName="email"
+              placeholder="Enter Your Email"
+              autocomplete="on"
+              class="form-control"
+              [ngClass]="{
+                'is-invalid': f['email'].invalid && f['email'].touched
+              }"
+            />
+            <div
+              class="invalid-feedback"
+              *ngIf="f['email'].invalid && f['email'].touched"
+            >
+              <div *ngIf="f['email'].errors?.['required']">
+                Email is required.
+              </div>
+              <div *ngIf="f['email'].errors?.['email']">
+                Please enter a valid email address.
               </div>
             </div>
-            <button class="bb-btn-2" type="submit">
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">
               <span *ngIf="isLoading">
                 <i class="fas fa-spinner fa-spin"></i>
               </span>
               <span *ngIf="!isLoading">Send PIN Code</span>
             </button>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

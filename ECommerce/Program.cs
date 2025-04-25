@@ -43,14 +43,14 @@ namespace ECommerce
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
-
+            //builder.Services.AddScoped<UnitOfWork, UnitOfWork>();
+            builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
+            builder.Services.AddTransient<IFavoriteRepository, FavoriteRepository>();
             builder.Services.AddScoped<IEmailProvider, EmailProvider>();
 
             builder.Services.AddScoped<ICartRepository, CartRepository>();
            
-            builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
-            builder.Services.AddTransient<IFavoriteRepository, FavoriteRepository>();
+            
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService,OrderService>();

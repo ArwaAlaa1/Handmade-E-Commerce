@@ -12,11 +12,10 @@ namespace ECommerce.Core.Models.Cart
         {
             
         }
-        private string cartId;
-
+        
         public Cart(string cartId)
         {
-            this.cartId = cartId;
+            Id = cartId;
             CartItems = new List<CartItem>();
         }
 

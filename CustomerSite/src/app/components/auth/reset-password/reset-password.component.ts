@@ -86,8 +86,7 @@ export class ResetPasswordComponent implements OnInit {
       next: (response) => {
         this.isLoading = false;
         window.alert('Your Password Changed Successfully, Login Now!');
-        // this._Router.navigate([`/login`]);
-        window.location.href = `/login`;
+        this._Router.navigate([`/login`]);
       },
       error: (error) => {
         this.isLoading = false;

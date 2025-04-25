@@ -22,8 +22,6 @@ export class AuthService {
       token: response.token,
       userId: response.userId,
       displayName: response.displayName,
-      userName: response.userName,
-      email: response.email,
       image: response.image,
     };
 

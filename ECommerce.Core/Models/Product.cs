@@ -19,6 +19,7 @@ namespace ECommerce.Core.Models
         public string? SellerId { get; set;}
         public AppUser? Seller { get; set; }
 
+
         // Foreign key
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }

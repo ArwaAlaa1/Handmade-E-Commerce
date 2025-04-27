@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +23,9 @@ export class ShippingService {
     }
     return new HttpHeaders();
   }
-  baseUrl = 'https://localhost:7223/api/ShippingCost';
+
    getShippingCosts(): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-      return this.http.get(`${this.baseUrl}`, { headers });
+      return this.http.get(`${environment.baseURL}ShippingCost`, { headers });
     }
 }

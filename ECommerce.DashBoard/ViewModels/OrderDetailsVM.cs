@@ -18,5 +18,10 @@ namespace ECommerce.DashBoard.ViewModels
         public int Quantity { get; set; }
         public decimal ProductCost { get; set; }
         public decimal TotalCost { get; set; }
+        public string? TraderName { get; set; }
+        public ItemStatus OrderItemStatus { get; set; }
+        public string? CustomizeInfo { get; set; }
+        public string? Color { get; set; }
+        public string? Size { get; set; }
     }
 }

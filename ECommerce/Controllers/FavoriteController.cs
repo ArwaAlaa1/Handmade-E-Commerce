@@ -35,8 +35,13 @@ namespace ECommerce.Controllers
             {
                 return Unauthorized("User is not authenticated.");
             }
-            var product=await _unitOfWork.Favorites.AddFavoriteproducttoUser(productId, userId);
-            return Ok(product);
+            var isfav = await _unitOfWork.Favorites.isFavorite(productId, userId);
+            if (isfav)
+            {
+                var product = await _unitOfWork.Favorites.AddFavoriteproducttoUser(productId, userId);
+                return Ok("Add to Product Succesflly");
+            }
+            else return BadRequest("this Product already in Fav List");
         }
 
         [Authorize(Roles = SD.CustomerRole)]
@@ -50,13 +55,22 @@ namespace ECommerce.Controllers
             }
             if (string.IsNullOrEmpty(userId) || productId <= 0)
                 return BadRequest("User ID or Product ID cannot be null or empty.");
-            bool resut= await _unitOfWork.Favorites.RemoveFavoriteproducttoUser(productId, userId);
+
+            //var isfav = await _unitOfWork.Favorites.isFavorite(productId, userId);
+            //if (!isfav)
+            //{
+            //    var product = await _unitOfWork.Favorites.AddFavoriteproducttoUser(productId, userId);
+            //    return Ok(product);
+            //}
+            //else return BadRequest("this product Not in Fav List");
+
+            bool resut = await _unitOfWork.Favorites.RemoveFavoriteproducttoUser(productId, userId);
             if (resut)
             {
                 return Ok("Deleted Succesfully");
             }else
             {
-                return NotFound("Product not found in favorites.");
+                return NotFound("This Product not found in favorites.");
             }
         }
 

@@ -31,6 +31,15 @@ namespace ECommerce.Repository
             _dbSet.Update(entity);
         }
 
+        public IQueryable<T> GetQueryable(Func<IQueryable<T>, IQueryable<T>> include = null)
+        {
+            IQueryable<T> query = _dbSet;
+            if (include != null)
+            {
+                query = include(query);
+            }
+            return query;
+        }
 
         public async Task AddAsync(T entity)
         {

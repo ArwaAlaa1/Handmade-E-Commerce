@@ -2,37 +2,41 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ShippingService } from '../../../services/shipping.service';
+import { finalize } from 'rxjs';
 
 @Component({
-
   selector: 'app-edit-address',
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './edit-address.component.html',
   styleUrl: './edit-address.component.css'
 })
 export class EditAddressComponent implements OnInit {
-  editAddressForm: FormGroup = new FormGroup({
-    fullName: new FormControl('', Validators.required),
-    phoneNumber: new FormControl('', [Validators.required]),
-    region: new FormControl('', [Validators.required]),
-    city: new FormControl('', [Validators.required]),
-    country: new FormControl(null, { validators: [Validators.required] }),
-    addressDetails: new FormControl(null, { validators: [Validators.required]}),
-  });
+  addressdata: any = {};
+  editAddressForm: FormGroup;
 
   errorMessage: string = '';
   isLoading: boolean = false;
-  addressdata: any = {};
+  shipingAddresses: any[] = [];
   Id: number = 0;
 
-  constructor(private _userService: UserService, private _route : ActivatedRoute , private _Router : Router) {
+  constructor(private _userService: UserService, private _route: ActivatedRoute, private _Router: Router, private shipingService: ShippingService) {
     this.Id = this._route.snapshot.params['id'];
+    this.editAddressForm = new FormGroup({
+      fullName: new FormControl('', Validators.required),
+      phoneNumber: new FormControl('', [Validators.required]),
+      region: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+      country: new FormControl('', { validators: [Validators.required] }),
+      addressDetails: new FormControl('', { validators: [Validators.required] }),
+    });
   }
 
   ngOnInit(): void {
     this._userService.getAddress(this.Id).subscribe({
       next: (addressdata) => {
+        this.addressdata = addressdata;
         this.editAddressForm.patchValue({
           fullName: addressdata.fullName,
           phoneNumber: addressdata.phoneNumber,
@@ -46,8 +50,23 @@ export class EditAddressComponent implements OnInit {
         console.error('Error loading data:', error);
       }
     });
+
+    this.getAddress();
   }
 
+  getAddress() {
+    this.isLoading = true;
+    this.shipingService.getShippingCosts().subscribe({
+      next: (response) => {
+        this.shipingAddresses = response;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading shipping addresses:', error);
+        this.isLoading = false;
+      }
+    });
+  }
 
   get f() {
     return this.editAddressForm.controls;
@@ -65,12 +84,11 @@ export class EditAddressComponent implements OnInit {
     this.isLoading = true;
     const formValue = this.editAddressForm.value;
 
-    this._userService.EditAddress( this.Id,formValue).subscribe({
+    this._userService.EditAddress(this.Id, formValue).subscribe({
       next: (response) => {
         this.isLoading = false;
-
         window.alert('Address updated successfully!');
-        this._Router.navigate([`/profile`])
+        this._Router.navigate(['/profile']);
       },
       error: (error) => {
         this.isLoading = false;

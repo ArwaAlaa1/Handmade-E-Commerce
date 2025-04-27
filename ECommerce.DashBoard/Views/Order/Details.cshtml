@@ -1,5 +1,4 @@
-﻿
-@using ECommerce.DashBoard.ViewModels
+﻿@using ECommerce.Core.Models.Order
 @model ECommerce.DashBoard.ViewModels.OrderDetailsVM
 
 <div class="card">
@@ -18,30 +17,19 @@
         </div>
         <div class="mb-3">
             <strong>Status:</strong>
-            @if (Model.Status == ECommerce.Core.Models.Order.OrderStatus.Pending)
+            @{
+                var statusBadges = new Dictionary<OrderStatus, (string, string)>
             {
-                <span class="badge bg-warning text-dark">Pending</span>
+            { OrderStatus.Pending, ("Pending", "bg-warning text-dark") },
+            { OrderStatus.InProgress, ("In Progress", "bg-info") },
+            { OrderStatus.Ready, ("Ready", "bg-success") },
+            { OrderStatus.Cancelled, ("Cancelled", "bg-danger") },
+            { OrderStatus.Shipping, ("Shipping", "bg-dark") },
+            { OrderStatus.Deliverd, ("Delivered", "bg-success") }
+            };
+                var (text, cssClass) = statusBadges.GetValueOrDefault(Model.Status, ("Unknown", "bg-secondary"));
             }
-            else if (Model.Status == ECommerce.Core.Models.Order.OrderStatus.InProgress)
-            {
-                <span class="badge bg-info">In Progress</span>
-            }
-            else if (Model.Status == ECommerce.Core.Models.Order.OrderStatus.Ready)
-            {
-                <span class="badge bg-success">Ready</span>
-            }
-            else if (Model.Status == ECommerce.Core.Models.Order.OrderStatus.Cancelled)
-            {
-                <span class="badge bg-danger">Cancelled</span>
-            }
-            else if (Model.Status == ECommerce.Core.Models.Order.OrderStatus.Shipping)
-            {
-                <span class="badge bg-dark">Shipping</span>
-            }
-            else if (Model.Status == ECommerce.Core.Models.Order.OrderStatus.Deliverd)
-            {
-                <span class="badge bg-success">Delivered</span>
-            }
+            <span class="badge @cssClass">@text</span>
         </div>
         <div class="mb-3">
             <strong>Shipping Cost:</strong> @Model.ShippingCost.ToString("C")
@@ -56,9 +44,14 @@
             <thead>
                 <tr>
                     <th>Product Name</th>
+                    <th>Trader Name</th>
                     <th>Quantity</th>
                     <th>Unit Price</th>
                     <th>Total Price</th>
+                    <th>Status</th>
+                    @* <th>Customize Info</th> *@
+                    <th>Color</th>
+                    <th>Size</th>
                 </tr>
             </thead>
             <tbody>
@@ -66,9 +59,31 @@
                 {
                     <tr>
                         <td>@item.ProductName</td>
+                        <td>@item.TraderName</td>
                         <td>@item.Quantity</td>
                         <td>@item.ProductCost.ToString("C")</td>
                         <td>@item.TotalCost.ToString("C")</td>
+                        <td>
+                            @if (item.OrderItemStatus == ItemStatus.Pending)
+                            {
+                                <span class="badge bg-warning text-dark">Pending</span>
+                            }
+                            else if (item.OrderItemStatus == ItemStatus.InProgress)
+                            {
+                                <span class="badge bg-info">In Progress</span>
+                            }
+                            else if (item.OrderItemStatus == ItemStatus.Ready)
+                            {
+                                <span class="badge bg-success">Ready</span>
+                            }
+                            else if (item.OrderItemStatus == ItemStatus.Cancelled)
+                            {
+                                <span class="badge bg-danger">Cancelled</span>
+                            }
+                        </td>
+                        @* <td>@item.CustomizeInfo</td> *@
+                        <td>@item.Color</td>
+                        <td>@item.Size</td>
                     </tr>
                 }
             </tbody>

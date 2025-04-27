@@ -6,6 +6,7 @@ using ECommerce.Core.Repository.Contract;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using ECommerce.Repository.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Controllers
 {
@@ -25,7 +26,7 @@ namespace ECommerce.Controllers
         }
 
         [HttpGet("GetAllWithFilter")]
-        public async Task<IActionResult> GetAllWithFilter(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)
+        public async Task<IActionResult> GetAllWithFilter(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice/*,string? email*/)
         {
             if (pageSize <= 0 || pageIndex <= 0)
                 return BadRequest("Invalid pagination parameters. Both pageSize and pageIndex must be greater than 0.");
@@ -37,24 +38,24 @@ namespace ECommerce.Controllers
                 return BadRequest("Invalid min price. The min price must be greater than 0.");
             if (minPrice.HasValue && maxPrice.HasValue && minPrice > maxPrice)
                 return BadRequest("Invalid price range. The min price must be less than or equal to the max price.");
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var favoriteProductIds = new List<int>();
-
-            if (!string.IsNullOrEmpty(userId))
-            {
-                var favoriteProducts = await _unitOfWork.Favorites.GetAllAsync(f => f.UserId == userId);
-
-                if (favoriteProducts?.Any() == true)
-                {
-                    favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
-                }
-            }
 
             var totalCount = await productRepository.GetFilteredProductsCount(categoryId, maxPrice, minPrice);
             var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
             var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, categoryId, maxPrice, minPrice);
             if (products == null || !products.Any())
                 return NotFound(new { message = "No products found." });
+
+            var productIds = products.Select(p => p.Id).ToList();
+            var favoriteProductIds = new List<int>();
+            if (userId != null)
+            {
+                favoriteProductIds = await _unitOfWork.Favorites.GetFavoriteProductIdsAsync(userId, productIds);
+            }
+
+            var reviewsCounts = await _unitOfWork.Reviews.GetReviewsCountForProductsAsync(productIds);
+
 
             var allProducts = products.Select(p =>
             {
@@ -76,13 +77,15 @@ namespace ECommerce.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    AdditionalDetails = p.AdditionalDetails,
+                    //AdditionalDetails = p.AdditionalDetails,
                     //BasePrice = basePrice,
                     SellingPrice = sellingPrice,
                     DiscountedPrice = discountedPrice,
                     IsOnSale = currentSale != null,
                     SalePercent = currentSale?.Percent,
-                    IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
+                    //IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
+                    IsFavorite = favoriteProductIds.Contains(p.Id),
+                    Rating = reviewsCounts.ContainsKey(p.Id) ? reviewsCounts[p.Id] : 0,
                     Category = new
                     {
                         Id = p.Category.Id,
@@ -103,13 +106,13 @@ namespace ECommerce.Controllers
                             Url = photo.PhotoLink
                         }).ToList(),
 
-                    Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+                    //Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
 
-                    Sizes = p.ProductSizes?.Select(s => new SizeDTO
-                    {
-                        Name = s.Size,
-                        ExtraCost = s.ExtraCost
-                    }).ToList() ?? new List<SizeDTO>()
+                    //Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                    //{
+                    //    Name = s.Size,
+                    //    ExtraCost = s.ExtraCost
+                    //}).ToList() ?? new List<SizeDTO>()
                 };
             });
 

@@ -1,53 +1,69 @@
-.card.h-100 {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 1rem;
+.product-card {
   overflow: hidden;
+  position: relative;
 }
 
-.card.h-100:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  border: 1px blue solid;
+.product-image-container {
+  position: relative;
+  background: #f8f9fa;
 }
 
-.card .card-img-top {
-  transition: transform 0.5s ease;
+.default-img {
+  transition: opacity 0.4s ease;
+  display: block;
+  margin: 0 auto;
 }
 
-.card:hover .card-img-top {
-  transform: scale(1.05);
+.hover-img {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
+.product-card:hover .hover-img {
+  opacity: 1;
+}
 
-.favorite-btn {
+.product-card:hover .default-img {
+  opacity: 0;
+}
+
+.hover-buttons {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #333366;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  background: rgba(206, 199, 199, 0.8);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.product-card:hover .hover-buttons {
+  opacity: 1;
+  transform: translateY(0);
+  -webkit-transform: translateY(0);
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -o-transform: translateY(0);
+}
+
+.action-btn {
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease;
-  -webkit-transition: background 0.3s ease, color 0.3s ease;
-  -moz-transition: background 0.3s ease, color 0.3s ease;
-  -ms-transition: background 0.3s ease, color 0.3s ease;
-  -o-transition: background 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.favorite-btn i {
-  color: white;
+.action-btn:hover {
+  background-color: #0d6efd !important;
+  color: #fff;
 }
 
-.favorite-btn:hover {
-  background: #222255;
+.active-favorite {
+  background-color: #dc3545;
+  color: #fff;
 }
-
-.favorite-btn .active {
-  color: red;
+.active-favorite:hover {
+  background-color: #bb2d3b;
+  color: #fff;
 }

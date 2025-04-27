@@ -4,7 +4,7 @@
       <div class="col-auto">
         <img
           *ngIf="userData.photo"
-          [src]="imageBaseUrl + userData.photo"
+          [src]="imageBaseUrl + 'images//' + userData.photo"
           alt="User Photo"
           class="rounded-circle border shadow-sm"
           width="120"
@@ -20,7 +20,7 @@
         />
       </div>
       <div class="col">
-        <h2 class="mb-1">{{ userData.userName }}</h2>
+        <h2 class="mb-1" style="color: #6c7fd8">{{ userData.userName }}</h2>
         <p class="text-muted mb-0">
           <i class="bi bi-envelope"></i> {{ userData.email }}
         </p>
@@ -41,27 +41,35 @@
   </div>
 
   <div class="mb-4">
-    <h4 class="mb-3">Addresses</h4>
+    <h4 class="mb-3" style="color: #6c7fd8">Addresses</h4>
     <div class="row">
       <div
-        class="col-md-6 mb-3 text-center fa-2x"
+        style="font-size: 1.5rem"
+        class="col-md-6 mb-3 text-center"
         *ngFor="let addr of userData.address"
       >
         <div class="card h-100 shadow-sm">
           <div class="card-body">
-            <h5 class="card-title">{{ addr.fullName }}</h5>
+            <h5 class="card-title" style="color: #6c7fd8; font-size: 2rem">
+              {{ addr.fullName }}
+            </h5>
             <p class="card-text mb-1">
-              <strong>Phone:</strong> {{ addr.phoneNumber }}
+              <strong style="color: #6c7fd8">Phone:</strong>
+              {{ addr.phoneNumber }}
             </p>
             <p class="card-text mb-1">
-              <strong>Region:</strong> {{ addr.region }}
+              <strong style="color: #6c7fd8">Region:</strong> {{ addr.region }}
             </p>
-            <p class="card-text mb-1"><strong>City:</strong> {{ addr.city }}</p>
             <p class="card-text mb-1">
-              <strong>Country:</strong> {{ addr.country }}
+              <strong style="color: #6c7fd8">City:</strong> {{ addr.city }}
+            </p>
+            <p class="card-text mb-1">
+              <strong style="color: #6c7fd8">Country:</strong>
+              {{ addr.country }}
             </p>
             <p class="card-text">
-              <strong>Details:</strong> {{ addr.addressDetails }}
+              <strong style="color: #6c7fd8">Details:</strong>
+              {{ addr.addressDetails }}
             </p>
             <a
               class="btn btn-outline-warning"

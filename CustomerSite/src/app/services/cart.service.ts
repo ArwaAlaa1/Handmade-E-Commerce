@@ -45,7 +45,7 @@ export class CartService {
     return this.http.get(`${this.baseUrl}`, { headers:this.getAuthHeaders()});
   }
 
-  removeItemFromCart(cart:Cart): Observable<any> {
+ updateCart(cart:Cart): Observable<any> {
     // const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
     if  (this.token) {
       const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization': `Bearer ${this.token}` });

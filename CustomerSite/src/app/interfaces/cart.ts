@@ -1,6 +1,7 @@
 export interface Cart {
     id: string;
     cartItems: CartItem[];
+    addressId: number;
   }
   
   export interface CartItem {
@@ -15,6 +16,8 @@ export interface Cart {
     price: number;
     color: string;
 
+    
+    unitPrice:number;
     size: string;
     activeSale: number;
     quantity: number;

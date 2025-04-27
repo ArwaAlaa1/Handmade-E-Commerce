@@ -20,6 +20,7 @@ namespace ECommerce.Core.Models.Cart
         }
 
         public string Id { get; set; }
+        public int? AddressId { get; set; }
         public List<CartItem> CartItems { get; set; }
     }
 }

@@ -55,6 +55,16 @@
             <i class="fas fa-heart"></i> Favourite
           </a>
         </li>
+        <li *ngIf="isLogin" class="nav-item">
+          <a
+            class="nav-link d-flex align-items-center gap-2"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLink="addresspop"
+          >
+            <i class="fas fa-heart"></i> addres
+          </a>
+        </li>
       </ul>
 
       <!-- <form class="d-flex mx-2" role="search">

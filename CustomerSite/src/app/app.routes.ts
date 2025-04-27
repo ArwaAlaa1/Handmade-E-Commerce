@@ -15,6 +15,7 @@ import { AddImageComponent } from './components/user/add-image/add-image.compone
 import { AddAddressComponent } from './components/user/add-address/add-address.component';
 import { EditAddressComponent } from './components/user/edit-address/edit-address.component';
 import { OffersComponent } from './components/offers/offers.component';
+import { AddressPopUpComponent } from './address-pop-up/address-pop-up.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -35,6 +36,7 @@ export const routes: Routes = [
   {path:'resetpassword/:email', component:ResetPasswordComponent, title:'Forget Password Page'},
   {path:'changepassword', canActivate:[AuthGuard], component:ChangePasswordComponent, title:'Change Password Page'},
 
+  {path:'addresspop', component:AddressPopUpComponent, title:'Address Page'},
 
   {path:'cart', component:CartComponent, title:'Cart Page'},
 

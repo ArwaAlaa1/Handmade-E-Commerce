@@ -18,7 +18,7 @@ namespace ECommerce.Repository.Repositories
         {
             _database = redis.GetDatabase();
         }
-        public async Task<Cart> GetCartAsync(string cartId)
+        public async Task<Cart?> GetCartAsync(string cartId)
         {
            var CustomerCart=await _database.StringGetAsync(cartId);
            return CustomerCart.IsNullOrEmpty ? null : JsonSerializer.Deserialize<Cart>(CustomerCart);

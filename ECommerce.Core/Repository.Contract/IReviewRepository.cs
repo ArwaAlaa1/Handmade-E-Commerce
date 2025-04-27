@@ -12,11 +12,12 @@ namespace ECommerce.Core.Repository.Contract
         
         Task<IEnumerable<Review>> GetReviewsWithProductAsync(int productId);
         Task<int> CountReviewsOnProductWithId(int productId);
+        Task<int> SumRatingOnProductWithId(int productId);
         Task<Review> GetReviewWithProductAsync(int reviewId,int productId);
 
         Task<Review> GetReviewWithUserAsync(string userid);
 
-        
+        Task<Dictionary<int, int>> GetReviewsCountForProductsAsync(List<int> productIds);
 
     }
 }

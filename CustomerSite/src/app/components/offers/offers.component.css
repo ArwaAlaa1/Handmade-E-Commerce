@@ -1,19 +1,65 @@
-.card.h-100 {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 1rem;
+.product-card {
   overflow: hidden;
+  position: relative;
 }
 
-.card.h-100:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  border: 1px blue solid;
+.product-image-container {
+  position: relative;
+  background: #f8f9fa;
 }
 
-.card .card-img-top {
-  transition: transform 0.5s ease;
+.default-img {
+  transition: opacity 0.4s ease;
+  display: block;
+  margin: 0 auto;
 }
 
-.card:hover .card-img-top {
-  transform: scale(1.05);
+.hover-img {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-card:hover .hover-img {
+  opacity: 1;
+}
+
+.product-card:hover .default-img {
+  opacity: 0;
+}
+
+.hover-buttons {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  background: rgba(255, 255, 255, 0.8);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.product-card:hover .hover-buttons {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.action-btn {
+  border-radius: 50%;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.action-btn:hover {
+  background-color: #0d6efd !important;
+  color: #fff;
+}
+
+.active-favorite {
+  background-color: #dc3545;
+  color: #fff;
+}
+.active-favorite:hover {
+  background-color: #bb2d3b;
+  color: #fff;
 }

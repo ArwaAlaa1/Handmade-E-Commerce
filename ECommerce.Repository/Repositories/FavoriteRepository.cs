@@ -1,6 +1,7 @@
 ﻿using ECommerce.Core.Models;
 using ECommerce.Core.Repository.Contract;
 using ECommerce.DashBoard.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -53,6 +54,7 @@ namespace ECommerce.Repository.Repositories
                 await _db.SaveChangesAsync();
                 return true;
             }
+
             return false;
         }
         public Task<List<Product>> GetAllUserFavorite(string userId)
@@ -62,5 +64,23 @@ namespace ECommerce.Repository.Repositories
             var products =  _db.Products.Where(p => p.Id == favroites.Result.FirstOrDefault().ProductId).ToListAsync();
              return  products;
         }
+
+        public async Task<bool> isFavorite(int productId, string userId)
+        {
+            var favroites = await _db.Favorites.Where(f => f.UserId == userId && f.ProductId == productId).Include(z => z.product).FirstOrDefaultAsync();
+            if (favroites == null) return true;
+            else return false;
+        }
+
+
+
+        public async Task<List<int>> GetFavoriteProductIdsAsync(string userId, List<int> productIds)
+        {
+            return await _db.Favorites
+                .Where(f => f.UserId == userId && productIds.Contains(f.ProductId))
+                .Select(f => f.ProductId)
+                .ToListAsync();
+        }
+
     }
 }

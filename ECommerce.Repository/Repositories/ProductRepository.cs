@@ -28,8 +28,8 @@ namespace ECommerce.Repository.Repositories
         {
             var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category)
                                                                .Include(i => i.ProductPhotos)
-                                                               .Include(p => p.ProductColors)
-                                                               .Include(p => p.ProductSizes)
+                                                               //.Include(p => p.ProductColors)
+                                                               //.Include(p => p.ProductSizes)
                                                                .Include(p => p.Sales)
                                                                .Include(p => p.Seller)
                                                                .AsQueryable();

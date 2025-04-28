@@ -1,5 +1,7 @@
-﻿using ECommerce.Core.Models.Cart;
+﻿using ECommerce.Core.Models;
+using ECommerce.Core.Models.Cart;
 using ECommerce.Core.Services.Contract;
+using ECommerce.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -105,38 +107,45 @@ namespace ECommerce.Controllers
 
         }
 
+        //[HttpPost("UpdateCart")]
+        //public async Task<IActionResult> UpdateCart([FromBody] Cart cart)
+        //{
+        //    var userId = User.Identity.IsAuthenticated
+        //       ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+        //       : null;
+        //    var existingCart = new Cart();
+        //    if (userId != null)
+        //    {
+        //         existingCart = await _cartRepository.GetCartAsync($"cart:{userId}");
+        //    }
+        //    else
+        //    {
+        //        existingCart = await _cartRepository.GetCartAsync($"cart:{cart.Id}");
+
+        //    }
+        //    if (existingCart != null)
+        //    {
+
+        //        await _cartRepository.AddCartAsync(cart);
+        //        if (cart.CartItems.Count()==0)
+        //        {
+        //            await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
+        //        }
+        //            return Ok(new { message="Cart Updated Successfully"});
+
+        //    }
+        //    return Ok(existingCart);
+
+        //}
+
         [HttpPost("UpdateCart")]
         public async Task<IActionResult> UpdateCart([FromBody] Cart cart)
         {
             var userId = User.Identity.IsAuthenticated
-               ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-               : null;
-            var existingCart = new Cart();
-            if (userId != null)
-            {
-                 existingCart = await _cartRepository.GetCartAsync($"cart:{userId}");
-            }
-            else
-            {
-                existingCart = await _cartRepository.GetCartAsync($"cart:{cart.Id}");
-
-            }
-            if (existingCart != null)
-            {
-        
-                await _cartRepository.AddCartAsync(cart);
-                if (cart.CartItems.Count()==0)
-                {
-                    await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
-                }
-                    return Ok(new { message="Cart Updated Successfully"});
-            
-            }
-            return Ok(existingCart);
-
-
-
-
+                ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                : null;
+                var result = await _cartRepository.UpdateCartAsync(cart);
+            return Ok(result);
         }
         [HttpDelete]
         public async Task DeleteCart(string id)

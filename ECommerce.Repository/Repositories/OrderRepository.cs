@@ -35,6 +35,12 @@ namespace ECommerce.Repository.Repositories
 
             return order;
         }
+        public async Task<Order?> GetOrderByPaymentIdAsync(string paymentId)
+        {
+            return await _db.Set<Order>()
+                .Where(o => o.PaymentId == paymentId)
+                .FirstOrDefaultAsync();
+        }
 
         public async Task<IEnumerable<Order>> GetUserOrdersAsync(string Email)
         {

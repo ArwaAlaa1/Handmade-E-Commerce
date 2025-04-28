@@ -60,8 +60,6 @@ namespace ECommerce.DashBoard.Controllers
                     Status = orderStatus 
                 };
             }).ToList();
-
-
             if (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
             {
                 if (Enum.TryParse<OrderStatus>(status, true, out var filterStatus))
@@ -73,6 +71,8 @@ namespace ECommerce.DashBoard.Controllers
                     _logger.LogWarning($"Invalid status filter: {status}");
                 }
             }
+
+
 
             //if (!string.IsNullOrEmpty(status) && status != "all")
             //{

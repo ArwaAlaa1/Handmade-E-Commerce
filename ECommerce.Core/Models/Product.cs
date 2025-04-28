@@ -19,12 +19,14 @@ namespace ECommerce.Core.Models
         public string? SellerId { get; set;}
         public AppUser? Seller { get; set; }
 
+
         // Foreign key
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
 
 
         public virtual ICollection<ProductPhoto> ProductPhotos { get; set; } = new List<ProductPhoto>();
+        public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
         public ICollection<Sale> Sales { get; set; }
 

@@ -20,8 +20,8 @@ export class ResetPasswordComponent implements OnInit {
     { validators: this.passwordMatchValidator }
   );
 
-  errorMessage: string = '';
   isLoading :boolean = false;
+  errorMessage: string = '';
   email: string = '';
 
 

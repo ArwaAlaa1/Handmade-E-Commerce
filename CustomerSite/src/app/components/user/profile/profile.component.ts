@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   selector: 'app-profile',
@@ -13,7 +14,7 @@ export class ProfileComponent implements OnInit {
 
   userData : any = {};
   // imageBaseUrl: string = `https://handmadee-commerce.runasp.net/images//`;
-  imageBaseUrl: string = `https://localhost:44360/images//`;
+  imageBaseUrl: string = environment.baseImageURLAPI;
 
   constructor(public _userService: UserService) { }
 
@@ -22,7 +23,7 @@ export class ProfileComponent implements OnInit {
     .subscribe({
       next: (response) => {
         this.userData = response;
-        console.log(this.userData);
+        // console.log(this.userData);
       },
       error: (error) => {
       }

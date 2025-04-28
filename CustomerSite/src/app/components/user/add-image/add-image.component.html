@@ -49,12 +49,19 @@
               </div>
             </div>
 
-            <div class="bb-login-button">
-              <button class="bb-btn-2 w-100" type="submit">
+            <div class="d-flex mb-5 mt-3">
+              <button class="w-50 btn btn-primary me-2" type="submit">
                 <span *ngIf="isLoading">
                   <i class="fas fa-spinner fa-spin"></i>
                 </span>
-                <span *ngIf="!isLoading">Add Photo</span>
+                <span *ngIf="!isLoading">Update Profile Photo</span>
+              </button>
+              <button
+                class="w-50 btn btn-secondary"
+                routerLink="/profile"
+                type="button"
+              >
+                <span>Back</span>
               </button>
             </div>
           </form>

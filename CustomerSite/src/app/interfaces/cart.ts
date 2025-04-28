@@ -15,8 +15,7 @@ export interface Cart {
     customizeInfo: string;
     price: number;
     color: string;
-
-    
+    sellingPrice: number;
     unitPrice:number;
     size: string;
     activeSale: number;

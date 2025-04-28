@@ -27,7 +27,8 @@ export class CartComponent {
  addressSelected: any = null;
  selectedAddressIndex :number = 0;
  deliveryCost: number = 0; 
-
+ subTotal : number = 0;
+  total: number = 0;
 
   imageBaseUrl: string = `${environment.baseImageURL}images/`;
   isLogin: boolean = false;
@@ -61,28 +62,21 @@ export class CartComponent {
                next: (res) => {
                 this.addressSelected = res;
                  console.log('Address data:', res);
-                 
+                 this.getDeliveryCost(this.addressSelected.city);
+          this.calculateTotal(this.cartData);
                },
                error: (err) => console.error('Error loading cart:', err)
                });
              }
+            
             }
-          
+           
         });
       }else{
         console.log('get cart from cookie');
       }
 
-      // if (this.cartData.addressId != null) {
-      //   this.addressSelected= this._userService.getAddress(this.cartData.addressId ).subscribe({
-      //    next: (res) => {
-      //     this.addressSelected = res;
-      //      console.log('Address data:', res);
-           
-      //    },
-      //    error: (err) => console.error('Error loading cart:', err)
-      //    });
-      //  }
+    
 
       //Get shipping costs
       this._shipCost.getShippingCosts().subscribe({
@@ -94,9 +88,22 @@ export class CartComponent {
         error: (err) => console.error('Error loading Shipping Costs:', err)
       });
 
+     
+
+
   }
 
-  //get trader by id
+  //Calculate subtotal and total
+  calculateTotal(cartdata:Cart): void {
+    for (const item of cartdata.cartItems) {
+      if (item.sellingPrice != null) {
+        this.subTotal += item.sellingPrice ;
+      } else {
+        this.subTotal += item.price ;
+      }
+    }
+    this.total = this.subTotal + this.deliveryCost;
+  }
 
 
   //remve item from cart
@@ -116,34 +123,59 @@ export class CartComponent {
         //   },
         //   error: (err) => console.error('Error loading cart:', err)
         // });
-       
+        this.getDeliveryCost(this.addressSelected.city);
+          this.calculateTotal(this.cartData);
      
         this.cartData.cartItems = [...this.cartData.cartItems];
       },
       error: (err) => console.error('Error removing item:', err)
     });
-   
+    
   }
 
 
+//get delivery cost 
+getDeliveryCost(city:string):void {
+  const selectedItem = this.shippingCosts.find(item => item.name === city);
+   
+  if (!selectedItem) {
+    console.error('Item not found');
+    this.deliveryCost = 0;
+    return ;
+  }
 
+  console.log('Selected Item:', selectedItem);
+
+  this.deliveryCost = selectedItem.cost; 
+}
 // Increase quantity
 Increase(itemId:string): void {
   const itemIndex = this.cartData.cartItems.findIndex((cartItem: any) => cartItem.itemId === itemId);
   if (itemIndex !== -1) {
   
       this.cartData.cartItems[itemIndex].quantity += 1;
-      this.cartData.cartItems[itemIndex].price= this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].price;
+      if(this.cartData.cartItems[itemIndex].sellingPrice != null){
+        this.cartData.cartItems[itemIndex].sellingPrice
+        = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].sellingPrice;
+        this.cartData.cartItems[itemIndex].price
+        = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
+    
+      }
+    else{
+      this.cartData.cartItems[itemIndex].price
+      = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
   
-      console.log('Updated cart data:', this.cartData);
+    }
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {
           this.cartData = res;
+        
+          this.calculateTotal(this.cartData);
         },
         error: (err) => console.error('Error increasing item quantity:', err)
       });
     }
-  
+    
 }
 // Decrease quantity
 Decrease(itemId:string): void {
@@ -151,18 +183,31 @@ Decrease(itemId:string): void {
   if (itemIndex !== -1) {
   
       this.cartData.cartItems[itemIndex].quantity -= 1;
-      this.cartData.cartItems[itemIndex].price= this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
-  
+      
+      if(this.cartData.cartItems[itemIndex].sellingPrice != null){
+        this.cartData.cartItems[itemIndex].sellingPrice
+        = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].sellingPrice;
+        this.cartData.cartItems[itemIndex].price
+        = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
+    
+      }
+    else{
+      this.cartData.cartItems[itemIndex].price
+      = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
+    }
+
       console.log('Updated cart data:', this.cartData);
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {
           console.log('Item quantity increased:', res);
           this.cartData = res;
+        
+          this.calculateTotal(this.cartData);
         },
         error: (err) => console.error('Error increasing item quantity:', err)
       });
     }
-  
+    
 }
 
   openModal() {
@@ -190,29 +235,20 @@ Decrease(itemId:string): void {
   onSelectedAddress(index: number) {
     this.selectedAddressIndex = index;
     this.addressSelected= this.addresses[index];
-    console.log('Selected Address Index:', index); 
-  this.cartData.addressId= this.addresses[index].id;
-  console.log('Selected Address Data:', this.addresses[index]); // هنا تقدر توصل لبيانات العنوان المختار
-    const selectedItem = this.shippingCosts.find(item => item.name === this.addressSelected.city);
    
-    if (!selectedItem) {
-      console.error('Item not found');
-      this.deliveryCost = 0;
-      return;
-    }
-  
-    console.log('Selected Item:', selectedItem);
-  
-    this.deliveryCost = selectedItem.cost; 
+  this.cartData.addressId= this.addresses[index].id;
   this.cartService.updateCart(this.cartData).subscribe({
     next: (res) => {
       console.log('Update Delivry Address:', res);
       this.cartData = res;
+      this.getDeliveryCost(this.addresses[index].city);
+      this.calculateTotal(this.cartData);
     },
     error: (err) => console.error('Error in Update Delivry Address:', err)
   });
-    
+  
   }
+
   Confirm():void{
     console.log('Selected Address Index from confirm:', this.selectedAddressIndex); 
     this.closeModal();

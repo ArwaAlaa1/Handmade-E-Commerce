@@ -43,16 +43,7 @@ namespace ECommerce.Services
 
             StripeConfiguration.ApiKey = configuration["StripeSetting:secretKey"];
             var shippingPrice = 0m;
-            /*
-             if (shippingCostId != null)
-            {
-                var shippingCost = unitOfWork.ShippingCosts.GetShippingCostByIdAsync(shippingCostId.Value);
-                if (shippingCost == null)
-                {
-                    throw new ArgumentNullException(nameof(shippingCost), "Shipping cost not found");
-                }
-                shippingPrice = shippingCost.Price;
-            }*/
+           
             if (shippingCostId.HasValue)
             {
                 //var shippingCost = await unitOfWork.ShippingCosts.GetShippingCostByIdAsync(shippingCostId.Value);

@@ -1,0 +1,297 @@
+﻿@model ECommerce.DashBoard.ViewModels.DashboardReportVM
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid mt-4">
+    <h1 class="mb-4">E-Commerce Dashboard</h1>
+
+    <!-- Range Filter -->
+    <div class="mb-4">
+        <form asp-action="Index" method="get" class="form-inline">
+            <label class="me-2">Filter by:</label>
+            <select name="range" class="form-select w-auto d-inline-block" onchange="this.form.submit()">
+                <option value="day" selected="@(Model.Range == "day")">Day</option>
+                <option value="week" selected="@(Model.Range == "week")">Week</option>
+                <option value="month" selected="@(Model.Range == "month")">Month</option>
+                <option value="year" selected="@(Model.Range == "year")">Year</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Orders</h5>
+                    <p class="card-text display-4">@Model.TotalOrders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Total Revenue</h5>
+                    <p class="card-text display-4">@Model.TotalRevenue.ToString("C")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row mb-4">
+        <!-- Order Status Pie Chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Order Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="orderStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Category Revenue Pie Chart -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Revenue by Category</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tables -->
+    <div class="row">
+        <!-- Best Sellers -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Top 5 Best Sellers</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.BestSellers.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity Sold</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.BestSellers)
+                                {
+                                    <tr>
+                                        <td>@item.Product</td>
+                                        <td>@item.Quantity</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No best sellers available for the selected period.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue by Product -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Top 5 Revenue by Product</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RevenueByProduct.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.RevenueByProduct)
+                                {
+                                    <tr>
+                                        <td>@item.Product</td>
+                                        <td>@item.Revenue.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No revenue data available for the selected period.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Status Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Order Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.OrderStatuses.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Status</th>
+                                    <th>Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderStatuses)
+                                {
+                                    <tr>
+                                        <td>@item.Status</td>
+                                        <td>@item.Count</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No order status data available for the selected period.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Customers -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Top 5 Customers by Orders</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TopCustomers.Any())
+                    {
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Customer Email</th>
+                                    <th>Order Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.TopCustomers)
+                                {
+                                    <tr>
+                                        <td>@item.CustomerEmail</td>
+                                        <td>@item.OrderCount</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No customer data available for the selected period.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        // Order Status Pie Chart
+        const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+        const orderStatusChart = new Chart(orderStatusCtx, {
+            type: 'pie',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.OrderStatuses.Select(s => $"'{s.Status}'")))],
+                datasets: [{
+                    data: [@Html.Raw(string.Join(",", Model.OrderStatuses.Select(s => s.Count)))],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',  // Pending
+                        'rgba(54, 162, 235, 0.7)',  // InProgress
+                        'rgba(255, 206, 86, 0.7)',  // Ready
+                        'rgba(75, 192, 192, 0.7)',  // Cancelled
+                        'rgba(153, 102, 255, 0.7)', // Shipping
+                        'rgba(255, 159, 64, 0.7)'   // Delivered
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Order Status Distribution'
+                    }
+                }
+            }
+        });
+
+        // Category Revenue Pie Chart
+        const categoryRevenueCtx = document.getElementById('categoryRevenueChart').getContext('2d');
+        const categoryRevenueChart = new Chart(categoryRevenueCtx, {
+            type: 'pie',
+            data: {
+                labels: [@Html.Raw(string.Join(",", Model.CategoryRevenues.Select(c => $"'{c.Category}'")))],
+                datasets: [{
+                    data: [@Html.Raw(string.Join(",", Model.CategoryRevenues.Select(c => c.Revenue)))],
+                    backgroundColor: [
+                        'rgba(255, 159, 64, 0.7)',
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Revenue by Category'
+                    }
+                }
+            }
+        });
+    </script>
+}

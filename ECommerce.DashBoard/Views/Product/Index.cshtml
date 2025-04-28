@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<ECommerce.DashBoard.ViewModels.ProductListVM>
 
-
 @{
     ViewData["Title"] = "Product List";
     var isAdmin = User.IsInRole("Admin");
@@ -9,25 +8,22 @@
 <div class="card">
     <!-- Header: Title + Buttons -->
     <div class="d-flex justify-content-between align-items-center px-3 pt-3">
-
         <h5 class="card-header mb-0">Product List</h5>
-
         <div class="d-flex flex-wrap gap-2">
             <form asp-action="Create" method="get" class="mb-0">
                 @if (!isAdmin)
                 {
                     <button type="submit" class="btn btn-lg btn-primary">
                         <i class="icon-base bx bx-plus icon-sm me-1"></i> New Product
-                </button>
+                    </button>
                 }
             </form>
-
             <form asp-action="Index" method="get" class="d-flex gap-2 mb-0">
                 <button type="submit" name="Active" value="all" class="btn btn-outline-primary">All Products</button>
             </form>
         </div>
     </div>
-   
+
     @if (ViewBag.AdminProfit != null && !isAdmin)
     {
         <div class="alert alert-info mx-3 mt-3">
@@ -35,105 +31,100 @@
         </div>
     }
 
-
     <!-- Table -->
-        @if(Model.Count()>0){
-    <div class="table-responsive text-nowrap">
-        <table class="table table-hover align-middle">
-            <thead>
+    @if (Model.Count() > 0)
+    {
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr class="text-center">
-                    <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().Name)</th>
-                        <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().CategoryName)</th>
+                        <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().Name)</th>
+                        <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().CategoryName)</th>
                         <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().Stock)</th>
-                    <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().SellingPrice)</th>
-                    <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().DiscountedPrice)</th>
-                            <th style="width: 20%;">Actions</th> <!-- For actions -->
-                   
-                </tr>
-            </thead>
-            <tbody class="table-border-bottom-0">
-            
-                @foreach (var item in Model)
-                {
-                    <tr class="text-center">
-                            <td>@item.Name</td>
+                        <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().SellingPrice)</th>
+                        <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().DiscountedPrice)</th>
+                        <th style="width: 15%;">Actions</th> <!-- For actions -->
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="text-center">
+                            <td>
+                                @if (isAdmin)
+                                {
+                                    <span data-bs-toggle="tooltip" title="Trader: @item.SellerName">
+                                        @item.Name
+                                    </span>
+                                }
+                                else
+                                {
+                                    @item.Name
+                                }
+                            </td>
                             <td>@item.CategoryName</td>
                             <td>@item.Stock</td>
-                            @if (item.IsOnSale)
-                            {
-                                @* <td class="text-danger"><s>@item.SellingPrice.ToString("C2")</s></td> *@
-                                <td class="text-danger">
-                                    <span data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
-                                        <s>@item.SellingPrice.ToString("C2")</s>
+                            <td>
+                                @if (item.SellingPrice > item.Cost)
+                                {
+                                    <span class="text-success" data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
+                                        @item.SellingPrice.ToString("C2")
                                     </span>
-                                </td>
-                                <td class="text-success fw-bold">@item.DiscountedPrice.ToString("C2")</td>
-                            }
-                            else
-                            {
-                                @* <td>@item.SellingPrice.ToString("C")</td> *@
-                               @*  <td>
+                                }
+                                else if (item.SellingPrice < item.Cost)
+                                {
+                                    <span class="text-danger" data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
+                                        @item.SellingPrice.ToString("C2")
+                                    </span>
+                                }
+                                else
+                                {
                                     <span data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
                                         @item.SellingPrice.ToString("C2")
                                     </span>
-                                </td> *@
-                                <td>
-                                    @if (item.SellingPrice > item.Cost)
-                                    {
-                                        <span class="text-success" data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
-                                            @item.SellingPrice.ToString("C2")
-                                        </span>
-                                    }
-                                    else if (item.SellingPrice < item.Cost)
-                                    {
-                                        <span class="text-danger" data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
-                                            @item.SellingPrice.ToString("C2")
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
-                                            @item.SellingPrice.ToString("C2")
-                                        </span>
-                                    }
-                                </td>
-
-                                <td class="text-muted">No Discount</td> 
-
-                            }
-                            
-                      
-                                <td>
-                                    <div class="dropdown">
-                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id"><i class="bx bx-edit-alt me-1"></i> Details</a>
+                                }
+                            </td>
+                            <td>
+                                @if (item.IsOnSale)
+                                {
+                                    <span class="text-success fw-bold">@item.DiscountedPrice.ToString("C2")</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No Discount</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id"><i class="bx bx-edit-alt me-1"></i> Details</a>
                                         @if (!isAdmin)
                                         {
                                             <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id"><i class="bx bx-edit-alt me-1"></i> Edit</a>
                                             <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id"><i class="bx bx-trash me-1"></i> Delete</a>
                                         }
-                                        </div>
                                     </div>
-                                </td>
-                       
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-	}
-	else
-	{
-		<div class="alert alert-info" role="alert">
-			No products available.
-		</div>
-	}
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info" role="alert">
+            No products available.
+        </div>
+    }
 </div>
 
 <hr class="my-4">
+
 @section Scripts {
     <script>
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -141,7 +132,4 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
-
 }
-
-

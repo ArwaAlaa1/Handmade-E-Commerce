@@ -33,7 +33,7 @@ namespace ECommerce.DashBoard.Controllers
             {
                
                 var products = await _unitOfWork.Repository<Product>()
-                    .GetAllAsync(p => !p.Category.IsDeleted, includeProperties: "Category,Sales");
+                    .GetAllAsync(p => !p.Category.IsDeleted, includeProperties: "Category,Sales,Seller");
                 var profitSetting = await _unitOfWork.Repository<ProfitSetting>().GetAllAsync();
                 var profitPercentage = profitSetting.FirstOrDefault()?.Percentage ?? 0;
 
@@ -48,6 +48,7 @@ namespace ECommerce.DashBoard.Controllers
                     {
                         Id = p.Id,
                         Name = p.Name,
+                        SellerName = p.Seller?.DisplayName,
                         Cost = p.Cost,
                         Stock = p.Stock,
                         SellingPrice = p.SellingPrice,
@@ -67,7 +68,7 @@ namespace ECommerce.DashBoard.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 var userId = user.Id;
                 var products = await _unitOfWork.Repository<Product>()
-                   .GetAllAsync(p => p.SellerId == userId && !p.Category.IsDeleted, includeProperties: "Category,Sales");
+                   .GetAllAsync(p => p.SellerId == userId && !p.Category.IsDeleted, includeProperties: "Category,Sales,Seller");
                 var profitSetting = await _unitOfWork.Repository<ProfitSetting>().GetAllAsync();
                 var profitPercentage = profitSetting.FirstOrDefault()?.Percentage ?? 0;
 
@@ -82,6 +83,7 @@ namespace ECommerce.DashBoard.Controllers
                     {
                         Id = p.Id,
                         Name = p.Name,
+                        SellerName = p.Seller?.DisplayName,
                         Cost = p.Cost,
                         Stock = p.Stock,
                         SellingPrice = p.SellingPrice,

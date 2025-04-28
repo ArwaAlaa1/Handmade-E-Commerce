@@ -43,7 +43,8 @@ namespace ECommerce.DashBoard.Controllers
                 }
 
                
-                var orderStatus = DetermineOrderStatus(o.OrderItems);
+                //var orderStatus = DetermineOrderStatus(o.OrderItems);
+
 
                 var totalAmount = o.OrderItems
                     .Where(oi => oi.Product != null)
@@ -57,7 +58,8 @@ namespace ECommerce.DashBoard.Controllers
                     CustomerEmail = o.CustomerEmail,
                     TotalAmount = totalAmount + shippingCost,
                     OrderDate = o.OrderDate,
-                    Status = orderStatus 
+                    Status = o.Status 
+                    //Status = orderStatus 
                 };
             }).ToList();
             if (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
@@ -72,13 +74,11 @@ namespace ECommerce.DashBoard.Controllers
                 }
             }
 
-
-
-            //if (!string.IsNullOrEmpty(status) && status != "all")
+            //if (!string.IsNullOrEmpty(status) && status.ToLower() != "all")
             //{
-            //    // Convert OrderStatus to string and compare
-            //    orders = orders.Where(o => o.Status.ToString().ToLower() == status.ToLower()).ToList();
+            //    orderVMs = orderVMs.Where(vm => vm.Status.ToString().ToLower() == status.ToLower()).ToList();
             //}
+
 
             return View(orderVMs);
         }
@@ -145,10 +145,12 @@ namespace ECommerce.DashBoard.Controllers
             }
 
 
-            if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress)
+            if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress && order.Status != OrderStatus.Ready)
             {
                 _logger.LogWarning($"Order {id} cannot be edited. Current status: {order.Status}");
                 return Forbid();
+                //ViewBag.ErrorMessage = $"Order {id} cannot be edited because it is in {order.Status} status.";
+                //return RedirectToAction(nameof(Index));
             }
 
             var viewModel = new OrderEditVM
@@ -161,6 +163,54 @@ namespace ECommerce.DashBoard.Controllers
             return View(viewModel);
         }
 
+        //[HttpPost]
+        //[Authorize(Roles = SD.AdminRole)]
+        //public async Task<IActionResult> Edit(OrderEditVM model)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        _logger.LogError("Invalid model state for OrderEditVM");
+        //        return View(model);
+        //    }
+        //    var order = await _unitOfWork.Repository<Order>()
+        //        .GetFirstOrDefaultAsync(o => o.Id == model.OrderId, includeProperties: "shippingCost,OrderItems");/*OrderItems,shippingCost*/
+
+        //    if (order == null)
+        //    {
+        //        _logger.LogWarning($"Order not found for OrderId: {model.OrderId}");
+        //        return NotFound();
+        //    }
+
+
+        //    if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress)
+        //    {
+        //        _logger.LogWarning($"Order {model.OrderId} cannot be edited. Current status: {order.Status}");
+        //        return Forbid();
+        //    }
+        //    if (order.OrderItems.Any(oi => oi.Product == null))
+        //    {
+        //        _logger.LogWarning($"Null product found in OrderId: {model.OrderId}");
+        //    }
+
+        //    var orderStatus = DetermineOrderStatus(order.OrderItems);
+        //    if (order.Status != orderStatus)
+        //    {
+        //        order.Status = orderStatus;
+        //        _logger.LogInformation($"Order {order.Id} status updated to {orderStatus}");
+        //    }
+
+        //    if (/*model.ShippingCost.HasValue &&*/ order.shippingCost != null)
+        //    {
+        //        order.shippingCost.Cost = model.ShippingCost ?? 0;
+        //        //order.shippingCost.Cost = model.ShippingCost.Value;
+        //        _logger.LogInformation($"Order {order.Id} shipping cost updated to {model.ShippingCost}");
+        //    }
+
+        //    await _unitOfWork.SaveAsync();
+
+        //    return RedirectToAction(nameof(Index));
+        //}
+
         [HttpPost]
         [Authorize(Roles = SD.AdminRole)]
         public async Task<IActionResult> Edit(OrderEditVM model)
@@ -170,8 +220,9 @@ namespace ECommerce.DashBoard.Controllers
                 _logger.LogError("Invalid model state for OrderEditVM");
                 return View(model);
             }
+
             var order = await _unitOfWork.Repository<Order>()
-                .GetFirstOrDefaultAsync(o => o.Id == model.OrderId, includeProperties: "shippingCost,OrderItems");/*OrderItems,shippingCost*/
+                .GetFirstOrDefaultAsync(o => o.Id == model.OrderId, includeProperties: "shippingCost,OrderItems");
 
             if (order == null)
             {
@@ -179,28 +230,41 @@ namespace ECommerce.DashBoard.Controllers
                 return NotFound();
             }
 
-
-            if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress)
+            
+            if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress && order.Status != OrderStatus.Ready)
             {
                 _logger.LogWarning($"Order {model.OrderId} cannot be edited. Current status: {order.Status}");
-                return Forbid();
-            }
-            if (order.OrderItems.Any(oi => oi.Product == null))
-            {
-                _logger.LogWarning($"Null product found in OrderId: {model.OrderId}");
+                ModelState.AddModelError("", "This order cannot be edited because it is not in Pending or In Progress or Ready status.");
+                return View(model);
             }
 
-            var orderStatus = DetermineOrderStatus(order.OrderItems);
-            if (order.Status != orderStatus)
+           
+            if (order.Status != model.Status)
             {
-                order.Status = orderStatus;
-                _logger.LogInformation($"Order {order.Id} status updated to {orderStatus}");
+                order.Status = model.Status;
+                _logger.LogInformation($"Order {order.Id} status updated to {model.Status}");
+
+               
+                foreach (var item in order.OrderItems)
+                {
+                    item.OrderItemStatus = model.Status switch
+                    {
+                        OrderStatus.Pending => ItemStatus.Pending,
+                        OrderStatus.InProgress => ItemStatus.InProgress,
+                        OrderStatus.Ready => ItemStatus.Ready,
+                        OrderStatus.Shipping => ItemStatus.Ready, 
+                        OrderStatus.Deliverd => ItemStatus.Ready,
+                        OrderStatus.Cancelled => ItemStatus.Cancelled,
+                        _ => item.OrderItemStatus 
+                    };
+                }
+                _logger.LogInformation($"All OrderItems for Order {order.Id} updated to match Order Status: {model.Status}");
             }
 
-            if (/*model.ShippingCost.HasValue &&*/ order.shippingCost != null)
+           
+            if (order.shippingCost != null)
             {
                 order.shippingCost.Cost = model.ShippingCost ?? 0;
-                //order.shippingCost.Cost = model.ShippingCost.Value;
                 _logger.LogInformation($"Order {order.Id} shipping cost updated to {model.ShippingCost}");
             }
 

@@ -41,12 +41,13 @@
     <div class="table-responsive text-nowrap">
         <table class="table table-hover align-middle">
             <thead>
-                <tr>
+                    <tr class="text-center">
                     <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().Name)</th>
-                        <th style="width: 20%;">@Html.DisplayNameFor(m => m.First().CategoryName)</th>
+                        <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().CategoryName)</th>
+                        <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().Stock)</th>
                     <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().SellingPrice)</th>
                     <th style="width: 15%;">@Html.DisplayNameFor(m => m.First().DiscountedPrice)</th>
-                            <th style="width: 10%;"></th> <!-- For actions -->
+                            <th style="width: 20%;">Actions</th> <!-- For actions -->
                    
                 </tr>
             </thead>
@@ -54,9 +55,10 @@
             
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr class="text-center">
                             <td>@item.Name</td>
                             <td>@item.CategoryName</td>
+                            <td>@item.Stock</td>
                             @if (item.IsOnSale)
                             {
                                 @* <td class="text-danger"><s>@item.SellingPrice.ToString("C2")</s></td> *@

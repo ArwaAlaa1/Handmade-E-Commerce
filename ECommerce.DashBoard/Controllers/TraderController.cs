@@ -159,6 +159,7 @@ namespace ECommerce.DashBoard.Controllers
 
             var sales = await _unitOfWork.Repository<Sale>().GetAllAsync();
 
+            var trader = await _userManager.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
 
             // Include OrderItems, Product, and Category
             var ordersQuery = _unitOfWork.Repository<Order>()
@@ -258,6 +259,9 @@ namespace ECommerce.DashBoard.Controllers
                 CategoryRevenues = categoryRevenues,
                 Range = range
             };
+
+            ViewBag.TraderName = trader.UserName;
+               
 
             return View(dashboardVM);
         }

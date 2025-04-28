@@ -1,15 +1,14 @@
-
 :root {
   --background-color: #ffffff;
   --text-color: #212529;
   --primary-color: #0d6efd;
   --card-background: #ffffff;
-  --background-colorPage:#f5eeee;
+  --background-colorPage: #f5eeee;
 }
 
 body.dark-mode {
   --background-colorMain: #1e1e1e;
-  --background-colorPage:#4d4646;
+  --background-colorPage: #4d4646;
   --background-color: #121212;
   --text-color: #f1f1f1;
   --primary-color: #0d6efd;
@@ -22,50 +21,66 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
-nav div li a {
+nav div li a,
+.nav-link,
+#productName,
+#pargraph {
   color: var(--text-color) !important;
 }
 
-.pagination-container{
+.pagination-container,
+.py-5,
+#page {
   background-color: var(--background-colorPage);
   color: var(--text-color);
+  min-height: 30vh;
 }
 
-.nav-link{
-  color: var(--text-color) !important;
+footer {
+  background-color: var(--background-colorMain);
+  color: var(--text-color);
+  padding-top: 2rem;
 }
 
-.py-5{
-  background-color: var(--background-colorPage);
+footer a, footer p, footer li, footer h5 {
+  color: var(--text-color);
 }
-
-.dropdown-item{
+.dropdown-item,
+.dropdown-menu {
   background-color: var(--background-colorMain);
 }
 
-.dropdown-menu{
-  background-color: var(--background-colorMain);
-}
-.card{
+.card {
   background-color: var(--card-background);
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
-  -webkit-transition: background-color 0.3s, color 0.3s;
-  -moz-transition: background-color 0.3s, color 0.3s;
-  -ms-transition: background-color 0.3s, color 0.3s;
-  -o-transition: background-color 0.3s, color 0.3s;
 }
 
-#productName{
-  color: var(--text-color) !important;
-}
-
-#pargraph
-{
-  color: var(--text-color) !important;
-}
-/* Example for Buttons */
 .btn-primary {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
+}
+
+body.dark-mode .card,
+body.dark-mode .bg-light,
+body.dark-mode .table-light {
+  background-color: var(--card-background) !important;
+  color: var(--text-color) !important;
+}
+
+body.dark-mode select,
+body.dark-mode option,
+body.dark-mode input,
+body.dark-mode textarea {
+  background-color: var(--background-colorMain) !important;
+  color: var(--text-color) !important;
+  border-color: var(--card-background) !important;
+}
+
+body.dark-mode hr {
+  border-top: 1px solid var(--card-background) !important;
+}
+
+body.dark-mode .table {
+  color: var(--text-color);
 }

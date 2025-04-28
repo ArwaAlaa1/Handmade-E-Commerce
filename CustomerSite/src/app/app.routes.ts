@@ -15,12 +15,13 @@ import { AddImageComponent } from './components/user/add-image/add-image.compone
 import { AddAddressComponent } from './components/user/add-address/add-address.component';
 import { EditAddressComponent } from './components/user/edit-address/edit-address.component';
 import { OffersComponent } from './components/offers/offers.component';
-import { AddressPopUpComponent } from './address-pop-up/address-pop-up.component';
+import { FavouriteComponent } from './components/favourite/favourite.component';
 
 export const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path:'home', component:HomeComponent, title:'Home Page'},
   {path:'offer', component:OffersComponent, title:'Offer Page'},
+  {path:'favourite', component:FavouriteComponent, title:'Favourite Page'},
 
 
   {path:'profile', canActivate:[AuthGuard], component:ProfileComponent, title:'Profile Page'},

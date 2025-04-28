@@ -420,6 +420,9 @@ namespace ECommerce.Repository.Data.Migrations
                     b.Property<string>("SellerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -792,7 +795,7 @@ namespace ECommerce.Repository.Data.Migrations
             modelBuilder.Entity("ECommerce.Core.Models.Favorite", b =>
                 {
                     b.HasOne("ECommerce.Core.Models.Product", "product")
-                        .WithMany()
+                        .WithMany("Favorites")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -990,6 +993,8 @@ namespace ECommerce.Repository.Data.Migrations
 
             modelBuilder.Entity("ECommerce.Core.Models.Product", b =>
                 {
+                    b.Navigation("Favorites");
+
                     b.Navigation("ProductColors");
 
                     b.Navigation("ProductPhotos");

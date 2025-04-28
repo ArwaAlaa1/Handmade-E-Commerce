@@ -7,27 +7,39 @@ using System.Threading.Tasks;
 using ECommerce.Core;
 using ECommerce.Core.Models;
 using ECommerce.Core.Repository.Contract;
+using ECommerce.Core.Services.Contract;
 using ECommerce.DashBoard.Data;
 using ECommerce.Repository.Repositories;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace ECommerce.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ECommerceDbContext _db;
+        //private readonly IConnectionMultiplexer redis;
         private Hashtable _repositories;
 
         public IReviewRepository Reviews { get; private set; }
         public IFavoriteRepository Favorites { get; private set; }
 
+        //public ICustomerBasketRepository CustomerBaskets { get;}
+        //public ICartRepository cartRepository { get; }
+        //public IShippingCostRepository ShippingCosts { get; }
+
         public UnitOfWork(ECommerceDbContext db,
                    IReviewRepository reviewRepository,
-                   IFavoriteRepository favoriteRepository)
+                   IFavoriteRepository favoriteRepository
+                   /*,IConnectionMultiplexer redis*/)
         {
             _db = db;
             Reviews = reviewRepository;
             Favorites = favoriteRepository;
+            //this.redis = redis;
+            //CustomerBaskets = new CustomerBasketRepository(redis);
+            //cartRepository = new CartRepository(redis);
+            //ShippingCosts = new ShippingCostRepository(_db);
             _repositories = new Hashtable();
         }
 

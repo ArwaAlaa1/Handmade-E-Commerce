@@ -7,6 +7,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using ECommerce.Repository.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using ECommerce.Services.Utility;
 
 namespace ECommerce.Controllers
 {
@@ -124,6 +126,110 @@ namespace ECommerce.Controllers
                 Products = allProducts
             });
         }
+
+        [Authorize(Roles =SD.CustomerRole)]
+        [HttpGet("GetFavList")]
+        public async Task<IActionResult> GetFavList(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice/*,string? email*/)
+        {
+            if (pageSize <= 0 || pageIndex <= 0)
+                return BadRequest("Invalid pagination parameters. Both pageSize and pageIndex must be greater than 0.");
+            if (categoryId.HasValue && categoryId <= 0)
+                return BadRequest("Invalid category ID. The category ID must be greater than 0.");
+            if (maxPrice.HasValue && maxPrice <= 0)
+                return BadRequest("Invalid max price. The max price must be greater than 0.");
+            if (minPrice.HasValue && minPrice <= 0)
+                return BadRequest("Invalid min price. The min price must be greater than 0.");
+            if (minPrice.HasValue && maxPrice.HasValue && minPrice > maxPrice)
+                return BadRequest("Invalid price range. The min price must be less than or equal to the max price.");
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var totalCount = await productRepository.GetFavProductsCount(categoryId, maxPrice, minPrice, userId);
+            var products = await productRepository.GetFavProducts(pageSize, pageIndex, categoryId, maxPrice, minPrice, userId);
+            if (products == null || !products.Any())
+                return NotFound(new { message = "No products found." });
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var productIds = products.Select(p => p.Id).ToList();
+            //var favoriteProductIds = new List<int>();
+            //if (userId != null)
+            //{
+            //    favoriteProductIds = await _unitOfWork.Favorites.GetFavoriteProductIdsAsync(userId, productIds);
+            //}
+
+            var reviewsCounts = await _unitOfWork.Reviews.GetReviewsCountForProductsAsync(productIds);
+
+
+            var allProducts = products.Select(p =>
+            {
+                var currentSale = p.Sales?.FirstOrDefault(s =>
+                    s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+
+                decimal basePrice = p.Cost;
+                decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
+                decimal? discountedPrice = null;
+
+                if (currentSale != null)
+                {
+                    var discount = sellingPrice * currentSale.Percent / 100;
+                    discountedPrice = sellingPrice - discount;
+                }
+
+                return new
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    //AdditionalDetails = p.AdditionalDetails,
+                    //BasePrice = basePrice,
+                    SellingPrice = sellingPrice,
+                    DiscountedPrice = discountedPrice,
+                    IsOnSale = currentSale != null,
+                    SalePercent = currentSale?.Percent,
+                    //IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
+                    //IsFavorite = favoriteProductIds.Contains(p.Id),
+                    IsFavorite = true,
+                    Rating = reviewsCounts.ContainsKey(p.Id) ? reviewsCounts[p.Id] : 0,
+                    Category = new
+                    {
+                        Id = p.Category.Id,
+                        Name = p.Category.Name
+                    },
+                    Seller = new
+                    {
+                        Name = p.Seller.UserName,
+                        Email = p.Seller.Email,
+                        Photo = p.Seller.Photo
+                    },
+
+                    Photos = p.ProductPhotos
+                        .Where(photo => !photo.IsDeleted)
+                        .Select(photo => new
+                        {
+                            Id = photo.Id,
+                            Url = photo.PhotoLink
+                        }).ToList(),
+
+                    //Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+
+                    //Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                    //{
+                    //    Name = s.Size,
+                    //    ExtraCost = s.ExtraCost
+                    //}).ToList() ?? new List<SizeDTO>()
+                };
+            });
+
+            //return Ok(allProducts);
+            return Ok(new
+            {
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                Products = allProducts
+            });
+        }
+
+
 
         [HttpGet("GetProductsByCategory")]
         public async Task<IActionResult> GetProductsByCategory(int categoryId, int pageSize, int pageIndex)

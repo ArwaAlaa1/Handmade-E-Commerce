@@ -5,15 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ECommerce.Core.Models
 {
     public class Product:BaseEntity
     {
+        
         public string Name { get; set; }
 
         public string Description { get; set; }
         public decimal Cost { get; set; }
         public string? AdditionalDetails { get; set; }
+        public int Stock { get; set; }
 
         public decimal AdminProfitPercentage { get; set; }
         public string? SellerId { get; set;}
@@ -26,6 +29,7 @@ namespace ECommerce.Core.Models
 
 
         public virtual ICollection<ProductPhoto> ProductPhotos { get; set; } = new List<ProductPhoto>();
+        public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
         public ICollection<Sale> Sales { get; set; }
 

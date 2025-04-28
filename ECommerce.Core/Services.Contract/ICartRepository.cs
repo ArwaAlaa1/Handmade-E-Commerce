@@ -9,10 +9,11 @@ namespace ECommerce.Core.Services.Contract
 {
     public interface ICartRepository
     {
-
-        Task<Cart?> GetCartAsync(string id);
+        
+        Task<Cart> GetCartAsync(string id);
         Task<Cart> AddCartAsync(Cart cart);
         Task<bool> DeleteCartAsync(string id);
+        Task<Cart> UpdateCartAsync(Cart cart);
 
     }
 }

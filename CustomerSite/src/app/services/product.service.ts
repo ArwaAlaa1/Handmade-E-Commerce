@@ -55,6 +55,31 @@ export class ProductService {
     return this._HttpClient.get(url, { headers: this.getAuthHeaders() });
   }
 
+  GetFavList(
+    pageSize: number,
+    pageIndex: number,
+    categoryId?: number | null,
+    maxPrice?: number | null,
+    minPrice?: number | null
+  ): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    let url = `${environment.baseURL}Products/GetFavList?pageSize=${pageSize}&pageIndex=${pageIndex}`;
+
+    if (categoryId !== null && categoryId !== undefined) {
+      url += `&categoryId=${categoryId}`;
+    }
+
+    if (maxPrice !== null && maxPrice !== undefined) {
+      url += `&maxPrice=${maxPrice}`;
+    }
+
+    if (minPrice !== null && minPrice !== undefined) {
+      url += `&minPrice=${minPrice}`;
+    }
+
+    return this._HttpClient.get(url, { headers: this.getAuthHeaders() });
+  }
   getProductinOffer(
     pageSize: number,
     pageIndex: number,

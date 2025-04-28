@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { error } from 'node:console';
 import { finalize } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -17,8 +18,8 @@ export class HomeComponent implements OnInit {
 
   currentPage: number = 1;
   itemsPerPage: number = 4;
-  totalCount: number = 11;
-  totalPages: number = 2;
+  totalCount: number = 0;
+  totalPages: number = 0;
   isLoading = true;
   imageBaseUrl:string = environment.baseImageURL;
   allProducts: any[] = [];
@@ -30,11 +31,12 @@ export class HomeComponent implements OnInit {
     minPrice: null
   };
 
-  constructor(public _productService: ProductService) {}
+  constructor(public _productService: ProductService, private _authService: AuthService) {}
 
   ngOnInit(): void {
     this.filterProducts();
     this.getCategories();
+    this._authService.checktheme();
   }
 
   applyFilters() {
@@ -103,7 +105,6 @@ export class HomeComponent implements OnInit {
     },
       error: (error) => {
         console.log(error);
-
       }
     });
   }

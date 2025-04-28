@@ -14,5 +14,6 @@
 
         public bool IsOnSale { get; set; }
         public int? SaleId { get; set; }
+        public int? Stock { get; set; }
     }
 }

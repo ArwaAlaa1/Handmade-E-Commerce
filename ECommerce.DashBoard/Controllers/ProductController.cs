@@ -49,6 +49,7 @@ namespace ECommerce.DashBoard.Controllers
                         Id = p.Id,
                         Name = p.Name,
                         Cost = p.Cost,
+                        Stock = p.Stock,
                         SellingPrice = p.SellingPrice,
                         DiscountedPrice = activeSale != null
                             ? p.SellingPrice * (1 - activeSale.Percent / 100m)
@@ -82,6 +83,7 @@ namespace ECommerce.DashBoard.Controllers
                         Id = p.Id,
                         Name = p.Name,
                         Cost = p.Cost,
+                        Stock = p.Stock,
                         SellingPrice = p.SellingPrice,
                         DiscountedPrice = activeSale != null
                             ? p.SellingPrice * (1 - activeSale.Percent / 100m)
@@ -112,6 +114,7 @@ namespace ECommerce.DashBoard.Controllers
                 Description = product.Description,
                 AdditionalDetails = product.AdditionalDetails,
                 Cost = product.Cost,
+                Stock = product.Stock,
                 AdminProfitPercentage = product.AdminProfitPercentage,
                 SellingPrice = product.SellingPrice,
                 CategoryName = product.Category?.Name,
@@ -197,7 +200,9 @@ namespace ECommerce.DashBoard.Controllers
             {
                 Name = vm.Name,
                 Description = vm.Description,
+
                 Cost = vm.Cost,
+                Stock = vm.Stock,
                 CategoryId = vm.CategoryId,
                 AdditionalDetails = vm.AdditionalDetails,
                 SellerId = user.Id,
@@ -313,6 +318,7 @@ namespace ECommerce.DashBoard.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Cost = product.Cost,
+                Stock = product.Stock,
                 CategoryId = product.CategoryId,
                 AdditionalDetails = product.AdditionalDetails,
                 AdminProfitPercentage = profitPercentage,
@@ -403,9 +409,10 @@ namespace ECommerce.DashBoard.Controllers
             product.Description = vm.Description;
             product.AdditionalDetails = vm.AdditionalDetails;
             product.Cost = vm.Cost;
+            product.Stock = vm.Stock;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;
-            product.AdminProfitPercentage = vm.AdminProfitPercentage.Value;
+            product.AdminProfitPercentage = product.AdminProfitPercentage;
 
             // Delete old ProductColors
             var oldColors = product.ProductColors.ToList();

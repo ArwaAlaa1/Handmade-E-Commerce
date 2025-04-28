@@ -83,7 +83,7 @@ export class CartComponent {
         next: (res) => {
           console.log('Shipping data:', res);
           this.shippingCosts = res;
-          
+
         },
         error: (err) => console.error('Error loading Shipping Costs:', err)
       });
@@ -108,12 +108,14 @@ export class CartComponent {
 
   //remve item from cart
   RemoveItem(itemId:String):void {
-    this.cartData.cartItems = this.cartData.cartItems.filter((item: any) => item.itemId !== itemId);
+    const index = this.cartData.cartItems.findIndex(item => item.itemId === itemId);
+    this.cartData.cartItems.splice(index, 1);
+
     console.log('Updated cart data:', this.cartData);
     this.cartService.updateCart(this.cartData).subscribe({
       next: (res) => {
         console.log('Item removed:', res);
-        this.cartData = res;
+        // this.cartData = res;
 
         // this.cartData.cartItems = this.cartData.cartItems.filter((item: any) => item.itemId !== itemId);
         // this.cartService.getCartById().subscribe({
@@ -146,7 +148,7 @@ getDeliveryCost(city:string):void {
 
   console.log('Selected Item:', selectedItem);
 
-  this.deliveryCost = selectedItem.cost; 
+  this.deliveryCost = selectedItem.cost;
 }
 // Increase quantity
 Increase(itemId:string): void {

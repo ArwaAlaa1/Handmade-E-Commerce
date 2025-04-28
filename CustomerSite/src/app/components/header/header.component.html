@@ -1,4 +1,10 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav
+  class="navbar navbar-expand-lg"
+  style="
+    background-color: var(--background-colorMain);
+    color: var(--text-color);
+  "
+>
   <div class="container-fluid">
     <img
       src="../../../assets/img/HandmadeLogo.png"
@@ -7,7 +13,7 @@
       class="mr-4"
     />
     <a
-      class="navbar-brand ms-2 me-5 fa-bold"
+      class="navbar-brand ms-2 me-3 fa-bold"
       style="color: #6c7fd8; font-size: 1.5rem"
       >Handmade</a
     >
@@ -56,14 +62,14 @@
             <i class="fas fa-heart"></i> Favourite
           </a>
         </li>
-        <li *ngIf="isLogin" class="nav-item">
+        <li class="nav-item">
           <a
             class="nav-link d-flex align-items-center gap-2"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
-            routerLink="addresspop"
+            routerLink="cart"
           >
-            <i class="fas fa-heart"></i> addres
+            <i class="bi bi-cart-plus"></i> Cart
           </a>
         </li>
       </ul>
@@ -79,6 +85,9 @@
       </form> -->
 
       <ul class="navbar-nav ms-auto d-flex align-items-center gap-2">
+        <button (click)="toggleTheme()" class="btn btn-sm btn-outline-primary">
+          {{ isDarkMode ? "Light Mode" : "Dark Mode" }}
+        </button>
         <ng-container *ngIf="isLogin">
           <li class="nav-item">
             <span class="nav-link">Hello {{ userName }}</span>
@@ -145,4 +154,3 @@
     </div>
   </div>
 </nav>
-<br />

@@ -16,6 +16,7 @@ namespace ECommerce.Core.Models
         public string Description { get; set; }
         public decimal Cost { get; set; }
         public string? AdditionalDetails { get; set; }
+        public int Stock { get; set; }
 
         public decimal AdminProfitPercentage { get; set; }
         public string? SellerId { get; set;}

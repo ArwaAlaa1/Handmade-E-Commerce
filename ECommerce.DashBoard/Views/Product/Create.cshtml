@@ -49,6 +49,16 @@
                         <span asp-validation-for="Cost" class="text-danger"></span>
                     </div> *@
 
+                    <div class="mb-6">
+                        <label class="form-label" asp-for="Stock"></label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-user"></i></span>
+                            <input asp-for="Stock" type="number" min="1" class="form-control" placeholder="Product Stock" />
+                        </div>
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+
+
                     <div class="mb-3">
                         <label asp-for="Cost" class="form-label"></label>
                         <input asp-for="Cost" class="form-control" />

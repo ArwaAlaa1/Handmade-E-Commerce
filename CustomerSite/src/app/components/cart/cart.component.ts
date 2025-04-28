@@ -25,7 +25,7 @@ export class CartComponent {
   isLogin: boolean = false;
   // deliveryCost: number = 0;
    constructor(private _shipCost:ShippingService,private cdr: ChangeDetectorRef,private _cookie:CookieService,private cartService: CartService,private _auth: AuthService) {
-  
+
     }
 
     ngOnInit(): void {
@@ -58,7 +58,7 @@ export class CartComponent {
         next: (res) => {
           console.log('Shipping data:', res);
           this.shippingCosts = res;
-          
+
         },
         error: (err) => console.error('Error loading Shipping Costs:', err)
       });
@@ -69,12 +69,14 @@ export class CartComponent {
 
   //remve item from cart
   RemoveItem(itemId:String):void {
-    this.cartData.cartItems = this.cartData.cartItems.filter((item: any) => item.itemId !== itemId);
+    const index = this.cartData.cartItems.findIndex(item => item.itemId === itemId);
+    this.cartData.cartItems.splice(index, 1);
+
     console.log('Updated cart data:', this.cartData);
     this.cartService.removeItemFromCart(this.cartData).subscribe({
       next: (res) => {
         console.log('Item removed:', res);
-        this.cartData = res;
+        // this.cartData = res;
 
         // this.cartData.cartItems = this.cartData.cartItems.filter((item: any) => item.itemId !== itemId);
         // this.cartService.getCartById().subscribe({
@@ -84,21 +86,21 @@ export class CartComponent {
         //   },
         //   error: (err) => console.error('Error loading cart:', err)
         // });
-       
-     
-        this.cartData.cartItems = [...this.cartData.cartItems];
+
+
+        // this.cartData.cartItems = [...this.cartData.cartItems];
       },
       error: (err) => console.error('Error removing item:', err)
     });
-   
+
   }
 
 //   GetDelivry(itemId:number): void {
-   
+
 //     console.log('Item ID:', itemId);
 //     const selectedItem = this.shippingCosts.find(item => item.id == itemId);
 //     console.log(selectedItem);
-   
+
 // }
 
 deliveryCost: number = 0; // أو null حسب رغبتك
@@ -116,7 +118,7 @@ GetDelivry(event: Event): void {
   }
 
   const selectedItem = this.shippingCosts.find(item => item.id === selectedId);
-   
+
   if (!selectedItem) {
     console.error('Item not found');
     this.deliveryCost = 0;
@@ -125,7 +127,7 @@ GetDelivry(event: Event): void {
 
   console.log('Selected Item:', selectedItem);
 
-  this.deliveryCost = selectedItem.cost; 
+  this.deliveryCost = selectedItem.cost;
 }
 
 

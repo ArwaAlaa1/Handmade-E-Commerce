@@ -1,6 +1,9 @@
-﻿using ECommerce.Core.Models;
+﻿using ECommerce.Core;
+using ECommerce.Core.Models;
+using ECommerce.Core.Models.Order;
 using ECommerce.DashBoard.Helper;
 using ECommerce.DashBoard.ViewModels;
+using ECommerce.Repository;
 using ECommerce.Services.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,10 +16,12 @@ namespace ECommerce.DashBoard.Controllers
     public class TraderController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TraderController(UserManager<AppUser> userManager)
+        public TraderController(UserManager<AppUser> userManager , IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IActionResult> Index(string Active ="all")
@@ -143,5 +148,123 @@ namespace ECommerce.DashBoard.Controllers
             await _userManager.UpdateAsync(trader);
             return RedirectToAction(nameof(Index));
         }
+
+
+
+        public async Task<IActionResult> Report(string id,string range = "month")
+        {
+
+            var products = await _unitOfWork.Repository<Product>()
+                .GetAllAsync(includeProperties: "Category");
+
+            var sales = await _unitOfWork.Repository<Sale>().GetAllAsync();
+
+            var trader = await _userManager.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+
+            // Include OrderItems, Product, and Category
+            var ordersQuery = _unitOfWork.Repository<Order>()
+                .GetQueryable(include: o => o.Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                    .ThenInclude(p => p.Category));
+
+            // Filter for supplier
+             ordersQuery = ordersQuery.Where(o => o.OrderItems.Any(oi => oi.TraderId == id));
+            
+
+            // Filter by range
+            var now = DateTimeOffset.UtcNow;
+            var filteredOrders = range switch
+            {
+                "day" => ordersQuery.Where(o => o.OrderDate.Date == now.Date),
+                "week" => ordersQuery.Where(o => o.OrderDate >= now.AddDays(-7)),
+                "month" => ordersQuery.Where(o => o.OrderDate >= now.AddMonths(-1)),
+                "year" => ordersQuery.Where(o => o.OrderDate >= now.AddYears(-1)),
+                _ => ordersQuery
+            };
+
+            var orders = await filteredOrders.ToListAsync();
+
+            // Existing reports
+            var totalOrders = orders.Count();
+            var totalRevenue = orders.Sum(o => o.OrderItems.Sum(oi => oi.TotalPrice));
+
+            var bestSellers = orders
+                .SelectMany(o => o.OrderItems)
+                .GroupBy(oi => oi.Product.Name)
+                .Select(g => new BestSellerVM
+                {
+                    Product = g.Key ?? "Unknown",
+                    Quantity = g.Sum(oi => oi.Quantity)
+                })
+                .OrderByDescending(x => x.Quantity)
+                .Take(5)
+                .ToList();
+
+            var revenueByProduct = orders
+                .SelectMany(o => o.OrderItems)
+                .GroupBy(oi => oi.Product.Name)
+                .Select(g => new RevenueVM
+                {
+                    Product = g.Key ?? "Unknown",
+                    Revenue = g.Sum(oi => oi.TotalPrice)
+                })
+                .OrderByDescending(r => r.Revenue)
+                .Take(5)
+                .ToList();
+
+            // Order Status Distribution
+            var orderStatuses = orders
+                .GroupBy(o => o.Status.ToString()) // Use enum's string representation
+                .Select(g => new OrderStatusVM
+                {
+                    Status = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+
+            // Top Customers by Orders (using CustomerEmail)
+            var topCustomers = orders
+                .GroupBy(o => o.CustomerEmail ?? "Unknown")
+                .Select(g => new TopCustomerVM
+                {
+                    CustomerEmail = g.Key,
+                    OrderCount = g.Count()
+                })
+                .OrderByDescending(x => x.OrderCount)
+                .Take(5)
+                .ToList();
+
+            // Revenue by Product Category
+            var categoryRevenues = orders
+                .SelectMany(o => o.OrderItems)
+                .GroupBy(oi => oi.Product.Category != null ? oi.Product.Category.Name : "Unknown")
+                .Select(g => new CategoryRevenueVM
+                {
+                    Category = g.Key,
+                    Revenue = g.Sum(oi => oi.TotalPrice)
+                })
+                .OrderByDescending(r => r.Revenue)
+                .Take(5)
+                .ToList();
+
+            var dashboardVM = new DashboardReportVM
+            {
+                TotalOrders = totalOrders,
+                TotalRevenue = totalRevenue,
+                BestSellers = bestSellers,
+                RevenueByProduct = revenueByProduct,
+                OrderStatuses = orderStatuses,
+                TopCustomers = topCustomers,
+                CategoryRevenues = categoryRevenues,
+                Range = range
+            };
+
+            ViewBag.TraderName = trader.UserName;
+               
+
+            return View(dashboardVM);
+        }
+
     }
 }

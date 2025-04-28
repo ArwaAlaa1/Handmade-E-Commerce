@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using ECommerce.Core.Models;
 using ECommerce.Core.Models.Cart;
 using ECommerce.Core.Services.Contract;
 using StackExchange.Redis;
@@ -39,7 +40,22 @@ namespace ECommerce.Repository.Repositories
             return await _database.KeyDeleteAsync(cartId);
                
         }
+        public async Task<Cart> UpdateCartAsync(Cart cart)
+        {
+            if (cart.CartItems == null || !cart.CartItems.Any())
+            {
+                await DeleteCartAsync($"cart:{cart.Id}");
+                return null;
+            }
 
-     
+            var _cart = await _database.StringSetAsync(cart.Id, JsonSerializer.Serialize(cart), TimeSpan.FromDays(2));
+            if (_cart)
+            {
+                return await GetCartAsync(cart.Id);
+            }
+            return null;
+        }
+
+
     }
 }

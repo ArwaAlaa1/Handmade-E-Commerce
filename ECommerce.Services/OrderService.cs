@@ -18,12 +18,14 @@ namespace ECommerce.Services
         private readonly ICartRepository _cartRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOrderRepository _orderRepo;
+        private readonly IPaymentService paymentService;
 
-        public OrderService(ICartRepository cartRepository, IUnitOfWork unitOfWork, IOrderRepository orderRepo)
+        public OrderService(ICartRepository cartRepository, IUnitOfWork unitOfWork, IOrderRepository orderRepo, IPaymentService paymentService)
         {
             _cartRepository = cartRepository;
             _unitOfWork = unitOfWork;
             _orderRepo = orderRepo;
+            this.paymentService = paymentService;
         }
         public async Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId, int shippingCostId, int ShippingAddressId)
         {
@@ -56,8 +58,14 @@ namespace ECommerce.Services
             var ShippingCost = await _unitOfWork.Repository<ShippingCost>().GetByIdAsync(shippingCostId);
             TotalPrice += ShippingCost.Cost;
             //createorder
-           
-            var order = new Order(CustomerEmail, shippingCostId, ShippingAddressId, TotalPrice, OrderItems,"");
+            var existingOrder = await _orderRepo.GetOrderByPaymentIdAsync(cart.PaymentId);
+            if ( existingOrder != null)
+            {
+                await CancelOrder(existingOrder.Id);
+                await paymentService.CreateOrUpdatePaymentAsync(CartId, ShippingCost.Id);
+            }
+
+            var order = new Order(CustomerEmail, shippingCostId, ShippingAddressId, TotalPrice, OrderItems,cart.PaymentId);
             //save to db
             await _unitOfWork.Repository<Order>().AddAsync(order);
             var rows = await _unitOfWork.SaveAsync();

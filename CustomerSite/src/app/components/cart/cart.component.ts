@@ -94,9 +94,6 @@ export class CartComponent {
         error: (err) => console.error('Error loading Shipping Costs:', err)
       });
 
-     
-
-
   }
 
   //get trader by id
@@ -141,7 +138,6 @@ Increase(itemId:string): void {
       console.log('Updated cart data:', this.cartData);
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {
-          console.log('Item quantity increased:', res);
           this.cartData = res;
         },
         error: (err) => console.error('Error increasing item quantity:', err)
@@ -168,26 +164,6 @@ Decrease(itemId:string): void {
     }
   
 }
-
-
-//Get All Address
-// getAllAddress(): void {
-//   this._userService.getAllAddress().subscribe({
-//     next: (res) => {
-//       console.log('Address data:', res);
-//       this.allAddress = res;
-//     },
-//     error: (err) => console.error('Error loading Address:', err)
-//   });
-// }
-
-// openAddressModal() {
-//   this.modalService.open(AddressPopUpComponent, {
-//     centered: true,
-//     size: 'lg'
-//   });
-// }
-
 
   openModal() {
     

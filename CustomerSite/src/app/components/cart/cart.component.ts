@@ -95,7 +95,10 @@ export class CartComponent {
 
   //Calculate subtotal and total
   calculateTotal(cartdata:Cart): void {
+    this.subTotal = 0;
+    this.total = 0;
     for (const item of cartdata.cartItems) {
+     
       if (item.sellingPrice != null) {
         this.subTotal += item.sellingPrice ;
       } else {
@@ -117,14 +120,6 @@ export class CartComponent {
         console.log('Item removed:', res);
         // this.cartData = res;
 
-        // this.cartData.cartItems = this.cartData.cartItems.filter((item: any) => item.itemId !== itemId);
-        // this.cartService.getCartById().subscribe({
-        //   next: (res) => {
-        //     console.log('Cart data:', res);
-        //     this.cartData = res;
-        //   },
-        //   error: (err) => console.error('Error loading cart:', err)
-        // });
         this.getDeliveryCost(this.addressSelected.city);
           this.calculateTotal(this.cartData);
      
@@ -157,8 +152,10 @@ Increase(itemId:string): void {
   
       this.cartData.cartItems[itemIndex].quantity += 1;
       if(this.cartData.cartItems[itemIndex].sellingPrice != null){
-        this.cartData.cartItems[itemIndex].sellingPrice
-        = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].sellingPrice;
+       
+        var x= this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].sellingPrice;
+        this.cartData.cartItems[itemIndex].sellingPrice=x;
+        
         this.cartData.cartItems[itemIndex].price
         = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
     
@@ -180,37 +177,38 @@ Increase(itemId:string): void {
     
 }
 // Decrease quantity
-Decrease(itemId:string): void {
+Decrease(itemId: string): void {
   const itemIndex = this.cartData.cartItems.findIndex((cartItem: any) => cartItem.itemId === itemId);
+
   if (itemIndex !== -1) {
-  
-      this.cartData.cartItems[itemIndex].quantity -= 1;
-      
-      if(this.cartData.cartItems[itemIndex].sellingPrice != null){
-        this.cartData.cartItems[itemIndex].sellingPrice
-        = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].sellingPrice;
-        this.cartData.cartItems[itemIndex].price
-        = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
-    
+    const item = this.cartData.cartItems[itemIndex];
+
+    if (item.quantity > 1) {
+      item.quantity -= 1;
+      if (item.sellingPrice != null) {
+        item.priceAfterSale = item.quantity * item.sellingPrice;
+      } else {
+        item.priceAfterSale = item.price; // لو مافيش خصم، نخليه زي السعر الأصلي
       }
-    else{
-      this.cartData.cartItems[itemIndex].price
-      = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
+    } else {
+     item.quantity=1
+      console.warn('Minimum quantity reached.');
+      return;
     }
 
-      console.log('Updated cart data:', this.cartData);
-      this.cartService.updateCart(this.cartData).subscribe({
-        next: (res) => {
-          console.log('Item quantity increased:', res);
-          this.cartData = res;
-        
-          this.calculateTotal(this.cartData);
-        },
-        error: (err) => console.error('Error increasing item quantity:', err)
-      });
-    }
-    
+    console.log('Updated cart data:', this.cartData);
+
+    this.cartService.updateCart(this.cartData).subscribe({
+      next: (res) => {
+        console.log('Item quantity decreased:', res);
+        this.cartData = res;
+        this.calculateTotal(this.cartData);
+      },
+      error: (err) => console.error('Error decreasing item quantity:', err)
+    });
+  }
 }
+
 
   openModal() {
     

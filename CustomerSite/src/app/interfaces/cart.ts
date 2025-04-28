@@ -16,6 +16,7 @@ export interface Cart {
     price: number;
     color: string;
     sellingPrice: number;
+    priceAfterSale: number;
     unitPrice:number;
     size: string;
     activeSale: number;

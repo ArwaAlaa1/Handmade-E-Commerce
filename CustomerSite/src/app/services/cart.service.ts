@@ -38,7 +38,17 @@ export class CartService {
     return new HttpHeaders();
   }
 
+  AddToCart(cart:Cart): Observable<any>{
+    // const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    if  (this.token) {
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization': `Bearer ${this.token}` });
+      return this.http.post(`${this.baseUrl}`,cart, { headers });
+    }
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.post(`${this.baseUrl}`,cart, { headers });
+  }
  
+
   getCartById(): Observable<any>{
     // const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 

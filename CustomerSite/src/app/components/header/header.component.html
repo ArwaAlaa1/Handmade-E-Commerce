@@ -62,6 +62,16 @@
             <i class="fas fa-heart"></i> Favourite
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link d-flex align-items-center gap-2"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            routerLink="cart"
+          >
+            <i class="bi bi-cart-plus"></i> Cart
+          </a>
+        </li>
       </ul>
 
       <!-- <form class="d-flex mx-2" role="search">
@@ -144,4 +154,3 @@
     </div>
   </div>
 </nav>
-<br />

@@ -14,6 +14,8 @@ namespace ECommerce.DashBoard.ViewModels
         [StringLength(100)]
         public string Name { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Product Quantity is required.")]
+        public int Stock { get; set; }
         public string Description { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]

@@ -81,10 +81,10 @@ namespace ECommerce.Controllers
                 return BadRequest("User ID cannot be null or empty.");
            
             var favorites = _unitOfWork.Favorites.GetAllUserFavorite(userId);
-            var Favoritesproducts = favorites.Result;
+            //var Favoritesproducts = favorites.Result;
             if (favorites == null || !favorites.IsCompleted )
                 return NotFound("No favorites found for this user.");
-            return Ok(Favoritesproducts);
+            return Ok(favorites);
         }
 
     }

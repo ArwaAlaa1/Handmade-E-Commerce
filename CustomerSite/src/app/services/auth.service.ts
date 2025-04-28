@@ -11,6 +11,7 @@ import { environment } from '../../environments/environment.development';
 export class AuthService {
 
   userData = new BehaviorSubject<any>(null);
+  theme : string = 'light';
 
   constructor(private _HttpClient: HttpClient, private _Router: Router, private _CookieService: CookieService)
   {
@@ -31,6 +32,17 @@ export class AuthService {
     });
 
     this.userData.next(userData);
+    this.checktheme();
+  }
+
+  checktheme():void{
+    const theme01 = this._CookieService.get('theme');
+    if(!theme01){
+      this._CookieService.set('theme', JSON.stringify(this.theme), {
+        expires: 30,
+        path: '/',
+      });
+    }
   }
 
   loadUserData() {

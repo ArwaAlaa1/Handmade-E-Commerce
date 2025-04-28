@@ -15,8 +15,8 @@ export class OffersComponent implements OnInit {
 
   currentPage: number = 1;
   itemsPerPage: number = 4;
-  totalCount: number = 11;
-  totalPages: number = 2;
+  totalCount: number = 0;
+  totalPages: number = 0;
   isLoading = true;
   imageBaseUrl:string = environment.baseImageURL;
   allProducts: any[] = [];

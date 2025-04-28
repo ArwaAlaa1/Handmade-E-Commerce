@@ -197,6 +197,7 @@ namespace ECommerce.DashBoard.Controllers
             {
                 Name = vm.Name,
                 Description = vm.Description,
+
                 Cost = vm.Cost,
                 CategoryId = vm.CategoryId,
                 AdditionalDetails = vm.AdditionalDetails,
@@ -405,7 +406,7 @@ namespace ECommerce.DashBoard.Controllers
             product.Cost = vm.Cost;
             product.CategoryId = vm.CategoryId;
             product.SellerId = user.Id;
-            product.AdminProfitPercentage = vm.AdminProfitPercentage.Value;
+            product.AdminProfitPercentage = product.AdminProfitPercentage;
 
             // Delete old ProductColors
             var oldColors = product.ProductColors.ToList();

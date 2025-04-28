@@ -37,7 +37,7 @@ export const routes: Routes = [
   {path:'resetpassword/:email', component:ResetPasswordComponent, title:'Forget Password Page'},
   {path:'changepassword', canActivate:[AuthGuard], component:ChangePasswordComponent, title:'Change Password Page'},
 
-  {path:'addresspop', component:AddressPopUpComponent, title:'Address Page'},
+  // {path:'addresspop', component:AddressPopUpComponent, title:'Address Page'},
 
   {path:'cart', component:CartComponent, title:'Cart Page'},
 

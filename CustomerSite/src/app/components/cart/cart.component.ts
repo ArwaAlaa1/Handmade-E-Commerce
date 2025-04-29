@@ -182,7 +182,8 @@ declare var bootstrap: any;
         this.updateCartAndTotals();
       }
     }
-  
+    
+    
     updateCartAndTotals(): void {
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {

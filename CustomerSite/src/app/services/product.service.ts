@@ -54,13 +54,17 @@ export class ProductService {
 
     return this._HttpClient.get(url, { headers: this.getAuthHeaders() });
   }
-  getProductById(productId: number): Observable<any> {
-
+  getProductById(id:number): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-    let url = `${environment.baseURL}Products/GetProductByID/${productId}`;
-    return this._HttpClient.get(url, { headers });
+    return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers });
   }
+  // getProductById(productId: number): Observable<any> {
+
+  //   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+  //   let url = `${environment.baseURL}Products/GetProductByID/${productId}`;
+  //   return this._HttpClient.get(url, { headers });
+  // }
   getProById(id:number): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers });

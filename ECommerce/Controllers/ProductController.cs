@@ -127,6 +127,41 @@ namespace ECommerce.Controllers
             });
         }
 
+
+        [HttpGet("GetProductByID/{id}")]
+        public async Task<IActionResult> GetByID(int id)
+        {
+            var pro = await _unitOfWork.Repository<Product>().GetByIdWithIncludeAsync(id, "Category,Seller,ProductColors,ProductPhotos,ProductSizes");// ().GetByIdWithIncludeAsync(id,"");
+            //return Ok(pro);
+
+            return Ok(new
+            {
+                Id = pro.Id,
+                Name = pro.Name,
+                Description = pro.Description,
+                AdditionalDetails = pro.AdditionalDetails,
+                //BasePrice = basePrice,
+                SellingPrice = pro.SellingPrice,
+                DiscountedPrice = pro.DiscountedPrice,
+                IsOnSale = pro.IsOnSale != null,
+                SalePercent = pro.IsOnSale,//.Percent,
+                                           // IsFavorite =userId != null && favoriteProductIds.Contains(p.Id),
+                Category = new
+                {
+                    Id = pro.Category.Id,
+                    Name = pro.Category.Name
+                },
+                Seller = new
+                {
+                    Name = pro.Seller.UserName,
+                    Email = pro.Seller.Email,
+                    Photo = pro.Seller.Photo
+                },
+
+                Photos = pro.ProductPhotos
+            });
+        }
+
         [Authorize(Roles =SD.CustomerRole)]
         [HttpGet("GetFavList")]
         public async Task<IActionResult> GetFavList(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice/*,string? email*/)
@@ -210,6 +245,15 @@ namespace ECommerce.Controllers
                             Url = photo.PhotoLink
                         }).ToList(),
 
+
+                Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+
+                Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                {
+                    Name = s.Size,
+                    ExtraCost = s.ExtraCost
+                }).ToList() ?? new List<SizeDTO>()
+
                     //Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
 
                     //Sizes = p.ProductSizes?.Select(s => new SizeDTO
@@ -226,10 +270,9 @@ namespace ECommerce.Controllers
                 TotalCount = totalCount,
                 TotalPages = totalPages,
                 Products = allProducts
+
             });
         }
-
-
 
         [HttpGet("GetProductsByCategory")]
         public async Task<IActionResult> GetProductsByCategory(int categoryId, int pageSize, int pageIndex)
@@ -523,6 +566,7 @@ namespace ECommerce.Controllers
                 },
                 Seller = new
                 {
+                    Id=product.Seller.Id,
                     Name = product.Seller.UserName,
                     Email = product.Seller.Email,
                     Photo = product.Seller.Photo

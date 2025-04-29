@@ -22,98 +22,85 @@
         <!-- <button type="button" class="btn btn-primary" (click)="openAddressModal()">
     Open Address Modal
   </button> -->
+  
 
-        <!-- Item 1 -->
-        @if (cartData.cartItems?.length == 0) {
-        <div class="text-center py-5">
-          <h4 class="text-muted">Your cart is empty</h4>
-          <a href="#" class="btn btn-primary">Continue Shopping</a>
-        </div>
-        }@else { @for (item of cartData.cartItems; track $index) {
-        <div class="rounded-2 p-2 border">
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <img
-              src="{{ imageBaseUrl }}{{ item.photoUrl }}"
-              class="rounded-circle"
-              alt="shop logo"
-            />
-            <!-- onclick="getTrader(item.sellerId)" -->
-            <h6 class="mb-0">{{ item.sellerName }}</h6>
-            <i class="bi bi-three-dots-vertical ms-auto"></i>
-          </div>
-          <div class="d-flex gap-3 mb-3">
-            <img
-              src="{{ imageBaseUrl }}{{ item.photoUrl }}"
-              class="rounded"
-              alt="Product Image"
-              width="100"
-              height="100"
-            />
-            <div class="flex-grow-1">
-              <h6 class="fw-semibold">{{ item.productName }}</h6>
-              <div class="d-flex flex-wrap gap-2 my-1">
-                <div>
-                  <div class="d-flex flex-wrap gap-2 my-1">
-                    @if (item.color !=null) {
-                    <span class="badge bg-secondary"
-                      >Color: {{ item.color }}</span
-                    >
-                    } @if (item.size !=null) {
-                    <span class="badge bg-secondary"
-                      >Size: {{ item.size }}</span
-                    >
-                    }
-                  </div>
-                  @if (item.customizeInfo !=null) {
-                  <span class="badge bg-secondary"
-                    >Customize Info: {{ item.customizeInfo }}</span
-                  >
-                  }
-                </div>
-                <div class="ms-auto text-end">
-                  @if (item.activeSale !=null && item.sellingPrice !=null) {
-                  <span class="badge bg-success"
-                    >{{ item.activeSale }} % off</span
-                  ><br />
-                  <strong class="text-success"
-                    >EGP {{ item.sellingPrice }}</strong
-                  ><br />
-                  <small class="text-muted text-decoration-line-through"
-                    >EGP {{ item.price }}</small
-                  >
-                  } @else{
-                  <strong class="text-success">EGP {{ item.price }}</strong
-                  ><br />
-                  }
-
-                  <!-- <small class="text-muted text-decoration-line-through">EGP {{item.price}}</small> -->
-                </div>
+  <!-- Item 1 -->
+  @if (cartData.cartItems?.length == 0) {
+    <div class="text-center py-5">
+      <h4 class="text-muted">Your cart is empty</h4>
+      <a href="#" class="btn btn-primary">Continue Shopping</a>
+    </div>
+}@else {
+  @for (item of cartData.cartItems; track $index) {
+    <div class="rounded-2 p-2 border">
+      <div class="d-flex align-items-center gap-2 mb-3 ">
+        <img src={{imageBaseUrl}}{{item.photoUrl}} class="rounded-circle" alt="shop logo">
+        <!-- onclick="getTrader(item.sellerId)" -->
+        <h6 class="mb-0" 
+        
+        >{{item.sellerName}}</h6>
+        <i class="bi bi-three-dots-vertical ms-auto"></i>
+      </div>
+      <div class="d-flex gap-3 mb-3">
+        <img src={{imageBaseUrl}}{{item.photoUrl}} class="rounded" alt="Product Image" width="100" height="100">
+        <div class="flex-grow-1">
+          <h6 class="fw-semibold">{{item.productName}}</h6>
+          <div class="d-flex flex-wrap gap-2 my-1">
+           <div>
+            <div class="d-flex flex-wrap gap-2 my-1">
+              @if (item.color !=null) {
+                <span class="badge bg-secondary">Color: {{item.color}}</span>
+              }
+              @if (item.size !=null) {
+                <span class="badge bg-secondary">Size: {{item.size}}</span>
+              }
+           
               </div>
-
-              <div class="d-flex align-items-center gap-2 mt-2">
-                <div class="quantity-selector">
-                  <span (click)="Decrease(item.itemId)">&#8722;</span>
-                  <span>{{ item.quantity }}</span>
-                  <span (click)="Increase(item.itemId)">&#43;</span>
-                </div>
-
-                <a href="#" class="text-decoration-underline small">Edit</a>
-                <a href="#" class="text-decoration-underline small"
-                  >Save for later</a
-                >
-                <a
-                  (click)="RemoveItem(item.itemId)"
-                  class="text-decoration-underline text-danger small"
-                  >Remove</a
-                >
-              </div>
+              @if (item.customizeInfo !=null) {
+                <span class="badge bg-secondary">Customize Info: {{item.customizeInfo}}</span>
+              }
+           
+             
+           </div>
+            <div class="ms-auto text-end ">
+              @if (item.activeSale !=null && item.priceAfterSale !=null) {
+                <span class="badge bg-success">{{item.activeSale}} % off</span><br>
+                <strong class="text-success">EGP {{ item.priceAfterSale}}</strong><br>
+                <small class="text-muted text-decoration-line-through">EGP {{item.price}}</small>
+              }
+              @else{
+                <strong class="text-success">EGP {{item.price}}</strong><br>
+              }
+            
+              <!-- <small class="text-muted text-decoration-line-through">EGP {{item.price}}</small> -->
             </div>
           </div>
+         
+    
+          <div class="d-flex align-items-center gap-2 mt-2">
+            <div class="quantity-selector">
+              <span (click)="Decrease(item.itemId)">&#8722;</span>
+              <span>{{ item.quantity }}</span>
+              <span (click)="Increase(item.itemId)">&#43;</span>
+            </div>
+            
+            <a href="#" class="text-decoration-underline small">Edit</a>
+            <a href="#" class="text-decoration-underline small">Save for later</a>
+            <a (click)="RemoveItem(item.itemId)" class="text-decoration-underline text-danger small">Remove</a>
+            
+          </div>
         </div>
-
-        <hr class="border-top my-3" />
-        } }
       </div>
+    </div>
+    
+
+    <hr class="border-top my-3 " />
+  }
+}
+
+ 
+  
+</div>
     </div>
     <!-- Summary Section -->
     <div class="col-md-5">
@@ -135,32 +122,24 @@
       <div class="bg-light p-4 rounded shadow-sm">
         <h5 class="fw-bold mb-4">Order Summary</h5>
 
-        <!-- <div class="mb-3">
-            <label class="form-label">Country *</label>
-            <select class="form-select" (change)="GetDelivry($event)">
-              <option value="">Please Select a region, state</option>
-              <option *ngFor="let item of shippingCosts" [value]="item.id">
-                {{item.name}} ----- {{item.deliveryTime}}
-              </option>
-            </select>
-          </div> -->
-        <div class="d-flex justify-content-between mb-2">
-          <span>Sub Total</span>
-          <span>{{ subTotal }}</span>
-        </div>
-        <div class="d-flex justify-content-between mb-2">
-          <span>Delivery Charges</span>
-          <span>{{ deliveryCost }}</span>
-        </div>
-        <hr />
-        <div class="d-flex justify-content-between fw-bold">
-          <span>Total Amount</span>
-          <span>EGP {{ subTotal + deliveryCost }}</span>
-        </div>
-        <div class="d-flex justify-content-lg-center fw-bold w-100 mt-4">
-          <button class="btn btn-success btn-lg w-100">Check out →</button>
-        </div>
-      </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Sub Total</span>
+            <span>{{subTotal}}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Delivery Charges</span>
+            <span>{{deliveryCost}}</span>
+          </div>
+          <hr> 
+          <div class="d-flex justify-content-between fw-bold">
+            <span>Total Amount</span>
+            <span>EGP {{total}}</span>
+          </div>
+          <div class="d-flex justify-content-lg-center fw-bold w-100 mt-4">
+            <button class="btn btn-success btn-lg w-100">Check out →</button>
+          </div>
+        
+      
     </div>
   </div>
 </div>

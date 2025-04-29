@@ -5,7 +5,7 @@
 
 <section class="py-5">
   <div class="container">
-    <div *ngIf="isLoading" class="text-center">
+    <div *ngIf="  " class="text-center">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">loading...</span>
       </div>
@@ -81,6 +81,21 @@
           <div
             class="position-relative overflow-hidden product-image-container"
           >
+<<<<<<< HEAD
+            <i class="bi bi-heart"></i>
+          </button>
+
+          <button 
+            *ngIf="product.IsFavorite"
+            class="favorite-btn"
+            (click)="deleteFromFavorite(product.id)"
+          >
+            <i class="bi bi-heart-fill text-danger"></i>
+          </button>
+
+          <div class="position-relative overflow-hidden">
+=======
+>>>>>>> 3fe2424c398972ee1969bf6cf3e067d0c11d7b2e
             <img
               width="100%"
               height="250"
@@ -88,6 +103,18 @@
               class="card-img-top default-img"
               [alt]="product.name"
             />
+<<<<<<< HEAD
+            <span class="badge bg-danger position-absolute top-0 start-0 m-2">{{
+              product.descreption
+            }}</span>
+            <div class="position-absolute top-0 end-0 m-2 d-flex gap-2">
+              <a href="#" class="btn btn-sm btn-light" title="Wishlist">
+                <i class="bi bi-heart"></i>
+              </a>
+                <a [attr.href]="'/ProductDetails/' + product.id" class="btn btn-sm btn-light" title="Quick View">
+                  <i class="bi bi-eye"></i>
+                </a>
+=======
             <img
               width="100%"
               height="250"
@@ -124,9 +151,11 @@
               <button
                 class="btn btn-light btn-sm action-btn"
                 title="Add to Cart"
+                (click)="addToCart(product.id,1)"
               >
                 <i class="bi bi-cart-plus"></i>
               </button>
+>>>>>>> 3fe2424c398972ee1969bf6cf3e067d0c11d7b2e
             </div>
           </div>
 

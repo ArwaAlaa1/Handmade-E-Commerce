@@ -75,17 +75,23 @@ namespace ECommerce.Controllers
         }
 
         [HttpGet("GetUserFavorite/{userid}")]
-        public ActionResult GetUserFavorites(string userId) 
+        public async Task<ActionResult> GetUserFavorites(string userId)
         {
             if (string.IsNullOrEmpty(userId))
                 return BadRequest("User ID cannot be null or empty.");
-           
-            var favorites = _unitOfWork.Favorites.GetAllUserFavorite(userId);
-            //var Favoritesproducts = favorites.Result;
-            if (favorites == null || !favorites.IsCompleted )
+
+
+            var favorites = await _unitOfWork.Favorites.GetAllUserFavorite(userId);
+
+            if (favorites == null || favorites.Count == 0)
                 return NotFound("No favorites found for this user.");
+
+
+           
+
             return Ok(favorites);
         }
+
 
     }
 }

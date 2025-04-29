@@ -1,6 +1,7 @@
+
 import { environment } from './../../../environments/environment.development';
 import { ShippingService } from './../../services/shipping.service';
-import { ChangeDetectorRef, Component, NgModule, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
@@ -10,7 +11,10 @@ import { Cart } from '../../interfaces/cart';
 import { UserService } from '../../services/user.service';
 import { AddressPopUpComponent } from "../../address-pop-up/address-pop-up.component";
 import { v4 as uuidv4 } from 'uuid';
+import { PaymentService } from '../../services/payment.service';
 import { Subscription } from 'rxjs';
+import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js'; 
+import { log } from 'console';
 declare var bootstrap: any; 
 @Component({
   selector: 'app-cart',
@@ -35,13 +39,22 @@ declare var bootstrap: any;
 
   imageBaseUrl: string = `${environment.baseImageURL}images/`;
   isLogin: boolean = false;
-
+  isLoading: boolean = false;
+  
+  errorMessage: string | null = null;
+  stripe: Stripe | null = null;
+  elements: StripeElements | null = null;
+  paymentElement: StripePaymentElement | null = null;
+  @ViewChild('paymentElement') paymentElementRef!: ElementRef; 
+  clientSecret: string | null = null;
    constructor(private _userService:UserService,private _shipCost:ShippingService,
     private cdr: ChangeDetectorRef,private _cookie:CookieService,
-    private cartService: CartService,private _auth: AuthService) {
+    private cartService: CartService,private _auth: AuthService
+  ,private PaymentService :PaymentService,private router: Router) {
   
-    }
-    ngOnInit(): void {
+}
+async ngOnInit(): Promise<void> {
+      this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
       const userSub = this._auth.userData.subscribe({
         next: (response) => {
           this.userData = response;
@@ -70,24 +83,39 @@ declare var bootstrap: any;
       });
       this.subscriptions.push(shippingSub);
     }
+    //
+
   
     ngOnDestroy(): void {
       this.subscriptions.forEach(sub => sub.unsubscribe());
     }
   
+    // calculateTotal(cartData: Cart): void {
+    //   this.subTotal = 0;
+    //   for (const item of cartData.cartItems) {
+    //     if (item.priceAfterSale != 0) {
+    //       this.subTotal += item.priceAfterSale??0;
+    //     } else {
+    //       this.subTotal += item.price??0;
+    //     }
+    //     // this.subTotal += item.priceAfterSale ?? item.price;
+    //   }
+    //   this.total = this.subTotal + this.deliveryCost;
+    // }
     calculateTotal(cartData: Cart): void {
       this.subTotal = 0;
-      for (const item of cartData.cartItems) {
-        if (item.priceAfterSale != 0) {
-          this.subTotal += item.priceAfterSale;
-        } else {
-          this.subTotal += item.price;
+      if (cartData.cartItems && cartData.cartItems.length > 0) {
+        for (const item of cartData.cartItems) {
+          const price = item.activeSale && item.priceAfterSale ? item.priceAfterSale : item.price;
+          this.subTotal += (price ?? 0) * (item.quantity ?? 1);
         }
-        // this.subTotal += item.priceAfterSale ?? item.price;
       }
-      this.total = this.subTotal + this.deliveryCost;
+      this.total = this.subTotal + (this.deliveryCost ?? 0);
+      console.log('Subtotal:', this.subTotal, 'Delivery Cost:', this.deliveryCost, 'Total:', this.total);
+      this.cdr.detectChanges();
     }
-  
+
+
     updateAddress(addressId: number): void {
       if (addressId == null) {
         const sub = this._userService.getAllAddress().subscribe({
@@ -143,8 +171,7 @@ declare var bootstrap: any;
         error: (err) => console.error('Error increasing item quantity:', err)
       });
     }
-    
-  
+   
     Decrease(itemId: string): void {
       const item = this.cartData.cartItems.find(i => i.itemId === itemId);
       if (!item) return;
@@ -183,6 +210,7 @@ declare var bootstrap: any;
       }
     }
     
+   
     
     updateCartAndTotals(): void {
       this.cartService.updateCart(this.cartData).subscribe({
@@ -197,6 +225,7 @@ declare var bootstrap: any;
       });
     }
 
+   
 
     
 
@@ -247,5 +276,150 @@ declare var bootstrap: any;
   Confirm():void{
     console.log('Selected Address Index from confirm:', this.selectedAddressIndex); 
     this.closeModal();
+  }
+
+  async onCheckout(): Promise<void> {
+    if (!this.cartData.addressId) {
+      this.errorMessage = 'Please select a delivery address before proceeding to checkout.';
+      return;
+    }
+
+    if (!this.cartData.cartItems || this.cartData.cartItems.length === 0) {
+      this.errorMessage = 'Your cart is empty. Add items to proceed to checkout.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    const shippingCostId = this.shippingCosts.find(item => item.name === this.addressSelected?.city)?.id;
+    console.log('shippingCostId:', shippingCostId);
+    const cartId= this.cartData.id;
+    console.log('cartId:', cartId);
+    
+
+    
+    this.PaymentService.createOrUpdatePayment(cartId, 35).subscribe({
+      next: (response: Cart) => {
+        this.isLoading = false;
+        this.clientSecret = response.clientSecret?? null;
+
+        // const backendTotal = response.cartItems.reduce((sum, item) => {
+        //   return sum + ((item.priceAfterSale ?? item.price ?? 0) * item.quantity);
+        // }, 0) + this.deliveryCost;
+
+        // if (Math.abs(this.total - backendTotal) > 0.01) {
+        //   this.errorMessage = 'Total mismatch detected. Please refresh the cart and try again.';
+        //   return;
+        // }
+        if (!this.clientSecret || !this.stripe) {
+          this.errorMessage = 'Failed to initialize payment. Please try again.';
+          return;
+        }
+
+       
+        this.elements = this.stripe.elements({ clientSecret: this.clientSecret });
+        this.paymentElement = this.elements.create('payment');
+
+        // this.paymentElement.mount(this.paymentElementRef.nativeElement);
+
+        
+        // this.paymentElement.on('ready', () => {
+        //   console.log('Payment Element is ready');
+        // });
+        // setTimeout(() => {
+        //   if (this.paymentElementRef && this.paymentElementRef.nativeElement) {
+        //     this.paymentElement.mount(this.paymentElementRef.nativeElement);
+  
+        //     this.paymentElement.on('ready', () => {
+        //       console.log('Payment Element is ready');
+        //     });
+        //   } else {
+        //     console.error('Payment element reference not found in the DOM');
+        //     this.errorMessage = 'Payment setup failed. Please try again.';
+        //   }
+        // }, 0);
+
+        setTimeout(() => {
+          if (
+            this.paymentElement &&
+            this.paymentElementRef &&
+            this.paymentElementRef.nativeElement
+          ) {
+            this.paymentElement.mount(this.paymentElementRef.nativeElement);
+        
+            this.paymentElement.on('ready', () => {
+              console.log('Payment Element is ready');
+              console.log('Payment Element:', this.paymentElement);
+              console.log(response.paymentId);
+              console.log(this.clientSecret);
+              
+              
+            });
+          } else {
+            console.error('Payment element reference not found in the DOM or paymentElement is null');
+            this.errorMessage = 'Payment setup failed. Please try again.';
+          }
+        }, 0);
+        
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage = err.error?.message || 'Failed to initialize payment. Please try again.';
+        console.error('Payment initialization error:', err);
+      }
+    });
+  }
+
+
+  async confirmPayment(): Promise<void> {
+    if (!this.stripe || !this.elements || !this.clientSecret) {
+      this.errorMessage = 'Payment setup is incomplete. Please try again.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    const { error, paymentIntent } = await this.stripe.confirmPayment({
+      elements: this.elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/order-confirmation` 
+      },
+      redirect: 'if_required' 
+    });
+
+    this.isLoading = false;
+
+    if (error) {
+      this.errorMessage = error.message || 'Payment failed. Please try again.';
+      console.error('Payment error:', error);
+    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+      console.log('Payment succeeded:', paymentIntent);
+
+     
+    
+      // Clear the cart in the backend
+    this.cartService.clearCart(this.cartData.id).subscribe({
+      next: () => {
+        console.log('Cart cleared in the backend');
+      },
+      error: (err) => {
+        console.error('Error clearing cart in the backend:', err);
+        this.errorMessage = 'Payment succeeded, but failed to clear cart. Please contact support.';
+      }
+      
+      });
+      // Clear the cart in the frontend
+    this.cartData = {} as Cart;
+    this.cartData.cartItems = [];
+    this.subTotal = 0;
+    this.total = 0;
+    this.deliveryCost = 0;
+
+    this.router.navigate(['/order-confirmation'], {
+      queryParams: { paymentId: paymentIntent.id }
+    });
+  }
   }
 }

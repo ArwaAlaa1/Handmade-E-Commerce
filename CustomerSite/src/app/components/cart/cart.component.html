@@ -136,8 +136,25 @@
             <span>EGP {{total}}</span>
           </div>
           <div class="d-flex justify-content-lg-center fw-bold w-100 mt-4">
-            <button class="btn btn-success btn-lg w-100">Check out →</button>
+            <!-- <button class="btn btn-success btn-lg w-100">Check out →</button> -->
+
+            <button class="btn btn-primary" (click)="onCheckout()" [disabled]="isLoading">
+              {{ isLoading ? 'Processing...' : 'Checkout' }}
+            </button>
           </div>
+          <div *ngIf="clientSecret" class="mt-4">
+          <div *ngIf="clientSecret" class="mt-4">
+            <h4>Enter Payment Details</h4>
+            <div *ngIf="errorMessage" class="alert alert-danger mt-2">{{ errorMessage }}</div>
+            <div #paymentElement></div>
+            <button class="btn btn-success mt-3" (click)="confirmPayment()" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isLoading ? 'Processing...' : 'Confirm Payment' }}
+            </button>
+          </div>
+
+          </div>
+        </div>
         
       
     </div>

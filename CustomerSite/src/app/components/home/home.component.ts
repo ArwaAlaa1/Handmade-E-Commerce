@@ -25,10 +25,7 @@ export class HomeComponent implements OnInit {
   isLoading = true;
   imageBaseUrl:string = environment.baseImageURL;
   allProducts: any[] = [];
-
-
   categories : any[] = [];
-
 
   filters = {
     categoryId: null,

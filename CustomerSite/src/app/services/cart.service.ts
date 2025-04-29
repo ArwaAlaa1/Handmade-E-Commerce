@@ -1,5 +1,5 @@
 import { Cart, CartItem } from './../interfaces/cart';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
@@ -117,6 +117,10 @@ export class CartService {
   
     console.log('Item processed for cart:', newItem, 'Quantity:', quantity);
   }
+  clearCart(id: string): Observable<void> {
+    const headers = this.getAuthHeaders();
+    const params = new HttpParams().set('id', id);
+    return this.http.delete<void>(`${this.baseUrl}/DeleteCartAsync`, { headers, params });
   
-  
+  }
 }

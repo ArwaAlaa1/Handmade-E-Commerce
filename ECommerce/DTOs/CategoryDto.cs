@@ -9,5 +9,7 @@ namespace ECommerce.DTOs
         [Required(ErrorMessage = "Category name is required.")]
         [StringLength(50)]
         public string Name { get; set; } = string.Empty;
+
+        public string? Photo { get; set; }
     }
 }

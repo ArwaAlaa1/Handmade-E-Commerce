@@ -45,12 +45,18 @@
 						<label asp-for="Description" class="form-label"></label>
 						<textarea asp-for="Description" class="form-control"></textarea>
 					</div>
+					<div class="mb-3">
+						<label asp-for="Stock" class="form-label"></label>
+						<input asp-for="Stock" type="number" min="1" class="form-control" />
+						<span asp-validation-for="Stock" class="text-danger"></span>
+					</div>
 
 					<div class="mb-3">
 						<label asp-for="Cost" class="form-label"></label>
 						<input asp-for="Cost" class="form-control" />
 						<span asp-validation-for="Cost" class="text-danger"></span>
 					</div>
+
 					<div class="mb-3">
 						<label asp-for="SellingPrice" class="form-label">Selling Price</label>
 						<input asp-for="SellingPrice" class="form-control" readonly />
@@ -60,6 +66,15 @@
 						<label asp-for="CategoryId" class="form-label">Category</label>
 						<select asp-for="CategoryId" asp-items="Model.Categories" class="form-control"></select>
 						<span asp-validation-for="CategoryId" class="text-danger"></span>
+					</div>
+
+
+					<div class="mb-6">
+						<label class="form-label" asp-for="AdditionalDetails"></label>
+						<div class="input-group input-group-merge">
+							<span class="input-group-text"><i class="bx bx-detail"></i></span>
+							<textarea asp-for="AdditionalDetails" class="form-control" placeholder="Additional details"></textarea>
+						</div>
 					</div>
 
 					<!-- Colors -->

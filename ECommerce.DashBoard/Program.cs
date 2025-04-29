@@ -10,6 +10,7 @@ using ECommerce.Repository.Repositories;
 using ECommerce.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace ECommerce.DashBoard
 {
@@ -48,6 +49,7 @@ namespace ECommerce.DashBoard
                 options.Cookie.IsEssential = true;
             });
 
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IDbInitializer, DbInitializer>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IEmailProvider, EmailProvider>();
@@ -56,7 +58,12 @@ namespace ECommerce.DashBoard
             builder.Services.AddScoped<IFavoriteRepository,FavoriteRepository>();
             builder.Services.AddScoped<IProductRepository,ProductRepository>();
 
-
+            ////Redis Connection
+            //builder.Services.AddSingleton<IConnectionMultiplexer>((provider) =>
+            //{
+            //    var connection = builder.Configuration.GetConnectionString("Redis");
+            //    return ConnectionMultiplexer.Connect(connection);
+            //});
 
 
             builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>

@@ -39,6 +39,7 @@
                         <div class="mb-6">
                             <label asp-for="Input.PIN" class="form-label">Pin Code</label>
                             <input type="number" maxlength="6" pattern="\d{6}" autofocus inputmode="numeric" title="Enter exactly 6 digits" class="form-control" asp-for="Input.PIN" placeholder="Enter your Pin Code" autofocus>
+                            <span asp-validation-for="Input.PIN" class="text-danger"></span>
                         </div>
                         <button class="btn btn-primary d-grid w-100" type="submit">Send Pin Code</button>
                     </form>
@@ -54,3 +55,10 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
+}

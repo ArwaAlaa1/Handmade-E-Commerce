@@ -1,12 +1,13 @@
+import { AuthService } from './../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-add-image',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './add-image.component.html',
   styleUrl: './add-image.component.css'
 })
@@ -20,7 +21,7 @@ export class AddImageComponent implements OnInit {
   errorMessage: string = '';
   isLoading :boolean = false;
 
-  constructor(private _userService: UserService,
+  constructor(private _userService: UserService,private _authService:AuthService,
     private _Router : Router
   ) {}
 
@@ -75,7 +76,10 @@ export class AddImageComponent implements OnInit {
     this._userService.AddImage(formData).subscribe({
       next: (response) => {
           this.isLoading = false;
-          console.log(response);
+          // console.log(response);
+          const user = this._authService.userData.getValue();
+          user.image = response;
+          this._authService.saveUserData(user);
 
           window.alert('Your Photo added Successfully.');
           this._Router.navigate(['/profile']);

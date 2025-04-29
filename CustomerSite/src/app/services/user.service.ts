@@ -70,4 +70,11 @@ export class UserService {
     return this._HttpClient.get(`${environment.baseURL}User/GetAddress?id=${id}`, { headers : this.getAuthHeaders() });
   }
 
+ 
+  getAllAddress(): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.get(`${environment.baseURL}User/GetAllAddress`, { headers : this.getAuthHeaders() });
+  }
+
+  
 }

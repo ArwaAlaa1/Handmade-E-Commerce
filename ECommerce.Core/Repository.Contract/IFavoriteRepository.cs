@@ -13,6 +13,8 @@ namespace ECommerce.Core.Repository.Contract
         Task<Product> AddFavoriteproducttoUser(int productid,string userid);
         Task<List<Product>> GetAllUserFavorite(string userId);
         Task<bool> RemoveFavoriteproducttoUser(int productid, string userid);
+        Task<bool> isFavorite(int productId, string userId);
+        Task<List<int>> GetFavoriteProductIdsAsync(string userId, List<int> productIds);
 
     }
 }

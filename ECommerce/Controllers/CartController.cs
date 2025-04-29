@@ -1,8 +1,12 @@
-﻿using ECommerce.Core.Models.Cart;
+﻿using AutoMapper;
+using ECommerce.Core.Models;
+using ECommerce.Core.Models.Cart;
 using ECommerce.Core.Services.Contract;
+using ECommerce.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using static StackExchange.Redis.Role;
 
 namespace ECommerce.Controllers
 {
@@ -44,99 +48,111 @@ namespace ECommerce.Controllers
             return Ok(cart);
         }
 
+       
         [HttpPost]
         public async Task<IActionResult> AddCart([FromBody] Cart cart)
         {
-            
-            var userId = User.Identity.IsAuthenticated
-                ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-                : null;
+            //var mappedcustomerbasket = mapper.Map<CustomerBasketDto, CustomerBasket>(basket);
+            var CreateOrUpdateBasket = await _cartRepository.AddCartAsync(cart);
+            //if (CreateOrUpdateBasket is null) return BadRequest(new ApiResponse(400));
+            return Ok(CreateOrUpdateBasket);
 
-            if (userId != null)
-            {
-                
-                var userCart = await _cartRepository.GetCartAsync($"cart:{userId}");
-                if (userCart != null)
-                {
-                    userCart.CartItems.AddRange(cart.CartItems);
-                    await _cartRepository.AddCartAsync(userCart);
-                    await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
-                    return Ok(userCart);
-                }
-                else
-                {
-                    var newCart = new Cart
-                    {
-                        Id = $"cart:{userId}",
-                        CartItems = cart.CartItems
-                    };
-                    await _cartRepository.AddCartAsync(newCart);
-                    await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
-                    return Ok(newCart);
-                }
-                
-            }
-            else
-            {
-                var existingCart = await _cartRepository.GetCartAsync($"cart:{cart.Id}");
-                if (existingCart == null)
-                {
-                    var newCart = new Cart
-                    {
-                        Id = $"cart:{cart.Id}",
-                        CartItems = cart.CartItems
-                    };
-                    await _cartRepository.AddCartAsync(newCart);
-                    return Ok(newCart);
+            //var userId = User.Identity.IsAuthenticated
+            //    ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+            //    : null;
 
-                }
-                else
-                {
-                    existingCart.CartItems = cart.CartItems;
+            //if (userId != null)
+            //{
 
-                    await _cartRepository.AddCartAsync(existingCart);
-                    return Ok(existingCart);
+            //    var userCart = await _cartRepository.GetCartAsync($"cart:{userId}");
+            //    if (userCart != null)
+            //    {
+            //        userCart.CartItems.AddRange(cart.CartItems);
+            //        await _cartRepository.AddCartAsync(userCart);
+            //        await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
+            //        return Ok(userCart);
+            //    }
+            //    else
+            //    {
+            //        var newCart = new Cart
+            //        {
+            //            Id = $"cart:{userId}",
+            //            CartItems = cart.CartItems
+            //        };
+            //        await _cartRepository.AddCartAsync(newCart);
+            //        await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
+            //        return Ok(newCart);
+            //    }
 
-                }
-            }
+            //}
+            //else
+            //{
+            //    var existingCart = await _cartRepository.GetCartAsync($"cart:{cart.Id}");
+            //    if (existingCart == null)
+            //    {
+            //        var newCart = new Cart
+            //        {
+            //            Id = $"cart:{cart.Id}",
+            //            CartItems = cart.CartItems
+            //        };
+            //        await _cartRepository.AddCartAsync(newCart);
+            //        return Ok(newCart);
 
-            
+            //    }
+            //    else
+            //    {
+            //        existingCart.CartItems = cart.CartItems;
+
+            //        await _cartRepository.AddCartAsync(existingCart);
+            //        return Ok(existingCart);
+
+            //    }
+            //}
+
+
 
 
         }
+
+        //[HttpPost("UpdateCart")]
+        //public async Task<IActionResult> UpdateCart([FromBody] Cart cart)
+        //{
+        //    var userId = User.Identity.IsAuthenticated
+        //       ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+        //       : null;
+        //    var existingCart = new Cart();
+        //    if (userId != null)
+        //    {
+        //         existingCart = await _cartRepository.GetCartAsync($"cart:{userId}");
+        //    }
+        //    else
+        //    {
+        //        existingCart = await _cartRepository.GetCartAsync($"cart:{cart.Id}");
+
+        //    }
+        //    if (existingCart != null)
+        //    {
+
+        //        await _cartRepository.AddCartAsync(cart);
+        //        if (cart.CartItems.Count()==0)
+        //        {
+        //            await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
+        //        }
+        //            return Ok(new { message="Cart Updated Successfully"});
+
+        //    }
+        //    return Ok(existingCart);
+
+        //}
 
         [HttpPost("UpdateCart")]
         public async Task<IActionResult> UpdateCart([FromBody] Cart cart)
         {
             var userId = User.Identity.IsAuthenticated
-               ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-               : null;
-            var existingCart = new Cart();
-            if (userId != null)
-            {
-                 existingCart = await _cartRepository.GetCartAsync($"cart:{userId}");
-            }
-            else
-            {
-                existingCart = await _cartRepository.GetCartAsync($"cart:{cart.Id}");
-
-            }
-            if (existingCart != null)
-            {
-        
-                await _cartRepository.AddCartAsync(cart);
-                if (cart.CartItems.Count()==0)
-                {
-                    await _cartRepository.DeleteCartAsync($"cart:{cart.Id}");
-                }
-                    return Ok(new { message="Cart Updated Successfully"});
-            
-            }
-            return Ok(existingCart);
-
-
-
-
+                ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                : null;
+                var result = await _cartRepository.UpdateCartAsync(cart);
+            return Ok(result);
         }
         [HttpDelete]
         public async Task DeleteCart(string id)

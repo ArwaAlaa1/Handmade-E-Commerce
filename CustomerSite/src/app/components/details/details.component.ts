@@ -43,7 +43,7 @@ export class DetailsComponent implements OnInit {
 
     this.isLoading = true;
 
-    this._service.getProductById(this.ProductId)
+    this._service.getProById(this.ProductId)
       .subscribe({
         next: (response) => {
           this.product = response;

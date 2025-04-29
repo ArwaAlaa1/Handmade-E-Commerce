@@ -23,7 +23,16 @@ namespace ECommerce.Repository.Repositories
 
             return await _db.Reviews.CountAsync(z=>z.ProductId==productId);
         }
-            
+
+
+        public async Task<int> SumRatingOnProductWithId(int productId)
+        {
+            return await _db.Reviews
+                            .Where(z => z.ProductId == productId)
+                            .SumAsync(x => x.Rating);
+        }
+
+
         public async Task<IEnumerable<Review>> GetReviewsWithProductAsync(int productId)
         {
             return await _db.Reviews.Where(x=>x.ProductId==productId).Include(z=>z.user).ToListAsync();
@@ -42,5 +51,17 @@ namespace ECommerce.Repository.Repositories
                 .Include(r => r.user)
                 .FirstOrDefaultAsync(r => r.UserId == userid);
         }
+
+        public async Task<Dictionary<int, int>> GetReviewsCountForProductsAsync(List<int> productIds)
+        {
+            return await _db.Reviews
+                .Where(r => productIds.Contains(r.ProductId))
+                .GroupBy(r => r.ProductId)
+                .ToDictionaryAsync(
+                    g => g.Key,
+                    g => g.Sum(r => r.Rating)
+                );
+        }
+
     }
 }

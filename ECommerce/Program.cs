@@ -56,9 +56,14 @@ namespace ECommerce
 
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IOrderService,OrderService>();
+            builder.Services.AddScoped<IShippingCostRepository, ShippingCostRepository>();
+            //builder.Services.AddScoped<ICustomerBasketRepository, CustomerBasketRepository>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 
-          
+            //register payment service
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 

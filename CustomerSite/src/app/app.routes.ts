@@ -15,13 +15,22 @@ import { AddImageComponent } from './components/user/add-image/add-image.compone
 import { AddAddressComponent } from './components/user/add-address/add-address.component';
 import { EditAddressComponent } from './components/user/edit-address/edit-address.component';
 import { OffersComponent } from './components/offers/offers.component';
+<<<<<<< HEAD
 import { DetailsComponent } from './components/details/details.component';
+=======
+import { FavouriteComponent } from './components/favourite/favourite.component';
+>>>>>>> 3fe2424c398972ee1969bf6cf3e067d0c11d7b2e
 
 export const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path:'home', component:HomeComponent, title:'Home Page'},
   {path:'offer', component:OffersComponent, title:'Offer Page'},
+<<<<<<< HEAD
   {path:'ProductDetails/:ProductId', component:DetailsComponent, title:'Details Page'},
+=======
+  {path:'favourite', component:FavouriteComponent, title:'Favourite Page'},
+
+>>>>>>> 3fe2424c398972ee1969bf6cf3e067d0c11d7b2e
 
   {path:'profile', canActivate:[AuthGuard], component:ProfileComponent, title:'Profile Page'},
   {path:'editprofile', canActivate:[AuthGuard], component:EditProfileComponent, title:'Edit Profile Page'},
@@ -36,6 +45,7 @@ export const routes: Routes = [
   {path:'resetpassword/:email', component:ResetPasswordComponent, title:'Forget Password Page'},
   {path:'changepassword', canActivate:[AuthGuard], component:ChangePasswordComponent, title:'Change Password Page'},
 
+  // {path:'addresspop', component:AddressPopUpComponent, title:'Address Page'},
 
   {path:'cart', component:CartComponent, title:'Cart Page'},
 

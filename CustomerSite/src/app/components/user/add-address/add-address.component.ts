@@ -1,16 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../services/user.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { ShippingService } from '../../../services/shipping.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-add-address',
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule,CommonModule, RouterLink],
   templateUrl: './add-address.component.html',
   styleUrl: './add-address.component.css'
 })
-export class AddAddressComponent {
+export class AddAddressComponent implements OnInit {
   addAddressForm: FormGroup = new FormGroup({
     fullName: new FormControl('', Validators.required),
     phoneNumber: new FormControl('', [Validators.required]),
@@ -22,9 +24,28 @@ export class AddAddressComponent {
 
   errorMessage: string = '';
   isLoading: boolean = false;
+  shipingAddresses: any[] = [];
 
-    constructor(private _userService: UserService, private _router : Router) {
-    }
+  constructor(private _userService: UserService, private _router : Router, private shipingService: ShippingService) {
+  }
+
+  ngOnInit(): void {
+    this.getAddress();
+  }
+
+  getAddress(){
+    this.isLoading = true;
+    this.shipingService.getShippingCosts(
+    ).pipe(
+      finalize(() => this.isLoading = false)
+    ).subscribe({
+      next: (response) => {
+        this.shipingAddresses = response;
+      },
+      error: (error) => {
+      }
+    });
+  }
 
   get f() {
     return this.addAddressForm.controls;

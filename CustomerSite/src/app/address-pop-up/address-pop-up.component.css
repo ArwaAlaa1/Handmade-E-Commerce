@@ -1,0 +1,16 @@
+.address-item {
+  border: 1px solid #dee2e6; /* رمادي فاتح */
+  background-color: #f8f9fa; /* رمادي خفيف */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.address-item:hover {
+  background-color: #e9ecef; /* غامق قليلاً عند الهوفر */
+}
+
+.active-address {
+  border: 2px solid #0d6efd; /* أزرق غامق حول الإطار */
+  background-color: #e7f1ff; /* أزرق خفيف للخلفية */
+  box-shadow: 0 0 10px rgba(13, 110, 253, 0.3); /* ظل أزرق خفيف */
+}

@@ -24,7 +24,8 @@ namespace ECommerce.Controllers
             var categoryDtos = categories.Select(c => new CategoryDto
             {
                 Id = c.Id,
-                Name = c.Name
+                Name = c.Name,
+                Photo = c.Photo
             });
 
             return Ok(categoryDtos);

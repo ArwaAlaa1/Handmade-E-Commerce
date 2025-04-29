@@ -28,7 +28,9 @@ namespace ECommerce.Controllers
         {
             var costs =await _unitOfWork.Repository<ShippingCost>().GetAllAsync();
             var mappedShipping = _mapper.Map<List<ShippingCostDto>>(costs);
-            return Ok(mappedShipping);
+
+            var mappedShippingOr = mappedShipping.OrderBy(x => x.Name);
+            return Ok(mappedShippingOr);
 
         }
       

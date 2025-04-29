@@ -1,4 +1,5 @@
 ﻿using ECommerce.Core.Models;
+using ECommerce.DashBoard.Validations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
@@ -12,8 +13,11 @@ namespace ECommerce.DashBoard.ViewModels
 
         [Required(ErrorMessage = "Product name is required.")]
         [StringLength(100)]
+        [UniqueProductName(ErrorMessage = "A product with this name already exists for the trader.")]
         public string Name { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Product Quantity is required.")]
+        public int Stock { get; set; }
         public string Description { get; set; }
 
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than 0.")]
@@ -21,7 +25,7 @@ namespace ECommerce.DashBoard.ViewModels
         public decimal? AdminProfitPercentage { get; set; }
         public decimal SellingPrice { get; set; }
         public string? CategoryName { get; set; }
-        public string AdditionalDetails { get; set; }
+        public string? AdditionalDetails { get; set; }
 
 
         [Required(ErrorMessage = "Please select a category.")]

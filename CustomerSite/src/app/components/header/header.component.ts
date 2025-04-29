@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment.development';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-header',
@@ -12,14 +13,18 @@ import { environment } from '../../../environments/environment.development';
 })
 export class HeaderComponent implements OnInit {
 
+  isDarkMode = false;
   isLogin: boolean = false;
   userName: string = '';
   photo: string | null = null;
   baseImageUrl : string = environment.baseImageURLAPI;
-  constructor(private _AuthService : AuthService) {
+  constructor(private _AuthService : AuthService, private _CookieService: CookieService) {
+    const theme = this._CookieService.get('theme');
+    this.isDarkMode = theme === 'dark';
   }
 
   ngOnInit(): void {
+    this.updateBodyClass();
 
     this._AuthService.userData.subscribe({
       next: (data) => {
@@ -28,14 +33,28 @@ export class HeaderComponent implements OnInit {
           this.userName = data.displayName;
           this.photo = data.image;
         }
-        else
-        {
+        else {
           this.isLogin = false;
         }
       }
     });
+  }
 
 
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    this._CookieService.set('theme', this.isDarkMode ? 'dark' : 'light');
+    this.updateBodyClass();
+  }
+
+  updateBodyClass() {
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      if (this.isDarkMode) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+    }
   }
 
   logout(){

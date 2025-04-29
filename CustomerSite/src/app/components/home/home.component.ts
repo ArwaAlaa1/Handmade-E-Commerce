@@ -149,6 +149,7 @@ export class HomeComponent implements OnInit {
           customizeInfo: this.product.customizeInfo,
           price: this.product.sellingPrice,
           color: this.product.color,
+          sellingPrice: this.product.sellingPrice,
           priceAfterSale: this.product.discountedPrice,
           unitPrice: this.product.sellingPrice,
           size: this.product.size,
@@ -161,4 +162,5 @@ export class HomeComponent implements OnInit {
     
     
   }
+
 }

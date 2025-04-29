@@ -17,11 +17,11 @@ export interface Cart {
     customizeInfo?: string; 
     color?: string; 
     size?: string; 
-    price?: number; 
+    price: number; 
     unitPrice: number; 
-    sellingPrice?: number; 
-    priceAfterSale?: number; 
-    activeSale?: number; 
+    sellingPrice: number; 
+    priceAfterSale: number; 
+    activeSale: number; 
     quantity: number;
   }
   

@@ -119,5 +119,10 @@ export class CartService {
   
   
   
-  
+  clearCart(id: string): Observable<void> {
+    const headers = this.getAuthHeaders();
+    const params = new HttpParams().set('id', id);
+    return this.http.delete<void>(`${this.baseUrl}/DeleteCartAsync`, { headers, params });
+ 
+  }
 }

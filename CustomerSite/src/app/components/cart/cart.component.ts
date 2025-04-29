@@ -77,19 +77,32 @@ declare var bootstrap: any;
   
     calculateTotal(cartData: Cart): void {
       this.subTotal = 0;
+    
+      if(cartData==null)
+    {
+      this.subTotal = 0;
+      this.total = this.subTotal + this.deliveryCost;
+    }else{
       for (const item of cartData.cartItems) {
-        if (item.priceAfterSale != 0) {
+        // احسب السعر الجديد لكل عنصر
+        item.price = item.quantity * item.unitPrice;
+    
+        if (item.activeSale && item.priceAfterSale > 0) {
+          item.priceAfterSale = item.price - (item.price * item.activeSale/ 100);
           this.subTotal += item.priceAfterSale;
         } else {
+          item.priceAfterSale = 0;
           this.subTotal += item.price;
         }
-        // this.subTotal += item.priceAfterSale ?? item.price;
       }
+    
       this.total = this.subTotal + this.deliveryCost;
     }
+    }
+    
   
     updateAddress(addressId: number): void {
-      if (addressId == null) {
+      if (addressId == 0) {
         const sub = this._userService.getAllAddress().subscribe({
           next: (res) => {
             this.addressSelected = res[0];
@@ -121,14 +134,10 @@ declare var bootstrap: any;
     }
   
     Increase(itemId: string): void {
-      const item = this.cartData.cartItems.find(i => i.itemId === itemId);
+      const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
       if (!item) return;
     
       item.quantity += 1;
-      item.price = item.quantity * item.unitPrice;
-      if (item.priceAfterSale != null) {
-        item.priceAfterSale = item.quantity * item.priceAfterSale;
-      }
     
       this.calculateTotal(this.cartData);
     
@@ -146,17 +155,13 @@ declare var bootstrap: any;
     
   
     Decrease(itemId: string): void {
-      const item = this.cartData.cartItems.find(i => i.itemId === itemId);
+      const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
       if (!item) return;
     
       if (item.quantity > 1) {
         item.quantity -= 1;
-        item.price = item.quantity * item.unitPrice;
-        if (item.priceAfterSale != null) {
-          item.priceAfterSale = item.quantity * item.priceAfterSale; 
-        }
     
-        this.calculateTotal(this.cartData); 
+        this.calculateTotal(this.cartData);
     
         this.cartService.updateCart(this.cartData).subscribe({
           next: (res) => {
@@ -164,7 +169,7 @@ declare var bootstrap: any;
             if (this.cartData.addressId != null) {
               this.updateAddress(this.cartData.addressId);
             }
-            this.calculateTotal(this.cartData); 
+            this.calculateTotal(this.cartData);
           },
           error: (err) => console.error('Error decreasing item quantity:', err)
         });
@@ -174,31 +179,60 @@ declare var bootstrap: any;
     }
     
     
+    
   
     RemoveItem(itemId: string): void {
-      const index = this.cartData.cartItems.findIndex(item => item.itemId === itemId);
-      if (index !== -1) {
+      const index = this.cartData.cartItems?.findIndex(item => item.itemId === itemId);
+      if (index !== undefined && index !== -1) {
         this.cartData.cartItems.splice(index, 1);
+        console.log('Item removed:', itemId);
         this.updateCartAndTotals();
       }
     }
-  
+    
+    // updateCartAndTotals(): void {
+    //   this.cartService.updateCart(this.cartData).subscribe({
+    //     next: (res) => {
+    //       this.cartData = res;
+    //       if (this.cartData.addressId != 0) {
+    //         this.updateAddress(this.cartData.addressId);
+    //       }
+    //       this.calculateTotal(this.cartData);
+    //     },
+    //     error: (err) => console.error('Error updating cart:', err)
+    //   });
+    // }
+
     updateCartAndTotals(): void {
+    
+      console.log('Updating cart from null:', this.cartData);
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {
-          this.cartData = res;
-          if (this.cartData.addressId != null) {
-            this.updateAddress(this.cartData.addressId);
+          if (res != null) {
+            this.cartData = res;
+            console.log('Updating cart from null:', this.cartData);
+          
+            if (!this.cartData.cartItems) {
+              this.cartData.cartItems = [];
+            }
+          
+            if (this.cartData.addressId && this.cartData.addressId !== 0) {
+              this.updateAddress(this.cartData.addressId);
+            }
+          
+            this.calculateTotal(this.cartData);
+          } else {
+            // If response is null, initialize empty cart
+            // this.cartData = { cartItems: [] } as Cart;
+            this.subTotal = 0;
+            this.total = this.deliveryCost; // only delivery if any
           }
-          this.calculateTotal(this.cartData);
+          
         },
         error: (err) => console.error('Error updating cart:', err)
       });
-    }
-
-
     
-
+  }
 
   openModal() {
     

@@ -31,6 +31,7 @@
       <a href="#" class="btn btn-primary">Continue Shopping</a>
     </div>
 }@else {
+  
   @for (item of cartData.cartItems; track $index) {
     <div class="rounded-2 p-2 border">
       <div class="d-flex align-items-center gap-2 mb-3 ">
@@ -110,13 +111,12 @@
         </h5>
         <div *ngIf="addressSelected" class="alert alert-info mt-3">
           Selected Delivery Address: <br />
-          <strong
-            >{{ addressSelected.city }} - {{ addressSelected.country }}</strong
-          ><br />
+          <strong>{{ addressSelected.city }} - {{ addressSelected.country }}</strong><br />
           {{ addressSelected.region }}<br />
-
           {{ addressSelected.phoneNumber }}
         </div>
+        
+        
       </div>
 
       <div class="bg-light p-4 rounded shadow-sm">

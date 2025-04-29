@@ -44,7 +44,7 @@ namespace ECommerce.Repository.Repositories
         {
             if (cart.CartItems == null || !cart.CartItems.Any())
             {
-                await DeleteCartAsync($"cart:{cart.Id}");
+                await DeleteCartAsync($"{cart.Id}");
                 return null;
             }
 

@@ -132,7 +132,8 @@ export class HomeComponent implements OnInit {
   ;
   addToCart(id:number, quantity:number) {
   
-    this.product= this._productService.getProductById(id).subscribe((response) =>
+    this.product= this._productService.getProductById(id)
+    .subscribe((response) =>
       {
         // console.log(response);
         this.product = response;

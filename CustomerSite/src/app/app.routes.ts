@@ -15,13 +15,20 @@ import { AddImageComponent } from './components/user/add-image/add-image.compone
 import { AddAddressComponent } from './components/user/add-address/add-address.component';
 import { EditAddressComponent } from './components/user/edit-address/edit-address.component';
 import { OffersComponent } from './components/offers/offers.component';
+import { DetailsComponent } from './components/details/details.component';
 import { FavouriteComponent } from './components/favourite/favourite.component';
+import { OrderConfirmationComponent } from './components/order-confirmation/order-confirmation.component';
+
 
 export const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
   {path:'home', component:HomeComponent, title:'Home Page'},
   {path:'offer', component:OffersComponent, title:'Offer Page'},
+
+  {path:'ProductDetails/:ProductId', component:DetailsComponent, title:'Details Page'},
+
   {path:'favourite', component:FavouriteComponent, title:'Favourite Page'},
+
 
 
   {path:'profile', canActivate:[AuthGuard], component:ProfileComponent, title:'Profile Page'},
@@ -40,6 +47,8 @@ export const routes: Routes = [
   // {path:'addresspop', component:AddressPopUpComponent, title:'Address Page'},
 
   {path:'cart', component:CartComponent, title:'Cart Page'},
+  {path:'order-confirmation', component:OrderConfirmationComponent, title:'order-confirmation Page'},
+
 
   {path:'**', canActivate:[AuthGuard],component: NotFoundComponent , title:'NotFound Page'}
 ];

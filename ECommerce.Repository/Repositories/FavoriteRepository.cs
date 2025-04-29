@@ -57,12 +57,15 @@ namespace ECommerce.Repository.Repositories
 
             return false;
         }
-        public Task<List<Product>> GetAllUserFavorite(string userId)
+        public async Task<List<Product>> GetAllUserFavorite(string userId)
         {
-            var favroites= _db.Favorites.Where(f => f.UserId == userId).Include(z=>z.product).ToListAsync();
-            
-            var products =  _db.Products.Where(p => p.Id == favroites.Result.FirstOrDefault().ProductId).ToListAsync();
-             return  products;
+            var favorites = await _db.Favorites
+                                     .Where(f => f.UserId == userId)
+                                     .Include(f => f.product)
+                                     .ToListAsync();
+
+            var products = favorites.Select(f => f.product).ToList();
+            return products;
         }
 
         public async Task<bool> isFavorite(int productId, string userId)

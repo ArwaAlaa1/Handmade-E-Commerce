@@ -24,6 +24,7 @@ namespace ECommerce.Repository
         public IReviewRepository Reviews { get; private set; }
         public IFavoriteRepository Favorites { get; private set; }
 
+        public IProductRepository Products { get; private set; }
         //public ICustomerBasketRepository CustomerBaskets { get;}
         //public ICartRepository cartRepository { get; }
         //public IShippingCostRepository ShippingCosts { get; }
@@ -31,15 +32,20 @@ namespace ECommerce.Repository
         public UnitOfWork(ECommerceDbContext db,
                    IReviewRepository reviewRepository,
                    IFavoriteRepository favoriteRepository
-                   /*,IConnectionMultiplexer redis*/)
+                   /*,IConnectionMultiplexer redis*/, IProductRepository productRepository)
+
         {
             _db = db;
             Reviews = reviewRepository;
             Favorites = favoriteRepository;
+
+            Products = productRepository;
+
             //this.redis = redis;
             //CustomerBaskets = new CustomerBasketRepository(redis);
             //cartRepository = new CartRepository(redis);
             //ShippingCosts = new ShippingCostRepository(_db);
+
             _repositories = new Hashtable();
         }
 

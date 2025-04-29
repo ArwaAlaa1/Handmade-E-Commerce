@@ -54,6 +54,29 @@ export class ProductService {
 
     return this._HttpClient.get(url, { headers: this.getAuthHeaders() });
   }
+  getProductById(id:number): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers });
+  }
+  // getProductById(productId: number): Observable<any> {
+
+  //   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+  //   let url = `${environment.baseURL}Products/GetProductByID/${productId}`;
+  //   return this._HttpClient.get(url, { headers });
+  // }
+  getProById(id:number): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers });
+  }
+  getProductReviews(productId: number): Observable<any> {
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    let url = `${environment.baseURL}Review/GetProductReviews/${productId}`;
+    return this._HttpClient.get(url, { headers });
+  }
+  
 
   GetFavList(
     pageSize: number,
@@ -80,6 +103,7 @@ export class ProductService {
 
     return this._HttpClient.get(url, { headers: this.getAuthHeaders() });
   }
+
   getProductinOffer(
     pageSize: number,
     pageIndex: number,
@@ -124,9 +148,6 @@ export class ProductService {
       { headers : this.getAuthHeaders(), responseType : 'text' });
   }
 
-  getProductById(id:number): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers });
-  }
+
 
 }

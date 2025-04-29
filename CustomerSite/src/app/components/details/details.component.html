@@ -1,0 +1,186 @@
+<section class="py-5 bg-light">
+  <div class="container">
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">loading...</span>
+      </div>
+    </div>
+    
+    <!-- Product Details -->
+    <div *ngIf="!isLoading && product" class="row g-4">
+      <!-- Image Gallery -->
+      <div class="col-lg-6">
+        <div class="product-gallery">
+          <div class="main-image mb-3">
+            <img 
+              [src]="imageBaseUrl + product.photos[0]?.url" 
+              class="img-fluid rounded shadow-sm"
+              style="width: 400px; height: 300px; object-fit: cover;" 
+              alt="{{ product.name }}" />
+          </div>
+          
+
+          <!-- Thumbnails -->
+
+        </div>
+      </div>
+
+      <!-- Product Information -->
+      <div class="col-lg-6">
+
+        <!-- اسم المنتج -->
+        <h1 class="fw-bold mb-2">{{ product.name }}</h1>
+      
+        <!-- اسم الكاتيجوري -->
+        <h5 class="text-muted mb-4">{{ product.category?.name }}</h5>
+      
+        <!-- الوصف -->
+        <p class="mb-4">{{ product.description }}</p>
+      
+        <!-- الأسعار -->
+        <div class="d-flex align-items-center mb-4">
+          <span *ngIf="product.discountedPrice && product.discountedPrice < product.sellingPrice" 
+                class="text-primary fw-bold fs-3 me-3">
+            {{ product.discountedPrice | currency }}
+          </span>
+      
+          <span [ngClass]="{
+                'text-primary fw-bold fs-3': !product.discountedPrice || product.discountedPrice >= product.sellingPrice,
+                'text-muted text-decoration-line-through fs-5': product.discountedPrice && product.discountedPrice < product.sellingPrice
+              }">
+            {{ product.sellingPrice | currency }}
+          </span>
+        </div>
+      
+        <!-- معلومات إضافية -->
+        <div class="mb-4">
+          <div class="d-flex align-items-center">
+           
+          </div>
+        </div>
+      
+        <!-- الألوان -->
+        <div *ngIf="product.colors?.length" class="mb-4">
+          <h6 class="fw-bold">Available Colors:</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <span *ngFor="let color of product.colors" class="badge rounded-pill text-bg-light px-3 py-2" [style.background]="color" style="color: #fff;">
+              {{ color }}
+            </span>
+          </div>
+        </div>
+      
+        <!-- المقاسات -->
+        <div *ngIf="product.sizes?.length" class="mb-4">
+          <h6 class="fw-bold">Available Sizes:</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <div *ngFor="let size of product.sizes" class="border rounded p-2 px-3 bg-light">
+              {{ size.name }} 
+              <small *ngIf="size.extraCost" class="text-muted ms-1">( +{{ size.extraCost | currency }} )</small>
+            </div>
+          </div>
+        </div>
+      
+        <!-- زرار شراء -->
+        <div class="d-grid mt-4">
+          <button class="btn btn-primary btn-lg rounded-pill">Add to Cart</button>
+        </div>
+      
+      </div>
+      
+          <!-- Wishlist and Quick View Buttons -->
+
+        </div>
+      </div>
+   
+
+    <!-- Gallery Grid Below (Optional Section) -->
+    <div class="text-center mt-5">
+      <h3 class="mb-4 fw-bold">More Images</h3>
+    
+      <!-- Carousel Container -->
+      <div id="productImagesCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner rounded-4 shadow-sm">
+          
+          <ng-container *ngFor="let photo of prductphotos; let i = index">
+            <div [class]="i === 0 ? 'carousel-item active' : 'carousel-item'">
+              <img [src]="imageBaseUrl + photo.url" class="d-block w-100" style="max-height: 400px; object-fit: cover;" alt="Product Image">
+            </div>
+          </ng-container>
+    
+        </div>
+    
+        <!-- Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+    <div class="card mt-5 shadow-sm">
+      <div class="card-body">
+        <h4 class="card-title mb-4">Leave a Review</h4>
+    
+        <form  (ngSubmit)="submitReview()" novalidate>
+          
+          <!-- التقييم -->
+          <div class="mb-3">
+            <label for="rating" class="form-label fw-bold">Rating (1 - 10)</label>
+            <input type="number" formControlName="rating" id="rating" class="form-control" min="1" max="10">
+            <div *ngIf="reviewForm.controls['rating'].invalid && reviewForm.controls['rating'].touched" class="text-danger mt-1">
+              Please enter a rating between 1 and 10.
+            </div>
+          </div>
+    
+          <!-- التعليق -->
+          <div class="mb-3">
+            <label for="reviewContent" class="form-label fw-bold">Your Review</label>
+            <textarea formControlName="reviewContent" id="reviewContent" class="form-control" rows="4" placeholder="Write your opinion..."></textarea>
+            <div *ngIf="reviewForm.controls['reviewContent'].invalid && reviewForm.controls['reviewContent'].touched" class="text-danger mt-1">
+              Review must be at least 10 characters.
+            </div>
+          </div>
+    
+          <!-- زرار الإرسال -->
+          <button class="btn btn-primary rounded-pill px-4" [disabled]="reviewForm.invalid">Submit Review</button>
+        </form>
+      </div>
+    </div>
+    
+<div class="row mt-5">
+
+
+    <!-- Product Reviews Section -->
+    <div class="mt-5">
+      <h3 class="mb-4 text-center fw-bold"> Reviews</h3>
+    
+        <p *ngIf="reviews.length<1" class="text-center text-muted">No reviews available for this product.</p>
+   
+        
+      <div *ngFor="let review of reviews" class="card shadow-sm mb-4 border-0">
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-2">
+            <h5 class="mb-0 me-2">{{ review.user.displayName }}</h5>
+            <small class="text-muted">({{ review.rating }}/10)</small>
+          </div>
+    
+          <div class="mb-2">
+            <ng-container *ngFor="let star of [].constructor(roundToFive(review.rating/2)); let i = index">
+              <i class="bi bi-star-fill text-warning"></i>
+            </ng-container>
+            <ng-container *ngFor="let star of [].constructor( roundToFive(review.rating/2)); let i = index">
+              <i class="bi bi-star text-warning"></i>
+            </ng-container>
+          </div>
+    
+          <p class="card-text">{{ review.reviewContent }}</p>
+        </div>
+      </div>
+      
+    </div>
+    
+    </div>
+
+</section>

@@ -1,5 +1,5 @@
 import { Cart, CartItem } from './../interfaces/cart';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';

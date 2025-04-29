@@ -50,7 +50,7 @@ namespace ECommerce.DashBoard.Controllers
         {
             var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var products = await _unitOfWork.Repository<Product>()
-                .GetAllAsync(p => p.SellerId == userid);
+                .GetAllAsync(p => p.SellerId == userid && p.IsDeleted != true);
             //var products = await _unitOfWork.Repository<Product>().GetAllAsync();
             var vm = new SaleVM
             {

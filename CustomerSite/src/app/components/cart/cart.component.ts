@@ -1,6 +1,7 @@
+
 import { environment } from './../../../environments/environment.development';
 import { ShippingService } from './../../services/shipping.service';
-import { ChangeDetectorRef, Component, NgModule, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
@@ -10,7 +11,10 @@ import { Cart } from '../../interfaces/cart';
 import { UserService } from '../../services/user.service';
 import { AddressPopUpComponent } from "../../address-pop-up/address-pop-up.component";
 import { v4 as uuidv4 } from 'uuid';
+import { PaymentService } from '../../services/payment.service';
 import { Subscription } from 'rxjs';
+import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js'; 
+import { log } from 'console';
 declare var bootstrap: any; 
 @Component({
   selector: 'app-cart',
@@ -35,13 +39,22 @@ declare var bootstrap: any;
 
   imageBaseUrl: string = `${environment.baseImageURL}images/`;
   isLogin: boolean = false;
-
+  isLoading: boolean = false;
+  
+  errorMessage: string | null = null;
+  stripe: Stripe | null = null;
+  elements: StripeElements | null = null;
+  paymentElement: StripePaymentElement | null = null;
+  @ViewChild('paymentElement') paymentElementRef!: ElementRef; 
+  clientSecret: string | null = null;
    constructor(private _userService:UserService,private _shipCost:ShippingService,
     private cdr: ChangeDetectorRef,private _cookie:CookieService,
-    private cartService: CartService,private _auth: AuthService) {
+    private cartService: CartService,private _auth: AuthService
+  ,private PaymentService :PaymentService,private router: Router) {
   
-    }
-    ngOnInit(): void {
+}
+async ngOnInit(): Promise<void> {
+      this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
       const userSub = this._auth.userData.subscribe({
         next: (response) => {
           this.userData = response;
@@ -70,11 +83,25 @@ declare var bootstrap: any;
       });
       this.subscriptions.push(shippingSub);
     }
+    //
+
   
     ngOnDestroy(): void {
       this.subscriptions.forEach(sub => sub.unsubscribe());
     }
   
+    // calculateTotal(cartData: Cart): void {
+    //   this.subTotal = 0;
+    //   for (const item of cartData.cartItems) {
+    //     if (item.priceAfterSale != 0) {
+    //       this.subTotal += item.priceAfterSale??0;
+    //     } else {
+    //       this.subTotal += item.price??0;
+    //     }
+    //     // this.subTotal += item.priceAfterSale ?? item.price;
+    //   }
+    //   this.total = this.subTotal + this.deliveryCost;
+    // }
     calculateTotal(cartData: Cart): void {
       this.subTotal = 0;
     
@@ -152,8 +179,7 @@ declare var bootstrap: any;
         error: (err) => console.error('Error increasing item quantity:', err)
       });
     }
-    
-  
+   
     Decrease(itemId: string): void {
       const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
       if (!item) return;

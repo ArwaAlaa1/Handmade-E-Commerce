@@ -20,8 +20,9 @@ namespace ECommerce.Core.Models.Cart
         }
 
         public string Id { get; set; } // Key
-        public string PaymentId { get; set; }  //PaymentIntent
-        public string ClientSecret { get; set; } //ClientSecret
+        public string? PaymentId { get; set; }  //PaymentIntent
+        public string? ClientSecret { get; set; } //ClientSecret
         public List<CartItem> CartItems { get; set; } = new List<CartItem>(); //Value
+        public int AddressId { get; set; }
     }
 }

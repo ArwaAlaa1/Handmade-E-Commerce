@@ -12,7 +12,11 @@
         public string? CustomizeInfo { get; set; }
         public string? Color { get; set; }
         public string? Size { get; set; }
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal? SellingPrice { get; set; }
+        public decimal? PriceAfterSale { get; set; } = 0.0m;
+
         public int ActiveSale { get; set; }
         public int Quantity { get; set; }
     }

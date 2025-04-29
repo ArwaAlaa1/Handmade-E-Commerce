@@ -55,9 +55,9 @@
              
            </div>
             <div class="ms-auto text-end ">
-              @if (item.activeSale !=null && item.sellingPrice !=null) {
+              @if (item.activeSale !=null && item.priceAfterSale !=null) {
                 <span class="badge bg-success">{{item.activeSale}} % off</span><br>
-                <strong class="text-success">EGP {{ item.sellingPrice}}</strong><br>
+                <strong class="text-success">EGP {{ item.priceAfterSale}}</strong><br>
                 <small class="text-muted text-decoration-line-through">EGP {{item.price}}</small>
               }
               @else{
@@ -131,7 +131,7 @@
           <hr> 
           <div class="d-flex justify-content-between fw-bold">
             <span>Total Amount</span>
-            <span>EGP {{subTotal+deliveryCost}}</span>
+            <span>EGP {{total}}</span>
           </div>
           <div class="d-flex justify-content-lg-center fw-bold w-100 mt-4">
             <button class="btn btn-success btn-lg w-100">Check out →</button>

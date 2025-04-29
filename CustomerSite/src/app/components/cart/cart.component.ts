@@ -1,6 +1,6 @@
 import { environment } from './../../../environments/environment.development';
 import { ShippingService } from './../../services/shipping.service';
-import { ChangeDetectorRef, Component, NgModule } from '@angular/core';
+import { ChangeDetectorRef, Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
@@ -9,7 +9,8 @@ import { CommonModule } from '@angular/common';
 import { Cart } from '../../interfaces/cart';
 import { UserService } from '../../services/user.service';
 import { AddressPopUpComponent } from "../../address-pop-up/address-pop-up.component";
-
+import { v4 as uuidv4 } from 'uuid';
+import { Subscription } from 'rxjs';
 declare var bootstrap: any; 
 @Component({
   selector: 'app-cart',
@@ -17,7 +18,8 @@ declare var bootstrap: any;
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
-export class CartComponent {
+// export class CartComponent {
+  export class CartComponent implements OnInit, OnDestroy {
   shippingCosts: any[] = [];
   cartData: Cart= {} as Cart;
  token: string = '';
@@ -29,6 +31,7 @@ export class CartComponent {
  deliveryCost: number = 0; 
  subTotal : number = 0;
   total: number = 0;
+  subscriptions: Subscription[] = [];
 
   imageBaseUrl: string = `${environment.baseImageURL}images/`;
   isLogin: boolean = false;
@@ -39,168 +42,162 @@ export class CartComponent {
   
     }
     ngOnInit(): void {
-      const storedData = this._auth.userData
-      .subscribe({
+      const userSub = this._auth.userData.subscribe({
         next: (response) => {
           this.userData = response;
-          console.log(this.userData);
-        },
-        error: (error) => {
-        }
-      });
-
-      if (this.userData !=null) {
-        this.token = this.userData.token;
-        this.isLogin = true;
-        this.cartService.getCartById().subscribe({
-          next: (res) => {
-            console.log('Cart data:', res);
-            this.cartData = res;
-            if (this.cartData.addressId != null) {
-              this.addressSelected= this._userService.getAddress(this.cartData.addressId ).subscribe({
-               next: (res) => {
-                this.addressSelected = res;
-                 console.log('Address data:', res);
-                 this.getDeliveryCost(this.addressSelected.city);
-          this.calculateTotal(this.cartData);
-               },
-               error: (err) => console.error('Error loading cart:', err)
-               });
-             }
-            
+          this.token = this.userData.token;
+          this.isLogin = true;
+  
+          this.cartService.getCartById().subscribe({
+            next: (res) => {
+              this.cartData = res;
+              if (this.cartData.addressId != null) {
+                this.updateAddress(this.cartData.addressId);
+              }
+              this.calculateTotal(this.cartData);
             }
-           
-        });
-      }else{
-        console.log('get cart from cookie');
-      }
-
-    
-
-      //Get shipping costs
-      this._shipCost.getShippingCosts().subscribe({
+          });
+        },
+        error: (err) => console.error('Failed to get user data:', err)
+      });
+      this.subscriptions.push(userSub);
+  
+      const shippingSub = this._shipCost.getShippingCosts().subscribe({
         next: (res) => {
           this.shippingCosts = res;
         },
         error: (err) => console.error('Error loading Shipping Costs:', err)
       });
-
-     
-
-
-  }
-
-  //Calculate subtotal and total
-  calculateTotal(cartdata:Cart): void {
-    this.subTotal = 0;
-    this.total = 0;
-    for (const item of cartdata.cartItems) {
-     
-      if (item.sellingPrice != null) {
-        this.subTotal += item.sellingPrice ;
+      this.subscriptions.push(shippingSub);
+    }
+  
+    ngOnDestroy(): void {
+      this.subscriptions.forEach(sub => sub.unsubscribe());
+    }
+  
+    calculateTotal(cartData: Cart): void {
+      this.subTotal = 0;
+      for (const item of cartData.cartItems) {
+        if (item.priceAfterSale != 0) {
+          this.subTotal += item.priceAfterSale;
+        } else {
+          this.subTotal += item.price;
+        }
+        // this.subTotal += item.priceAfterSale ?? item.price;
+      }
+      this.total = this.subTotal + this.deliveryCost;
+    }
+  
+    updateAddress(addressId: number): void {
+      if (addressId == null) {
+        const sub = this._userService.getAllAddress().subscribe({
+          next: (res) => {
+            this.addressSelected = res[0];
+            this.getDeliveryCost(this.addressSelected.city);
+          },
+          error: (err) => console.error('Error loading addresses:', err)
+        });
+        this.subscriptions.push(sub);
       } else {
-        this.subTotal += item.price ;
+        const sub = this._userService.getAddress(addressId).subscribe({
+          next: (res) => {
+            this.addressSelected = res;
+            this.getDeliveryCost(this.addressSelected.city);
+          },
+          error: (err) => console.error('Error loading address:', err)
+        });
+        this.subscriptions.push(sub);
       }
     }
-    this.total = this.subTotal + this.deliveryCost;
-  }
-
-
-  //remve item from cart
-  RemoveItem(itemId:String):void {
-    const index = this.cartData.cartItems.findIndex(item => item.itemId === itemId);
-    this.cartData.cartItems.splice(index, 1);
-
-    console.log('Updated cart data:', this.cartData);
-    this.cartService.updateCart(this.cartData).subscribe({
-      next: (res) => {
-        console.log('Item removed:', res);
-        // this.cartData = res;
-
-        this.getDeliveryCost(this.addressSelected.city);
-          this.calculateTotal(this.cartData);
-     
-        this.cartData.cartItems = [...this.cartData.cartItems];
-      },
-      error: (err) => console.error('Error removing item:', err)
-    });
-    
-  }
-
-
-//get delivery cost 
-getDeliveryCost(city:string):void {
-  const selectedItem = this.shippingCosts.find(item => item.name === city);
-   
-  if (!selectedItem) {
-    console.error('Item not found');
-    this.deliveryCost = 0;
-    return ;
-  }
-
-  console.log('Selected Item:', selectedItem);
-
-  this.deliveryCost = selectedItem.cost;
-}
-// Increase quantity
-Increase(itemId:string): void {
-  const itemIndex = this.cartData.cartItems.findIndex((cartItem: any) => cartItem.itemId === itemId);
-  if (itemIndex !== -1) {
   
-      this.cartData.cartItems[itemIndex].quantity += 1;
-      if(this.cartData.cartItems[itemIndex].sellingPrice != null){
-       
-        var x= this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].sellingPrice;
-        this.cartData.cartItems[itemIndex].sellingPrice=x;
-        
-        this.cartData.cartItems[itemIndex].price
-        = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
-    
+    getDeliveryCost(city: string): void {
+      const selectedItem = this.shippingCosts.find(item => item.name === city);
+      if (!selectedItem) {
+        console.error('Shipping cost not found for city:', city);
+        this.deliveryCost = 0;
+        return;
       }
-    else{
-      this.cartData.cartItems[itemIndex].price
-      = this.cartData.cartItems[itemIndex].quantity*this.cartData.cartItems[itemIndex].unitPrice;
-  
+      this.deliveryCost = selectedItem.cost;
     }
+  
+    Increase(itemId: string): void {
+      const item = this.cartData.cartItems.find(i => i.itemId === itemId);
+      if (!item) return;
+    
+      item.quantity += 1;
+      item.price = item.quantity * item.unitPrice;
+      if (item.priceAfterSale != null) {
+        item.priceAfterSale = item.quantity * item.priceAfterSale;
+      }
+    
+      this.calculateTotal(this.cartData);
+    
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {
           this.cartData = res;
-        
+          if (this.cartData.addressId != null) {
+            this.updateAddress(this.cartData.addressId);
+          }
           this.calculateTotal(this.cartData);
         },
         error: (err) => console.error('Error increasing item quantity:', err)
       });
     }
     
-}
-// Decrease quantity
-Decrease(itemId: string): void {
-  const itemIndex = this.cartData.cartItems.findIndex((cartItem: any) => cartItem.itemId === itemId);
-
-  if (itemIndex !== -1) {
-    const item = this.cartData.cartItems[itemIndex];
-
-    if (item.quantity > 1) {
-      item.quantity -= 1;
-      if (item.sellingPrice != null) {
-        item.priceAfterSale = item.quantity * item.sellingPrice;
+  
+    Decrease(itemId: string): void {
+      const item = this.cartData.cartItems.find(i => i.itemId === itemId);
+      if (!item) return;
+    
+      if (item.quantity > 1) {
+        item.quantity -= 1;
+        item.price = item.quantity * item.unitPrice;
+        if (item.priceAfterSale != null) {
+          item.priceAfterSale = item.quantity * item.priceAfterSale; 
+        }
+    
+        this.calculateTotal(this.cartData); 
+    
+        this.cartService.updateCart(this.cartData).subscribe({
+          next: (res) => {
+            this.cartData = res;
+            if (this.cartData.addressId != null) {
+              this.updateAddress(this.cartData.addressId);
+            }
+            this.calculateTotal(this.cartData); 
+          },
+          error: (err) => console.error('Error decreasing item quantity:', err)
+        });
       } else {
-        item.priceAfterSale = item.price; // لو مافيش خصم، نخليه زي السعر الأصلي
+        console.warn('Minimum quantity is 1');
       }
     }
+    
+    
+  
+    RemoveItem(itemId: string): void {
+      const index = this.cartData.cartItems.findIndex(item => item.itemId === itemId);
+      if (index !== -1) {
+        this.cartData.cartItems.splice(index, 1);
+        this.updateCartAndTotals();
+      }
+    }
+  
+    updateCartAndTotals(): void {
+      this.cartService.updateCart(this.cartData).subscribe({
+        next: (res) => {
+          this.cartData = res;
+          if (this.cartData.addressId != null) {
+            this.updateAddress(this.cartData.addressId);
+          }
+          this.calculateTotal(this.cartData);
+        },
+        error: (err) => console.error('Error updating cart:', err)
+      });
+    }
 
-    console.log('Updated cart data:', this.cartData);
 
-    this.cartService.updateCart(this.cartData).subscribe({
-      next: (res) => {
-        console.log('Item quantity decreased:', res);
-        this.cartData = res;
-        this.calculateTotal(this.cartData);
-      },
-      error: (err) => console.error('Error decreasing item quantity:', err)
-    });
-  }
-}
+    
 
 
   openModal() {
@@ -234,8 +231,12 @@ Decrease(itemId: string): void {
     next: (res) => {
       console.log('Update Delivry Address:', res);
       this.cartData = res;
-      this.getDeliveryCost(this.addresses[index].city);
-      this.calculateTotal(this.cartData);
+      // this.getDeliveryCost(this.addresses[index].city);
+      if(this.cartData.addressId != null) {
+        this.updateAddress(this.cartData.addressId);
+      }
+     this.calculateTotal(this.cartData);
+     
     },
     error: (err) => console.error('Error in Update Delivry Address:', err)
   });

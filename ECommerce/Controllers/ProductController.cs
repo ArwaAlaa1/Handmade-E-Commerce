@@ -523,6 +523,7 @@ namespace ECommerce.Controllers
                 },
                 Seller = new
                 {
+                    Id=product.Seller.Id,
                     Name = product.Seller.UserName,
                     Email = product.Seller.Email,
                     Photo = product.Seller.Photo

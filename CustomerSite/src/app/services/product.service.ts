@@ -124,4 +124,9 @@ export class ProductService {
       { headers : this.getAuthHeaders(), responseType : 'text' });
   }
 
+  getProductById(id:number): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers });
+  }
+
 }

@@ -1,3 +1,4 @@
+import { CartItem } from './../../interfaces/cart';
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
@@ -6,7 +7,8 @@ import { error } from 'node:console';
 import { finalize } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-
+import { CartService } from '../../services/cart.service';
+import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -31,7 +33,8 @@ export class HomeComponent implements OnInit {
     minPrice: null
   };
 
-  constructor(public _productService: ProductService, private _authService: AuthService) {}
+  constructor(public _productService: ProductService, private _authService: AuthService
+    ,private _cartService:CartService) {}
 
   ngOnInit(): void {
     this.filterProducts();
@@ -125,4 +128,36 @@ export class HomeComponent implements OnInit {
     return Math.round(fiveStarRating * 2) / 2;
   }
 
+  product :any = {};
+  ;
+  addToCart(id:number, quantity:number) {
+  
+    this.product= this._productService.getProductById(id).subscribe((response) =>
+      {
+        // console.log(response);
+        this.product = response;
+        console.log(this.product);
+        const cartItem: CartItem = {
+          itemId: uuidv4().toString(),
+          productId: this.product.id,
+          productName: this.product.name,
+          sellerName: this.product.seller.name,
+          sellerId: this.product.seller.id,
+          photoUrl: this.product.photos[0].url,
+          category: this.product.category.name,
+          customizeInfo: this.product.customizeInfo,
+          price: this.product.sellingPrice,
+          color: this.product.color,
+          priceAfterSale: this.product.discountedPrice,
+          unitPrice: this.product.sellingPrice,
+          size: this.product.size,
+          activeSale: this.product.salePercent,
+          quantity: quantity
+        };
+        this._cartService.addItemToBasket(cartItem,quantity);
+      });
+   
+    
+    
+  }
 }

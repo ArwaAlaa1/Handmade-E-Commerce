@@ -5,12 +5,14 @@
 
 <section class="py-5">
   <div class="container">
-    <div *ngIf="  " class="text-center">
+    <!-- Spinner loading -->
+    <div *ngIf="isLoading" class="text-center">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">loading...</span>
       </div>
     </div>
 
+    <!-- Alert if no products -->
     <div
       *ngIf="!isLoading && totalCount === 0"
       class="alert alert-warning text-center"
@@ -20,82 +22,61 @@
       available Products at the moment.
     </div>
 
+    <!-- Filters -->
     <div *ngIf="!isLoading && totalCount != 0" class="card mb-4 p-3">
-      <div>
-        <div class="row g-3 align-items-center">
-          <div class="col-md-4">
-            <!-- <label for="category" class="form-label">Category</label> -->
-            <select
-              id="category"
-              class="form-select"
-              [(ngModel)]="filters.categoryId"
+      <div class="row g-3 align-items-center">
+        <div class="col-md-4">
+          <select
+            id="category"
+            class="form-select"
+            [(ngModel)]="filters.categoryId"
+          >
+            <option [ngValue]="null">All Categories</option>
+            <option
+              *ngFor="let category of categories"
+              [ngValue]="category.id"
             >
-              <option [ngValue]="null">All Categories</option>
-              <option
-                *ngFor="let category of categories"
-                [ngValue]="category.id"
-              >
-                {{ category.name }}
-              </option>
-            </select>
-          </div>
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
 
-          <div class="col-md-3">
-            <!-- <label for="minPrice" class="form-label">Min Price</label> -->
-            <input
-              type="number"
-              id="minPrice"
-              class="form-control"
-              min="1"
-              [(ngModel)]="filters.minPrice"
-              placeholder="Minimum Price"
-            />
-          </div>
+        <div class="col-md-3">
+          <input
+            type="number"
+            id="minPrice"
+            class="form-control"
+            min="1"
+            [(ngModel)]="filters.minPrice"
+            placeholder="Minimum Price"
+          />
+        </div>
 
-          <div class="col-md-3">
-            <!-- <label for="maxPrice" class="form-label">Max Price</label> -->
-            <input
-              type="number"
-              min="10"
-              id="maxPrice"
-              class="form-control"
-              [(ngModel)]="filters.maxPrice"
-              placeholder="Maximum Price"
-            />
-          </div>
+        <div class="col-md-3">
+          <input
+            type="number"
+            min="10"
+            id="maxPrice"
+            class="form-control"
+            [(ngModel)]="filters.maxPrice"
+            placeholder="Maximum Price"
+          />
+        </div>
 
-          <div class="col-md-2 d-flex align-items-end">
-            <button class="btn btn-primary w-100" (click)="applyFilters()">
-              Apply Filter
-            </button>
-          </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button class="btn btn-primary w-100" (click)="applyFilters()">
+            Apply Filter
+          </button>
         </div>
       </div>
     </div>
 
+    <!-- Product Cards -->
     <div *ngIf="!isLoading && totalCount != 0" class="row g-4">
       <div class="col-sm-6 col-lg-3" *ngFor="let product of allProducts">
-        <div
-          class="card h-100 shadow-sm product-card position-relative overflow-hidden"
-        >
-          <div
-            class="position-relative overflow-hidden product-image-container"
-          >
-<<<<<<< HEAD
-            <i class="bi bi-heart"></i>
-          </button>
-
-          <button 
-            *ngIf="product.IsFavorite"
-            class="favorite-btn"
-            (click)="deleteFromFavorite(product.id)"
-          >
-            <i class="bi bi-heart-fill text-danger"></i>
-          </button>
-
+        <div class="card h-100 shadow-sm position-relative overflow-hidden">
+          <!-- Image Container -->
           <div class="position-relative overflow-hidden">
-=======
->>>>>>> 3fe2424c398972ee1969bf6cf3e067d0c11d7b2e
             <img
               width="100%"
               height="250"
@@ -103,18 +84,6 @@
               class="card-img-top default-img"
               [alt]="product.name"
             />
-<<<<<<< HEAD
-            <span class="badge bg-danger position-absolute top-0 start-0 m-2">{{
-              product.descreption
-            }}</span>
-            <div class="position-absolute top-0 end-0 m-2 d-flex gap-2">
-              <a href="#" class="btn btn-sm btn-light" title="Wishlist">
-                <i class="bi bi-heart"></i>
-              </a>
-                <a [attr.href]="'/ProductDetails/' + product.id" class="btn btn-sm btn-light" title="Quick View">
-                  <i class="bi bi-eye"></i>
-                </a>
-=======
             <img
               width="100%"
               height="250"
@@ -123,10 +92,14 @@
               [alt]="product.name"
             />
 
-            <div class="hover-buttons d-flex justify-content-center gap-2 p-2">
+            <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+              {{ product.description }}
+            </span>
+
+            <!-- Hover Buttons -->
+            <div class="position-absolute top-0 end-0 m-2 d-flex gap-2">
               <button
-                class="btn btn-light btn-sm action-btn"
-                [ngClass]="{ 'active-favorite': product.isFavorite }"
+                class="btn btn-sm btn-light"
                 title="Wishlist"
                 (click)="
                   product.isFavorite
@@ -136,60 +109,52 @@
               >
                 <i
                   [class]="
-                    product.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'
+                    product.isFavorite ? 'bi bi-heart-fill text-danger' : 'bi bi-heart'
                   "
                 ></i>
               </button>
 
-              <button
-                class="btn btn-light btn-sm action-btn"
+              <a
+                [attr.href]="'/ProductDetails/' + product.id"
+                class="btn btn-sm btn-light"
                 title="Quick View"
               >
                 <i class="bi bi-eye"></i>
-              </button>
+              </a>
+            </div>
 
+            <div
+              class="hover-buttons d-flex justify-content-center gap-2 p-2"
+            >
               <button
                 class="btn btn-light btn-sm action-btn"
                 title="Add to Cart"
-                (click)="addToCart(product.id,1)"
+                (click)="addToCart(product.id, 1)"
               >
                 <i class="bi bi-cart-plus"></i>
               </button>
->>>>>>> 3fe2424c398972ee1969bf6cf3e067d0c11d7b2e
             </div>
           </div>
 
+          <!-- Card Body -->
           <div class="card-body d-flex flex-column">
-            <div class="text-muted mb-1 d-flex align-items-center">
-              <div
-                id="productName"
-                class="d-flex justify-content-start"
-                style="flex-grow: 1"
-              >
-                <span>{{ product.name }}</span>
-              </div>
-              <div class="d-flex justify-content-end">
-                <ng-container *ngIf="product.rating">
-                  <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
-                    <i
-                      class="bi"
-                      [ngClass]="{
-                        'bi-star-fill': getStarRating(product.rating) >= star,
-                        'bi-star-half':
-                          getStarRating(product.rating) >= star - 0.5 &&
-                          getStarRating(product.rating) < star,
-                        'bi-star': getStarRating(product.rating) < star - 0.5
-                      }"
-                      style="
-                        color: gold;
-                        margin-left: 1px;
-                        margin-right: 1px;
-                        font-size: 1rem;
-                      "
-                    ></i>
-                  </ng-container>
+            <div class="text-muted mb-1 d-flex align-items-center justify-content-between">
+              <span>{{ product.name }}</span>
+              <ng-container *ngIf="product.rating">
+                <ng-container *ngFor="let star of [1,2,3,4,5]">
+                  <i
+                    class="bi"
+                    [ngClass]="{
+                      'bi-star-fill': getStarRating(product.rating) >= star,
+                      'bi-star-half':
+                        getStarRating(product.rating) >= star - 0.5 &&
+                        getStarRating(product.rating) < star,
+                      'bi-star': getStarRating(product.rating) < star - 0.5
+                    }"
+                    style="color: gold; font-size: 1rem;"
+                  ></i>
                 </ng-container>
-              </div>
+              </ng-container>
             </div>
 
             <h6 class="card-title">{{ product.description }}</h6>
@@ -216,10 +181,10 @@
       </div>
     </div>
 
+    <!-- Pagination -->
     <div *ngIf="!isLoading" class="pagination-container mt-3">
       <nav *ngIf="totalCount != 0" aria-label="Page navigation">
         <ul class="pagination justify-content-center align-items-center">
-          <!-- Previous Button -->
           <li class="page-item" [class.disabled]="currentPage === 1">
             <button
               class="page-link"
@@ -229,15 +194,11 @@
               Previous
             </button>
           </li>
-
-          <!-- Page Number -->
           <li class="page-item disabled">
             <span class="page-link">
               Page {{ currentPage }} of {{ totalPages }}
             </span>
           </li>
-
-          <!-- Next Button -->
           <li class="page-item" [class.disabled]="currentPage === totalPages">
             <button
               class="page-link"
@@ -247,8 +208,6 @@
               Next
             </button>
           </li>
-
-          <!-- Total Products Badge -->
           <li class="page-item disabled ms-3">
             <span class="page-link"> Total: {{ totalCount }} </span>
           </li>

@@ -25,11 +25,11 @@ export class HomeComponent implements OnInit {
   isLoading = true;
   imageBaseUrl:string = environment.baseImageURL;
   allProducts: any[] = [];
-<<<<<<< HEAD
-=======
+
+
   categories : any[] = [];
 
->>>>>>> 3fe2424c398972ee1969bf6cf3e067d0c11d7b2e
+
   filters = {
     categoryId: null,
     maxPrice: null,

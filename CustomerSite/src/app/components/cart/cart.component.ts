@@ -38,7 +38,6 @@ export class CartComponent {
     private cartService: CartService,private _auth: AuthService) {
   
     }
-
     ngOnInit(): void {
       const storedData = this._auth.userData
       .subscribe({
@@ -81,9 +80,7 @@ export class CartComponent {
       //Get shipping costs
       this._shipCost.getShippingCosts().subscribe({
         next: (res) => {
-          console.log('Shipping data:', res);
           this.shippingCosts = res;
-
         },
         error: (err) => console.error('Error loading Shipping Costs:', err)
       });
@@ -190,10 +187,6 @@ Decrease(itemId: string): void {
       } else {
         item.priceAfterSale = item.price; // لو مافيش خصم، نخليه زي السعر الأصلي
       }
-    } else {
-     item.quantity=1
-      console.warn('Minimum quantity reached.');
-      return;
     }
 
     console.log('Updated cart data:', this.cartData);

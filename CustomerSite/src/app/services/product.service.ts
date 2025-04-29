@@ -53,7 +53,22 @@ export class ProductService {
 
     return this._HttpClient.get(url, { headers });
   }
+  getProductById(productId: number): Observable<any> {
 
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    let url = `${environment.baseURL}Products/GetProductByID/${productId}`;
+    return this._HttpClient.get(url, { headers });
+  }
+
+  getProductReviews(productId: number): Observable<any> {
+
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+    let url = `${environment.baseURL}Review/GetProductReviews/${productId}`;
+    return this._HttpClient.get(url, { headers });
+  }
+  
   getProductinOffer(
     pageSize: number,
     pageIndex: number,

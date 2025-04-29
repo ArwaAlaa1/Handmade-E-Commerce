@@ -23,10 +23,10 @@ namespace ECommerce.Repository.Repositories
 
             return await _db.Reviews.CountAsync(z=>z.ProductId==productId);
         }
-
+            
         public async Task<IEnumerable<Review>> GetReviewsWithProductAsync(int productId)
         {
-            return await _db.Reviews.Where(x=>x.ProductId==productId).ToListAsync();
+            return await _db.Reviews.Where(x=>x.ProductId==productId).Include(z=>z.user).ToListAsync();
         }
 
         public async Task<Review> GetReviewWithProductAsync(int reviewId, int productId)

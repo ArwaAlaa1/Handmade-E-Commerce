@@ -50,6 +50,17 @@ namespace ECommerce.Repository.Repositories
                 .ToListAsync();
         }
 
+        //public override Task<Product?> GetByIdAsync(int id)
+        //{
+        //    var product = _context.Products.Include(c => c.Category)
+        //                                   .Include(i => i.ProductPhotos)
+        //                                   .Include(p => p.ProductColors)
+        //                                   .Include(p => p.ProductSizes)
+        //                                   .Include(p => p.Seller)
+        //                                   .FirstOrDefaultAsync(p => p.Id == id);
+        //    return product;
+        //}
+       
         public async Task<IEnumerable<Product>> GetProductsWithOffer(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)
         {
             var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category)

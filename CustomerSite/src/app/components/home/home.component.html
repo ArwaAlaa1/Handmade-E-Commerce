@@ -6,7 +6,7 @@
 <!-- Day of the Deal Section -->
 <section class="py-5 bg-light">
   <div class="container">
-    <div *ngIf="isLoading" class="text-center">
+    <div *ngIf="  " class="text-center">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">loading...</span>
       </div>
@@ -24,7 +24,7 @@
             <i class="bi bi-heart"></i>
           </button>
 
-          <button
+          <button 
             *ngIf="product.IsFavorite"
             class="favorite-btn"
             (click)="deleteFromFavorite(product.id)"
@@ -47,9 +47,9 @@
               <a href="#" class="btn btn-sm btn-light" title="Wishlist">
                 <i class="bi bi-heart"></i>
               </a>
-              <a href="#" class="btn btn-sm btn-light" title="Quick View">
-                <i class="bi bi-eye"></i>
-              </a>
+                <a [attr.href]="'/ProductDetails/' + product.id" class="btn btn-sm btn-light" title="Quick View">
+                  <i class="bi bi-eye"></i>
+                </a>
             </div>
           </div>
           <div class="card-body d-flex flex-column">

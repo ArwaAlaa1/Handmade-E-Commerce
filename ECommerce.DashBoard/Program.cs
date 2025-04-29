@@ -54,6 +54,7 @@ namespace ECommerce.DashBoard
 
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IFavoriteRepository,FavoriteRepository>();
+            builder.Services.AddScoped<IProductRepository,ProductRepository>();
 
 
 

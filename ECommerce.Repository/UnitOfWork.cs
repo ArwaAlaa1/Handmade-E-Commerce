@@ -20,14 +20,15 @@ namespace ECommerce.Repository
 
         public IReviewRepository Reviews { get; private set; }
         public IFavoriteRepository Favorites { get; private set; }
-
+        public IProductRepository Products { get; private set; }
         public UnitOfWork(ECommerceDbContext db,
                    IReviewRepository reviewRepository,
-                   IFavoriteRepository favoriteRepository)
+                   IFavoriteRepository favoriteRepository,IProductRepository productRepository)
         {
             _db = db;
             Reviews = reviewRepository;
             Favorites = favoriteRepository;
+            Products = productRepository;
             _repositories = new Hashtable();
         }
 

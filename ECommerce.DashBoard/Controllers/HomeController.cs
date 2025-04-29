@@ -32,8 +32,8 @@ namespace ECommerce.DashBoard.Controllers
 
             var products = await _unitOfWork.Repository<Product>()
                 .GetAllAsync(includeProperties: "Category");
-            var sales = await _unitOfWork.Repository<Sale>().GetAllAsync();
-            
+            var sales = await _unitOfWork.Repository<Sale>().GetAllAsync(includeProperties: "Product");
+
 
             var user = await _userManager.GetUserAsync(User);
             var isAdmin = User.IsInRole(SD.AdminRole);
@@ -50,6 +50,8 @@ namespace ECommerce.DashBoard.Controllers
             if (isSupplier && user != null)
             {
                 ordersQuery = ordersQuery.Where(o => o.OrderItems.Any(oi => oi.TraderId == user.Id));
+                products = products.Where(p=> p.SellerId == user.Id);
+                sales = sales.Where(s=> s.Product.SellerId == user.Id && s.IsDeleted != true );
             }
 
             // Filter by range
@@ -128,6 +130,8 @@ namespace ECommerce.DashBoard.Controllers
                 .OrderByDescending(r => r.Revenue)
                 .Take(5)
                 .ToList();
+            var totalproducts = products.Count();
+            var totalSales = sales.Count();
 
             var dashboardVM = new DashboardReportVM
             {
@@ -138,7 +142,9 @@ namespace ECommerce.DashBoard.Controllers
                 OrderStatuses = orderStatuses,
                 TopCustomers = topCustomers,
                 CategoryRevenues = categoryRevenues,
-                Range = range
+                Range = range,
+                TotalProducts = totalproducts,
+                TotalSales = totalSales
             };
 
             return View(dashboardVM);

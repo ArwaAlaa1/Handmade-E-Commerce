@@ -85,16 +85,16 @@ namespace ECommerce
             });
 
 
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowAllOrigins",
-            //        builder =>
-            //        {
-            //            builder.AllowAnyOrigin()
-            //                   .AllowAnyHeader()
-            //                   .AllowAnyMethod();
-            //        });
-            //});
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyHeader()
+                               .AllowAnyMethod();
+                    });
+            });
 
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -156,8 +156,8 @@ namespace ECommerce
             app.UseStaticFiles();
             app.MapHub<NotificationHub>("/notificationHub");
             app.UseHttpsRedirection();
-            app.UseCors("AllowDashBoard");
-            //app.UseCors("AllowAllOrigins");
+            //app.UseCors("AllowDashBoard");
+            app.UseCors("AllowAllOrigins");
             app.UseAuthentication();
             app.UseAuthorization();
 

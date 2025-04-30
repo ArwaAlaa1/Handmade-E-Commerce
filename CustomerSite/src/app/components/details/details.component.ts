@@ -30,7 +30,7 @@ export class DetailsComponent implements OnInit {
 
   newreviewcontent:string='';
   inputrate:number=0;
-Math: any;
+
   reviewForm: FormGroup = new FormGroup(
     {
       rating: new FormControl(null, { validators: [Validators.required,Validators.min(1), Validators.max(10)] }),
@@ -157,5 +157,7 @@ Math: any;
     this.voteValue = value;
     this.reviewForm.controls['rating'].setValue(value * 2);
   }
-
+  getRoundedRating(rating: number): number {
+    return Math.round(rating / 2);
+  }
 }

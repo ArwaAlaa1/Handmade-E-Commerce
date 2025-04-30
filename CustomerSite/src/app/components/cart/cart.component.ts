@@ -15,6 +15,7 @@ import { PaymentService } from '../../services/payment.service';
 import { Subscription } from 'rxjs';
 import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
 import { log } from 'console';
+import { OrderResponse } from '../../interfaces/order-response';
  
 declare var bootstrap: any; 
 @Component({
@@ -333,6 +334,7 @@ async ngOnInit(): Promise<void> {
     this.PaymentService.createOrUpdatePayment(cartId, 35).subscribe({
       next: (response: Cart) => {
         this.isLoading = false;
+        this.cartData = response;
         this.clientSecret = response.clientSecret?? null;
  
         // const backendTotal = response.cartItems.reduce((sum, item) => {
@@ -427,30 +429,62 @@ async ngOnInit(): Promise<void> {
       console.error('Payment error:', error);
     } else if (paymentIntent && paymentIntent.status === 'succeeded') {
       console.log('Payment succeeded:', paymentIntent);
- 
+      const shippingCostId = this.shippingCosts.find(item => item.name === this.addressSelected?.city)?.id;
+      console.log('shippingCostId:', shippingCostId);
+      const cartId= this.cartData.id;
+      console.log('cartId:', cartId);
+     this.PaymentService.createOrder(cartId, shippingCostId, this.cartData.addressId,paymentIntent.id).subscribe({
+
+      next: (response:OrderResponse) => {
+        console.log('Order created in database:', response);
+
+        // Clear the cart in the frontend
+        this.cartData = {} as Cart;
+        this.cartData.cartItems = [];
+        this.subTotal = 0;
+        this.total = 0;
+        this.deliveryCost = 0;
+
+        this.router.navigate(['/order-confirmation'], {
+          queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
      
-   
-      // Clear the cart in the backend
+        });
+      },
+      error: (err : OrderResponse) => {
+        console.error('Error creating order in the backend:', err);
+        this.errorMessage = 'Payment succeeded, but failed to create order. Please contact support.';
+      }
+    });
+  }
+}
+    
+  
+
+  clearAllCart(): void {
+    if (!this.cartData || !this.cartData.id) {
+      console.warn('No cart data to clear');
+      return;
+    }
+  
+    // Clear the cart in the backend
     this.cartService.clearCart(this.cartData.id).subscribe({
       next: () => {
         console.log('Cart cleared in the backend');
+  
+        // Clear the cart in the frontend
+        this.cartData = {} as Cart;
+        this.cartData.cartItems = [];
+        this.subTotal = 0;
+        this.total = 0;
+        this.deliveryCost = 0;
+  
+        // Update the UI
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error clearing cart in the backend:', err);
-        this.errorMessage = 'Payment succeeded, but failed to clear cart. Please contact support.';
+        this.errorMessage = 'Failed to clear cart. Please try again.';
       }
-     
-      });
-      // Clear the cart in the frontend
-    this.cartData = {} as Cart;
-    this.cartData.cartItems = [];
-    this.subTotal = 0;
-    this.total = 0;
-    this.deliveryCost = 0;
- 
-    this.router.navigate(['/order-confirmation'], {
-      queryParams: { paymentId: paymentIntent.id }
     });
-  }
   }
 }

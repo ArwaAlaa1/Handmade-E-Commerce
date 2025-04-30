@@ -62,7 +62,7 @@ namespace ECommerce.Controllers
             var allProducts = products.Select(p =>
             {
                 var currentSale = p.Sales?.FirstOrDefault(s =>
-                    s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+                    s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
 
                 decimal basePrice = p.Cost;
                 decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);

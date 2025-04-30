@@ -27,7 +27,7 @@ namespace ECommerce.Services
             _orderRepo = orderRepo;
             this.paymentService = paymentService;
         }
-        public async Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId, int shippingCostId, int ShippingAddressId)
+        public async Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId, int shippingCostId, int ShippingAddressId, string paymentId)
         {
             //1.Get Cart from cart repo
             var cart = await _cartRepository.GetCartAsync(CartId);
@@ -56,16 +56,19 @@ namespace ECommerce.Services
             var TotalPrice = OrderItems.Sum(OI => OI.TotalPrice);
             ////get shippingcost
             var ShippingCost = await _unitOfWork.Repository<ShippingCost>().GetByIdAsync(shippingCostId);
-            TotalPrice += ShippingCost.Cost;
+            //TotalPrice += ShippingCost.Cost;
             //createorder
-            var existingOrder = await _orderRepo.GetOrderByPaymentIdAsync(cart.PaymentId);
+            var existingOrder = await _orderRepo.GetOrderByPaymentIdAsync(paymentId);
             if ( existingOrder != null)
             {
                 await CancelOrder(existingOrder.Id);
-                await paymentService.CreateOrUpdatePaymentAsync(CartId, ShippingCost.Id);
+                //await paymentService.CreateOrUpdatePaymentAsync(CartId, ShippingCost.Id); //**
             }
 
-            var order = new Order(CustomerEmail, shippingCostId, ShippingAddressId, TotalPrice, OrderItems,cart.PaymentId);
+            var order = new Order(CustomerEmail, shippingCostId, ShippingAddressId, TotalPrice, OrderItems, paymentId)
+            {
+                shippingCost = ShippingCost,
+            };
             //save to db
             await _unitOfWork.Repository<Order>().AddAsync(order);
             var rows = await _unitOfWork.SaveAsync();

@@ -33,6 +33,7 @@ export class DetailsComponent implements OnInit {
       reviewContent: new FormControl(null, { validators: [Validators.required, Validators.minLength(10)] }),
     },
   );
+Math: any;
 
   constructor(private _route: ActivatedRoute, private _service: ProductService) {
     this.ProductId=this._route.snapshot.params['ProductId'];

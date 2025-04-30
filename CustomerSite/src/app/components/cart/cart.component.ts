@@ -38,7 +38,7 @@ declare var bootstrap: any;
   total: number = 0;
   subscriptions: Subscription[] = [];
 
-  imageBaseUrl: string = ${environment.baseImageURL}images/;
+  imageBaseUrl: string = `${environment.baseImageURL}images/`;
   isLogin: boolean = false;
   isLoading: boolean = false;
 
@@ -415,7 +415,7 @@ async ngOnInit(): Promise<void> {
     const { error, paymentIntent } = await this.stripe.confirmPayment({
       elements: this.elements,
       confirmParams: {
-        return_url: ${window.location.origin}/order-confirmation
+        return_url: `${window.location.origin}/order-confirmation`
       },
       redirect: 'if_required'
     });

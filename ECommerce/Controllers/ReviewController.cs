@@ -33,31 +33,28 @@ namespace ECommerce.Controllers
         }
 
 
+
         [Authorize(Roles = SD.CustomerRole)]
         [HttpPost("AddReview")]
-        public async Task<IActionResult> AddReview([FromBody] reviewDto Dto)
+        public async Task<IActionResult> AddReview([FromBody] AddReviewDTO review)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null) return Unauthorized();
-            var user = _userManager.FindByIdAsync(userId);
-
-            var newReview = new Review
+            try
             {
-                ProductId = Dto.ProductId,
-                ReviewContent = Dto.ReviewContent,
-                Rating = Dto.Rating,
-                UserId = userId
-                //user  = user
-            };
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            await _unitOfWork.Reviews.AddAsync(newReview);
-            await _unitOfWork.SaveAsync();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                var rev = await _unitOfWork.Reviews.AddReview(review.ProductId, userId, review.ReviewContent, review.Rating);
 
-            return CreatedAtAction(nameof(GetReview), new { reviewId = newReview.Id }, newReview);
+                return Ok(new { content = review.ReviewContent, rate = review.Rating });
+            }
+            catch
+            {
+                return BadRequest("You Are not a customer.");
+            }
+
         }
+
 
         [HttpGet("EditReview/{ReviewId}")]
         public async Task<IActionResult> EditReview(int ReviewId,UpdateReviewDTO newrevewdto)

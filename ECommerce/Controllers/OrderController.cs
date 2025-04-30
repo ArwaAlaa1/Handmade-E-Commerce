@@ -6,10 +6,12 @@ using ECommerce.Core.Repository.Contract;
 using ECommerce.Core.Services.Contract;
 using ECommerce.DTOs;
 using ECommerce.DTOs.OrderDtos;
+using ECommerce.Hubs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ECommerce.Controllers
 {
@@ -22,7 +24,8 @@ namespace ECommerce.Controllers
         private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
-       
+        private readonly IHubContext<NotificationHub> _hubContext;
+
         private readonly ILogger<OrderController> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -34,14 +37,16 @@ namespace ECommerce.Controllers
             , IWebHostEnvironment webHostEnvironment,
             ILogger<OrderController> logger,
                         IConfiguration configuration,
-                        IUnitOfWork unitOfWork)
+                        IUnitOfWork unitOfWork,
+                        IHubContext<NotificationHub> hubContext)
         {
             _orderService = orderService;
             _cartRepository = cartRepository;
             _addressRepository = addressRepository;
             _mapper = mapper;
             _userManager = userManager;
-        
+            _hubContext = hubContext;
+
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
@@ -53,24 +58,41 @@ namespace ECommerce.Controllers
         {
             try
             {
-
                 var address = await _addressRepository.GetByIdAsync(orderDto.AddressId);
-
                 var user = await _userManager.GetUserAsync(User);
-              
-                var order = await _orderService.CreateOrderAsync(user.Email, orderDto.CartId, orderDto.ShippingCostId,orderDto.AddressId);
+
+                var order = await _orderService.CreateOrderAsync(user.Email, orderDto.CartId, orderDto.ShippingCostId, orderDto.AddressId);
                 if (order == null)
                 {
                     return BadRequest(new { Message = "Failure in Order Process" });
                 }
+
+                // Delete the cart
                 var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
-                return Ok(new { Message= "Order Created Successfully" });
+
+                // Send notification to each unique trader in the order
+                var traderIds = order.OrderItems
+                                     .Select(oi => oi.TraderId)
+                                     .Distinct()
+                                     .ToList();
+
+                foreach (var traderId in traderIds)
+                {
+                    await _hubContext.Clients
+                        .Group($"Trader_{traderId}")
+                        .SendAsync("ReceiveOrderNotification", new
+                        {
+                            Message = "🔔 You have a new order!",
+                            OrderId = order.Id,
+                            TraderId = traderId
+                        });
+                }
+
+                return Ok(new { Message = "Order Created Successfully" });
             }
             catch (Exception ex)
             {
-
                 _logger.LogError(ex, "Error occurred while creating the order.");
-
                 return BadRequest(new { Message = "failed!" });
             }
         }

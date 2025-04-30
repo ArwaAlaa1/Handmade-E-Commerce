@@ -66,10 +66,12 @@ export class ProductService {
   //   let url = `${environment.baseURL}Products/GetProductByID/${productId}`;
   //   return this._HttpClient.get(url, { headers });
   // }
+
   getProById(id:number): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers : this.getAuthHeaders()});
   }
+
   getProductReviews(productId: number): Observable<any> {
 
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -129,10 +131,10 @@ export class ProductService {
       { headers : this.getAuthHeaders(), responseType : 'text' });
   }
 
-  AddReview(credentials: { productId: number; reviewContent: string; rating: number }): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this._HttpClient.post(`${environment.baseURL}Review/AddReview`, credentials, { headers: this.getAuthHeaders() });
+  AddReview(proId: number, Content: string,rate: number ): Observable<any> {
+
+    return this._HttpClient.post(`${environment.baseURL}Review/AddReview`,{ProductId:proId,ReviewContent:Content, Rating:rate }, { headers: this.getAuthHeaders()});
   }
 
-
 }
+

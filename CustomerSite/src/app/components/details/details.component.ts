@@ -4,6 +4,7 @@ import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators  } from '@angular/forms';
+import { response } from 'express';
 
 @Component({
   selector: 'app-details',
@@ -27,13 +28,15 @@ export class DetailsComponent implements OnInit {
   // prductphotos: any = null;
   // Math: any;
 
+  newreviewcontent:string='';
+  inputrate:number=0;
+Math: any;
   reviewForm: FormGroup = new FormGroup(
     {
       rating: new FormControl(null, { validators: [Validators.required,Validators.min(1), Validators.max(10)] }),
       reviewContent: new FormControl(null, { validators: [Validators.required, Validators.minLength(10)] }),
     },
   );
-Math: any;
 
   constructor(private _route: ActivatedRoute, private _service: ProductService) {
     this.ProductId=this._route.snapshot.params['ProductId'];
@@ -132,6 +135,17 @@ Math: any;
   if (this.reviewForm.valid) {
     const reviewData = this.reviewForm.value;
     console.log('Review Submitted:', reviewData);
+    this._service.AddReview(this.product.id,this.reviewForm.controls['reviewContent'].value,this.voteValue*2).subscribe({
+      next:(response)=>{
+        console.log(response);
+        this.getreviews(this.ProductId);
+      },
+      error: (error) => {
+        console.error('Error cannot add review:', error);
+      }
+
+    });
+
     this.reviewForm.reset();
     } else {
       this.reviewForm.markAllAsTouched();
@@ -145,5 +159,3 @@ Math: any;
   }
 
 }
-
-

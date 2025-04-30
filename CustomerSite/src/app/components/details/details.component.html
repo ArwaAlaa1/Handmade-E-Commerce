@@ -1,186 +1,286 @@
 <section class="py-5 bg-light">
-  <div class="container">
-    <!-- Loading Spinner -->
-    <div *ngIf="isLoading" class="text-center">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">loading...</span>
-      </div>
-    </div>
-    
-    <!-- Product Details -->
-    <div *ngIf="!isLoading && product" class="row g-4">
-      <!-- Image Gallery -->
-      <div class="col-lg-6">
-        <div class="product-gallery">
-          <div class="main-image mb-3">
-            <img 
-              [src]="imageBaseUrl + product.photos[0]?.url" 
-              class="img-fluid rounded shadow-sm"
-              style="width: 400px; height: 300px; object-fit: cover;" 
-              alt="{{ product.name }}" />
+  <div class="container" *ngIf="product">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="border rounded shadow-sm p-3">
+          <img
+            [src]="
+              imageBaseUrl +
+              (selectedPhotoUrl ? selectedPhotoUrl : product.photos[0]?.url)
+            "
+            class="img-fluid rounded w-100"
+            style="
+              max-height: 450px;
+              object-fit: contain;
+              background-color: #f8f9fa;
+            "
+            alt="Main Product Image"
+          />
+
+          <div class="d-flex gap-2 mt-3 overflow-auto">
+            <img
+              *ngFor="let photo of product.photos"
+              [src]="imageBaseUrl + photo.url"
+              (click)="selectPhoto(photo.url)"
+              class="rounded"
+              [ngClass]="{
+                'border border-3 border-primary': selectedPhotoUrl === photo.url
+              }"
+              style="
+                width: 70px;
+                height: 70px;
+                object-fit: cover;
+                cursor: pointer;
+              "
+            />
           </div>
-          
-
-          <!-- Thumbnails -->
-
         </div>
       </div>
 
-      <!-- Product Information -->
-      <div class="col-lg-6">
+      <div class="col-md-6">
+        <h2 class="fw-bold mb-3">{{ product.name }}</h2>
+        <p class="text-muted">{{ product.description }}</p>
+        <p class="mb-2">
+          <i class="bi bi-tag-fill text-primary me-1"></i>
+          <strong>Category:</strong> {{ product.category?.name }}
+        </p>
 
-        <!-- اسم المنتج -->
-        <h1 class="fw-bold mb-2">{{ product.name }}</h1>
-      
-        <!-- اسم الكاتيجوري -->
-        <h5 class="text-muted mb-4">{{ product.category?.name }}</h5>
-      
-        <!-- الوصف -->
-        <p class="mb-4">{{ product.description }}</p>
-      
-        <!-- الأسعار -->
-        <div class="d-flex align-items-center mb-4">
-          <span *ngIf="product.discountedPrice && product.discountedPrice < product.sellingPrice" 
-                class="text-primary fw-bold fs-3 me-3">
+        <div class="mb-4">
+          <span
+            class="fs-3 fw-bold text-danger"
+            *ngIf="product.discountedPrice"
+          >
             {{ product.discountedPrice | currency }}
           </span>
-      
-          <span [ngClass]="{
-                'text-primary fw-bold fs-3': !product.discountedPrice || product.discountedPrice >= product.sellingPrice,
-                'text-muted text-decoration-line-through fs-5': product.discountedPrice && product.discountedPrice < product.sellingPrice
-              }">
+          <span
+            class="fs-5 text-muted text-decoration-line-through"
+            *ngIf="product.discountedPrice"
+          >
             {{ product.sellingPrice | currency }}
           </span>
-        </div>
-      
-        <!-- معلومات إضافية -->
-        <div class="mb-4">
-          <div class="d-flex align-items-center">
-           
+          <span
+            class="fs-4 fw-bold text-primary"
+            *ngIf="!product.discountedPrice"
+          >
+            {{ product.sellingPrice | currency }}
+          </span>
+          <div *ngIf="product.offer" class="mt-2">
+            <span class="badge bg-success">
+              {{ product.offer.discount }}% Off
+            </span>
+            <small class="text-muted">
+              ({{ product.offer.startDate | date : "mediumDate" }} -
+              {{ product.offer.endDate | date : "mediumDate" }})
+            </small>
           </div>
         </div>
-      
-        <!-- الألوان -->
+
         <div *ngIf="product.colors?.length" class="mb-4">
-          <h6 class="fw-bold">Available Colors:</h6>
-          <div class="d-flex flex-wrap gap-2">
-            <span *ngFor="let color of product.colors" class="badge rounded-pill text-bg-light px-3 py-2" [style.background]="color" style="color: #fff;">
-              {{ color }}
+          <h6>Colors:</h6>
+          <div class="d-flex gap-2">
+            <div
+              *ngFor="let color of product.colors"
+              class="rounded-circle"
+              [style.background]="color"
+              style="width: 30px; height: 30px; border: 2px solid #ccc"
+            ></div>
+          </div>
+        </div>
+
+        <div *ngIf="product.sizes?.length" class="mb-4">
+          <h6>Sizes:</h6>
+          <div class="d-flex gap-2 flex-wrap">
+            <span
+              *ngFor="let size of product.sizes"
+              class="badge bg-light text-dark border px-3 py-2"
+            >
+              {{ size.name }}
+              <small *ngIf="size.extraCost"
+                >(+{{ size.extraCost | currency }})</small
+              >
             </span>
           </div>
         </div>
-      
-        <!-- المقاسات -->
-        <div *ngIf="product.sizes?.length" class="mb-4">
-          <h6 class="fw-bold">Available Sizes:</h6>
-          <div class="d-flex flex-wrap gap-2">
-            <div *ngFor="let size of product.sizes" class="border rounded p-2 px-3 bg-light">
-              {{ size.name }} 
-              <small *ngIf="size.extraCost" class="text-muted ms-1">( +{{ size.extraCost | currency }} )</small>
+
+        <div class="mb-4">
+          <button
+            class="btn btn-outline-danger"
+            [ngClass]="{ 'active-favorite': product.isFavorite }"
+            title="Wishlist"
+            (click)="
+              product.isFavorite
+                ? deleteFromFavorite(product.id)
+                : addToFavorite(product.id)
+            "
+          >
+            <i
+              [class]="product.isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'"
+            ></i>
+          </button>
+        </div>
+
+        <div class="bg-light rounded p-3">
+          <h6 class="mb-3 fw-bold">Seller Info</h6>
+          <div class="d-flex align-items-center gap-3">
+            <img
+              [src]="imageBaseUrl + '/images/users/' + product.seller?.photo"
+              class="rounded-circle border"
+              style="width: 80px; height: 80px; object-fit: cover"
+              alt="Seller Logo"
+            />
+            <div>
+              <p class="mb-1 fw-semibold">
+                <i class="bi bi-person-fill me-1"></i>
+                {{ product.seller?.name }}
+              </p>
+              <p class="mb-0 text-muted">
+                <i class="bi bi-envelope-fill me-1"></i>
+                {{ product.seller?.email }}
+              </p>
             </div>
           </div>
         </div>
-      
-        <!-- زرار شراء -->
-        <div class="d-grid mt-4">
-          <button class="btn btn-primary btn-lg rounded-pill">Add to Cart</button>
-        </div>
-      
       </div>
-      
-          <!-- Wishlist and Quick View Buttons -->
+    </div>
+  </div>
 
+  <div class="card mt-5 shadow-lg border-0 rounded-4">
+    <div class="card-body p-4">
+      <h4 class="mb-4 fw-bold text-primary">💬 Leave a Review</h4>
+
+      <form (ngSubmit)="submitReview()" [formGroup]="reviewForm" novalidate>
+        <!-- النجوم -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">Your Rating</label>
+          <div class="stars fs-4">
+            <i
+              *ngFor="let star of [1, 2, 3, 4, 5]"
+              class="bi me-1"
+              [ngClass]="
+                voteValue >= star
+                  ? 'bi-star-fill text-warning'
+                  : 'bi-star text-muted'
+              "
+              style="cursor: pointer"
+              (click)="setVote(star)"
+            ></i>
+          </div>
+          <input
+            type="hidden"
+            formControlName="rating"
+            [value]="voteValue * 2"
+          />
+          <div
+            *ngIf="
+              reviewForm.controls['rating'].invalid &&
+              reviewForm.controls['rating'].touched
+            "
+            class="text-danger mt-1"
+          >
+            Please select a rating.
+          </div>
         </div>
-      </div>
-   
 
-    <!-- Gallery Grid Below (Optional Section) -->
-    <div class="text-center mt-5">
-      <h3 class="mb-4 fw-bold">More Images</h3>
-    
-      <!-- Carousel Container -->
-      <div id="productImagesCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner rounded-4 shadow-sm">
-          
-          <ng-container *ngFor="let photo of prductphotos; let i = index">
-            <div [class]="i === 0 ? 'carousel-item active' : 'carousel-item'">
-              <img [src]="imageBaseUrl + photo.url" class="d-block w-100" style="max-height: 400px; object-fit: cover;" alt="Product Image">
-            </div>
+        <!-- تعليق المستخدم -->
+        <div class="mb-3">
+          <label for="reviewContent" class="form-label fw-bold"
+            >Your Review</label
+          >
+          <textarea
+            formControlName="reviewContent"
+            id="reviewContent"
+            class="form-control rounded-3 shadow-sm"
+            rows="4"
+            placeholder="Write your opinion..."
+          ></textarea>
+          <div
+            *ngIf="
+              reviewForm.controls['reviewContent'].invalid &&
+              reviewForm.controls['reviewContent'].touched
+            "
+            class="text-danger mt-1"
+          >
+            Review must be at least 10 characters.
+          </div>
+        </div>
+
+        <!-- زر الإرسال -->
+        <button
+          type="submit"
+          class="btn btn-warning text-white fw-semibold rounded-pill px-4"
+          [disabled]="reviewForm.invalid"
+        >
+          Submit Review
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- قائمة المراجعات -->
+  <div class="mt-5">
+    <h3 class="text-center fw-bold mb-4">⭐ Reviews</h3>
+
+    <p *ngIf="reviews.length < 1" class="text-center text-muted">
+      No reviews available for this product.
+    </p>
+
+    <div
+      *ngFor="let review of reviews"
+      class="card border-0 shadow-sm mb-4 rounded-3"
+    >
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-3">
+          <img
+            [src]="imageBaseUrlAPI + '/images/' + review.user.photo"
+            alt="User"
+            class="rounded-circle me-3 border"
+            style="width: 50px; height: 50px; object-fit: cover"
+          />
+          <div>
+            <ng-container *ngFor="let review of reviews">
+              <div>
+                <h6 class="mb-0 fw-bold">{{ review.user.displayName }}</h6>
+                <small class="text-muted">
+                  Rated:
+                  <ng-container *ngFor="let star of [1, 2, 3, 4, 5]">
+                    <i
+                      class="bi"
+                      [ngClass]="{
+                        'bi-star-fill': getStarRating(review.rating) >= star,
+                        'bi-star-half':
+                          getStarRating(review.rating) >= star - 0.5 &&
+                          getStarRating(review.rating) < star,
+                        'bi-star': getStarRating(review.rating) < star - 0.5
+                      }"
+                      style="
+                        color: gold;
+                        margin-left: 1px;
+                        margin-right: 1px;
+                        font-size: 1rem;
+                      "
+                    ></i>
+                  </ng-container>
+                </small>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
+            <i
+              class="bi"
+              [ngClass]="
+                i <= Math.round(review.rating / 2)
+                  ? 'bi-star-fill text-warning'
+                  : 'bi-star text-muted'
+              "
+            ></i>
           </ng-container>
-    
         </div>
-    
-        <!-- Controls -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#productImagesCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
+
+        <p class="mb-0 text-muted">{{ review.reviewContent }}</p>
       </div>
     </div>
-    <div class="card mt-5 shadow-sm">
-      <div class="card-body">
-        <h4 class="card-title mb-4">Leave a Review</h4>
-    
-        <form  (ngSubmit)="submitReview()" novalidate>
-          
-          <!-- التقييم -->
-          <div class="mb-3">
-            <label for="rating" class="form-label fw-bold">Rating (1 - 10)</label>
-            <input type="number" formControlName="rating" id="rating" class="form-control" min="1" max="10">
-            <div *ngIf="reviewForm.controls['rating'].invalid && reviewForm.controls['rating'].touched" class="text-danger mt-1">
-              Please enter a rating between 1 and 10.
-            </div>
-          </div>
-    
-          <!-- التعليق -->
-          <div class="mb-3">
-            <label for="reviewContent" class="form-label fw-bold">Your Review</label>
-            <textarea formControlName="reviewContent" id="reviewContent" class="form-control" rows="4" placeholder="Write your opinion..."></textarea>
-            <div *ngIf="reviewForm.controls['reviewContent'].invalid && reviewForm.controls['reviewContent'].touched" class="text-danger mt-1">
-              Review must be at least 10 characters.
-            </div>
-          </div>
-    
-          <!-- زرار الإرسال -->
-          <button class="btn btn-primary rounded-pill px-4" [disabled]="reviewForm.invalid">Submit Review</button>
-        </form>
-      </div>
-    </div>
-    
-<div class="row mt-5">
-
-
-    <!-- Product Reviews Section -->
-    <div class="mt-5">
-      <h3 class="mb-4 text-center fw-bold"> Reviews</h3>
-    
-        <p *ngIf="reviews.length<1" class="text-center text-muted">No reviews available for this product.</p>
-   
-        
-      <div *ngFor="let review of reviews" class="card shadow-sm mb-4 border-0">
-        <div class="card-body">
-          <div class="d-flex align-items-center mb-2">
-            <h5 class="mb-0 me-2">{{ review.user.displayName }}</h5>
-            <small class="text-muted">({{ review.rating }}/10)</small>
-          </div>
-    
-          <div class="mb-2">
-            <ng-container *ngFor="let star of [].constructor(roundToFive(review.rating/2)); let i = index">
-              <i class="bi bi-star-fill text-warning"></i>
-            </ng-container>
-            <ng-container *ngFor="let star of [].constructor( roundToFive(review.rating/2)); let i = index">
-              <i class="bi bi-star text-warning"></i>
-            </ng-container>
-          </div>
-    
-          <p class="card-text">{{ review.reviewContent }}</p>
-        </div>
-      </div>
-      
-    </div>
-    
-    </div>
-
+  </div>
 </section>

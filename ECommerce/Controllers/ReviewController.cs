@@ -2,8 +2,12 @@
 using ECommerce.Core.Models;
 using ECommerce.DTOs.ReviewDtos;
 using ECommerce.Repository.Repositories;
+using ECommerce.Services.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ECommerce.Controllers
 {
@@ -12,10 +16,12 @@ namespace ECommerce.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ReviewController(IUnitOfWork unitOfWork)
+        public ReviewController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
         [HttpGet("GetReview/{ReviewId}")]
         public async Task<IActionResult> GetReview(int ReviewId)
@@ -27,14 +33,30 @@ namespace ECommerce.Controllers
         }
 
 
+        [Authorize(Roles = SD.CustomerRole)]
         [HttpPost("AddReview")]
-        public async Task<IActionResult> AddReview([FromBody] Review review)
+        public async Task<IActionResult> AddReview([FromBody] reviewDto Dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            await _unitOfWork.Reviews.AddAsync(review);
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null) return Unauthorized();
+            var user = _userManager.FindByIdAsync(userId);
+
+            var newReview = new Review
+            {
+                ProductId = Dto.ProductId,
+                ReviewContent = Dto.ReviewContent,
+                Rating = Dto.Rating,
+                UserId = userId
+                //user  = user
+            };
+
+            await _unitOfWork.Reviews.AddAsync(newReview);
             await _unitOfWork.SaveAsync();
-            return CreatedAtAction(nameof(GetReview), new { reviewId = review.Id }, review);
+
+            return CreatedAtAction(nameof(GetReview), new { reviewId = newReview.Id }, newReview);
         }
 
         [HttpGet("EditReview/{ReviewId}")]
@@ -74,7 +96,6 @@ namespace ECommerce.Controllers
                 return NotFound("No reviews found.");
             return Ok(reviews);
         }
-
 
 
         [HttpGet("GetProductReviews/{productId}")]

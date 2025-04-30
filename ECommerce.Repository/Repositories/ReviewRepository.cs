@@ -33,7 +33,7 @@ namespace ECommerce.Repository.Repositories
         }
 
 
-        public async Task<IEnumerable<Review>> GetReviewsWithProductAsync(int productId)
+        public async Task<List<Review>> GetReviewsWithProductAsync(int productId)
         {
             return await _db.Reviews.Where(x=>x.ProductId==productId).Include(z=>z.user).ToListAsync();
         }

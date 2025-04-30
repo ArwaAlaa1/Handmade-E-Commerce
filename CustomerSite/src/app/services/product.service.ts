@@ -58,6 +58,7 @@ export class ProductService {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers });
   }
+
   // getProductById(productId: number): Observable<any> {
 
   //   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
@@ -67,7 +68,7 @@ export class ProductService {
   // }
   getProById(id:number): Observable<any> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers });
+    return this._HttpClient.get(`${environment.baseURL}Products/GetProductByIdWithOffer/${id}`, { headers : this.getAuthHeaders()});
   }
   getProductReviews(productId: number): Observable<any> {
 
@@ -76,7 +77,7 @@ export class ProductService {
     let url = `${environment.baseURL}Review/GetProductReviews/${productId}`;
     return this._HttpClient.get(url, { headers });
   }
-  
+
 
   GetFavList(
     pageSize: number,
@@ -104,30 +105,10 @@ export class ProductService {
     return this._HttpClient.get(url, { headers: this.getAuthHeaders() });
   }
 
-  getProductinOffer(
-    pageSize: number,
-    pageIndex: number,
-    categoryId?: number | null,
-    maxPrice?: number | null,
-    minPrice?: number | null
-  ): Observable<any> {
+  getProductinOffer(pageSize: number, pageIndex: number): Observable<any>
+  {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
-    let url = `${environment.baseURL}Products/GetProductsWithActiveOffers?pageSize=${pageSize}&pageIndex=${pageIndex}`;
-
-    if (categoryId !== null && categoryId !== undefined) {
-      url += `&categoryId=${categoryId}`;
-    }
-
-    if (maxPrice !== null && maxPrice !== undefined) {
-      url += `&maxPrice=${maxPrice}`;
-    }
-
-    if (minPrice !== null && minPrice !== undefined) {
-      url += `&minPrice=${minPrice}`;
-    }
-
-    return this._HttpClient.get(url, { headers });
+    return this._HttpClient.get(`${environment.baseURL}Products/GetProductsWithActiveOffers?pageSize=${pageSize}&pageIndex=${pageIndex}`, { headers : this.getAuthHeaders()  });
   }
 
   getAllCategories(): Observable<any> {
@@ -148,6 +129,10 @@ export class ProductService {
       { headers : this.getAuthHeaders(), responseType : 'text' });
   }
 
+  AddReview(credentials: { productId: number; reviewContent: string; rating: number }): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.post(`${environment.baseURL}Review/AddReview`, credentials, { headers: this.getAuthHeaders() });
+  }
 
 
 }

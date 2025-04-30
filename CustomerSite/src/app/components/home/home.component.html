@@ -117,6 +117,7 @@
               <button
                 class="btn btn-light btn-sm action-btn"
                 title="Quick View"
+                [routerLink]="['/ProductDetails', product.id]"
               >
                 <i class="bi bi-eye"></i>
               </button>
@@ -124,7 +125,7 @@
               <button
                 class="btn btn-light btn-sm action-btn"
                 title="Add to Cart"
-                (click)="addToCart(product.id,1)"
+                (click)="addToCart(product.id, 1)"
               >
                 <i class="bi bi-cart-plus"></i>
               </button>

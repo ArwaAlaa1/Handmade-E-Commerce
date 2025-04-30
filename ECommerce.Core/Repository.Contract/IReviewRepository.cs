@@ -10,7 +10,7 @@ namespace ECommerce.Core.Repository.Contract
     public interface IReviewRepository : IGenericRepository<Review>
     {
         
-        Task<IEnumerable<Review>> GetReviewsWithProductAsync(int productId);
+        Task<List<Review>> GetReviewsWithProductAsync(int productId);
         Task<int> CountReviewsOnProductWithId(int productId);
         Task<int> SumRatingOnProductWithId(int productId);
         Task<Review> GetReviewWithProductAsync(int reviewId,int productId);

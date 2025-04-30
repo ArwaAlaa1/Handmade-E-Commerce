@@ -11,7 +11,7 @@ import { UserService } from '../../services/user.service';
 import { AddressPopUpComponent } from "../../address-pop-up/address-pop-up.component";
 import { v4 as uuidv4 } from 'uuid';
 import { Subscription } from 'rxjs';
-declare var bootstrap: any; 
+declare var bootstrap: any;
 @Component({
   selector: 'app-cart',
   imports: [CommonModule, AddressPopUpComponent],
@@ -28,7 +28,7 @@ declare var bootstrap: any;
  addresses: any[] = [];
  addressSelected: any = null;
  selectedAddressIndex :number = 0;
- deliveryCost: number = 0; 
+ deliveryCost: number = 0;
  subTotal : number = 0;
   total: number = 0;
   subscriptions: Subscription[] = [];
@@ -39,7 +39,7 @@ declare var bootstrap: any;
    constructor(private _userService:UserService,private _shipCost:ShippingService,
     private cdr: ChangeDetectorRef,private _cookie:CookieService,
     private cartService: CartService,private _auth: AuthService) {
-  
+
     }
     ngOnInit(): void {
       const userSub = this._auth.userData.subscribe({
@@ -47,7 +47,7 @@ declare var bootstrap: any;
           this.userData = response;
           this.token = this.userData.token;
           this.isLogin = true;
-  
+
           this.cartService.getCartById().subscribe({
             next: (res) => {
               this.cartData = res;
@@ -61,7 +61,7 @@ declare var bootstrap: any;
         error: (err) => console.error('Failed to get user data:', err)
       });
       this.subscriptions.push(userSub);
-  
+
       const shippingSub = this._shipCost.getShippingCosts().subscribe({
         next: (res) => {
           this.shippingCosts = res;
@@ -70,11 +70,11 @@ declare var bootstrap: any;
       });
       this.subscriptions.push(shippingSub);
     }
-  
+
     ngOnDestroy(): void {
       this.subscriptions.forEach(sub => sub.unsubscribe());
     }
-  
+
     calculateTotal(cartData: Cart): void {
       this.subTotal = 0;
       for (const item of cartData.cartItems) {
@@ -87,7 +87,7 @@ declare var bootstrap: any;
       }
       this.total = this.subTotal + this.deliveryCost;
     }
-  
+
     updateAddress(addressId: number): void {
       if (addressId == null) {
         const sub = this._userService.getAllAddress().subscribe({
@@ -109,7 +109,7 @@ declare var bootstrap: any;
         this.subscriptions.push(sub);
       }
     }
-  
+
     getDeliveryCost(city: string): void {
       const selectedItem = this.shippingCosts.find(item => item.name === city);
       if (!selectedItem) {
@@ -119,19 +119,19 @@ declare var bootstrap: any;
       }
       this.deliveryCost = selectedItem.cost;
     }
-  
+
     Increase(itemId: string): void {
       const item = this.cartData.cartItems.find(i => i.itemId === itemId);
       if (!item) return;
-    
+
       item.quantity += 1;
       item.price = item.quantity * item.unitPrice;
       if (item.priceAfterSale != null) {
         item.priceAfterSale = item.quantity * item.priceAfterSale;
       }
-    
+
       this.calculateTotal(this.cartData);
-    
+
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {
           this.cartData = res;
@@ -143,28 +143,28 @@ declare var bootstrap: any;
         error: (err) => console.error('Error increasing item quantity:', err)
       });
     }
-    
-  
+
+
     Decrease(itemId: string): void {
       const item = this.cartData.cartItems.find(i => i.itemId === itemId);
       if (!item) return;
-    
+
       if (item.quantity > 1) {
         item.quantity -= 1;
         item.price = item.quantity * item.unitPrice;
         if (item.priceAfterSale != null) {
-          item.priceAfterSale = item.quantity * item.priceAfterSale; 
+          item.priceAfterSale = item.quantity * item.priceAfterSale;
         }
-    
-        this.calculateTotal(this.cartData); 
-    
+
+        this.calculateTotal(this.cartData);
+
         this.cartService.updateCart(this.cartData).subscribe({
           next: (res) => {
             this.cartData = res;
             if (this.cartData.addressId != null) {
               this.updateAddress(this.cartData.addressId);
             }
-            this.calculateTotal(this.cartData); 
+            this.calculateTotal(this.cartData);
           },
           error: (err) => console.error('Error decreasing item quantity:', err)
         });
@@ -172,9 +172,9 @@ declare var bootstrap: any;
         console.warn('Minimum quantity is 1');
       }
     }
-    
-    
-  
+
+
+
     RemoveItem(itemId: string): void {
       const index = this.cartData.cartItems.findIndex(item => item.itemId === itemId);
       if (index !== -1) {
@@ -182,8 +182,8 @@ declare var bootstrap: any;
         this.updateCartAndTotals();
       }
     }
-    
-    
+
+
     updateCartAndTotals(): void {
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {
@@ -198,11 +198,11 @@ declare var bootstrap: any;
     }
 
 
-    
+
 
 
   openModal() {
-    
+
       this._userService.getAllAddress().subscribe({
             next: (res) => {
               console.log('Address data:', res);
@@ -210,8 +210,8 @@ declare var bootstrap: any;
             },
             error: (err) => console.error('Error loading Address:', err)
           });
-     
-    
+
+
     const modalElement = document.getElementById('myModal');
     this.modal = new bootstrap.Modal(modalElement);
     this.modal.show();
@@ -222,11 +222,11 @@ declare var bootstrap: any;
       this.modal.hide();
     }
   }
- 
+
   onSelectedAddress(index: number) {
     this.selectedAddressIndex = index;
     this.addressSelected= this.addresses[index];
-   
+
   this.cartData.addressId= this.addresses[index].id;
   this.cartService.updateCart(this.cartData).subscribe({
     next: (res) => {
@@ -237,15 +237,15 @@ declare var bootstrap: any;
         this.updateAddress(this.cartData.addressId);
       }
      this.calculateTotal(this.cartData);
-     
+
     },
     error: (err) => console.error('Error in Update Delivry Address:', err)
   });
-  
+
   }
 
   Confirm():void{
-    console.log('Selected Address Index from confirm:', this.selectedAddressIndex); 
+    console.log('Selected Address Index from confirm:', this.selectedAddressIndex);
     this.closeModal();
   }
 }

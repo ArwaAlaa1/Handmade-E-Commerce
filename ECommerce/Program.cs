@@ -16,6 +16,7 @@ using StackExchange.Redis;
 using ECommerce.Controllers;
 using ECommerce.Helper;
 using Microsoft.Extensions.DependencyInjection;
+using ECommerce.Hubs;
 namespace ECommerce
 {
     public class Program
@@ -66,6 +67,8 @@ namespace ECommerce
 
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
+
+            builder.Services.AddSignalR();
 
 
             builder.Services.AddIdentityServices(builder.Configuration);
@@ -138,6 +141,7 @@ namespace ECommerce
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hand-made E-Commerce v1"));
             app.UseStaticFiles();
+            app.MapHub<NotificationHub>("/notificationHub");
             app.UseHttpsRedirection();
             app.UseCors("AllowAllOrigins");
             app.UseAuthentication();

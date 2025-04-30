@@ -9,10 +9,11 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { v4 as uuidv4 } from 'uuid';
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -100,7 +101,6 @@ export class HomeComponent implements OnInit {
     this._productService.addToFav(productId).subscribe({
     next:(response) =>
     {
-      console.log(response);
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
       product.isFavorite = true;
@@ -115,7 +115,6 @@ export class HomeComponent implements OnInit {
   deleteFromFavorite(productId : number) {
     this._productService.deleteFromFav(productId).subscribe((response) =>
     {
-      console.log(response);
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
         product.isFavorite = false;
@@ -129,9 +128,10 @@ export class HomeComponent implements OnInit {
   }
 
   product :any = {};
-  ;
+
   addToCart(id:number, quantity:number) {
-  
+
+
     this.product= this._productService.getProductById(id)
     .subscribe((response) =>
       {
@@ -158,9 +158,9 @@ export class HomeComponent implements OnInit {
         };
         this._cartService.addItemToBasket(cartItem,quantity);
       });
-   
-    
-    
+
+
+
   }
 
 }

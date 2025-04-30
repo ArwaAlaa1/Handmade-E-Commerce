@@ -10,8 +10,8 @@ namespace ECommerce.Core.Models
 {
     public class Review:BaseEntity
     {
-        [Key]
-        public int Id { get; set; }
+        //[Key]
+        //public int Id { get; set; }
         [MaxLength(250)]
         public string ReviewContent { get; set; }
         [Required]
@@ -20,11 +20,10 @@ namespace ECommerce.Core.Models
 
         public int ProductId { get; set; }
         [ForeignKey("ProductId")]
-        public virtual Product product { get; set; }
+        public virtual Product? product { get; set; }
 
-        
         public string UserId { get; set; }
         [ForeignKey("UserId")]
-        public AppUser user { get; set; }
+        public AppUser? user { get; set; }
     }
 }

@@ -514,6 +514,7 @@ namespace ECommerce.Controllers
             });
         }
 
+
         [HttpGet("GetProductByIdWithOffer/{id}")]
         public async Task<IActionResult> GetProductByIdWithOffer(int id)
         {
@@ -529,18 +530,7 @@ namespace ECommerce.Controllers
                 return NotFound(new { message = $"Category with ID {product.CategoryId} not found." });
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var favoriteProductIds = new List<int>();
-
-            if (!string.IsNullOrEmpty(userId))
-            {
-                var favoriteProducts = await _unitOfWork.Favorites.GetAllAsync(f => f.UserId == userId);
-
-                if (favoriteProducts?.Any() == true)
-                {
-                    favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
-                }
-            }
-
+            var fav = await _unitOfWork.Favorites.isFavorite(id, userId);
             var currentSale = product.Sales.FirstOrDefault(s =>
                               s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
 
@@ -555,10 +545,11 @@ namespace ECommerce.Controllers
                 Description = product.Description,
                 AdditionalDetails = product.AdditionalDetails,
                 //BasePrice = basePrice,
+                Stock = product.Stock,
                 SellingPrice = sellingPrice,
                 DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,
                 SalePercent = currentSale?.Percent,
-                IsFavorite = userId != null && favoriteProductIds.Contains(product.Id),
+                IsFavorite = !fav,
                 Category = new
                 {
                     Id = product.Category.Id,
@@ -585,7 +576,7 @@ namespace ECommerce.Controllers
                     EndDate = currentSale.EndDate,
                     Discount = currentSale.Percent
                 } : null,
-                Photos = product.ProductPhotos.Select(p => new
+                Photos = product.ProductPhotos.Where(p => p.IsDeleted == false).Select(p => new
                 {
                     Id = p.Id,
                     Url = p.PhotoLink
@@ -601,6 +592,8 @@ namespace ECommerce.Controllers
             return Ok(productDetails);
         }
        
+
+
         [HttpGet("GetProductsByDiscountPercentage")]
         public async Task<IActionResult> GetProductsByDiscountPercentage(int discountPercentage, int pageSize, int pageIndex)
         {

@@ -30,7 +30,7 @@
   
 
   <!-- Item 1 -->
-  @if (cartData.cartItems?.length == 0) {
+  @if (cartData.cartItems?.length == 0 || cartData.id== null) {
     <div class="text-center py-5">
       <h4 class="text-muted">Your cart is empty</h4>
       <a href="#" class="btn btn-primary">Continue Shopping</a>
@@ -111,7 +111,7 @@
   </div>
   <!-- Summary Section -->
   <div class="col-md-5">
-    <div class="bg-light p-3 rounded shadow-sm mb-3">
+    <!-- <div class="bg-light p-3 rounded shadow-sm mb-3">
       <h5 class="fw-bold" (click)="openModal()">
         <i class="fa-solid fa-location-dot"></i> Deliver To
       </h5>
@@ -120,6 +120,30 @@
         <strong>{{ addressSelected.city }} - {{ addressSelected.country }}</strong><br />
         {{ addressSelected.region }}<br />
         {{ addressSelected.phoneNumber }}
+
+    </div> -->
+    <!-- Summary Section -->
+    <div class="col-md-5">
+      <div class="bg-light p-3 rounded shadow-sm mb-3">
+        @if(this.token != null) {
+          <h5 class="fw-bold" (click)="openModal()">
+            <i class="fa-solid fa-location-dot"></i> Deliver To
+          </h5>
+        } @else {
+          <h5 class="fw-bold" *ngIf="token == null" (click)="redirectToLogin()">
+            <i class="fa-solid fa-location-dot"></i> Deliver To
+          </h5>
+        }
+       
+        <div *ngIf="addressSelected" class="alert alert-info mt-3">
+          Selected Delivery Address: <br />
+          <strong>{{ addressSelected.city }} - {{ addressSelected.country }}</strong><br />
+          {{ addressSelected.region }}<br />
+          {{ addressSelected.phoneNumber }}
+        </div>
+        
+        
+
       </div>
       
       

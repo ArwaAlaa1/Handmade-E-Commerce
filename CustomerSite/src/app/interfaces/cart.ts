@@ -3,7 +3,7 @@ export interface Cart {
     paymentId?: string; 
     clientSecret?: string;
     cartItems: CartItem[];
-    addressId: number;
+    addressId?: number;
   }
 
   export interface CartItem {

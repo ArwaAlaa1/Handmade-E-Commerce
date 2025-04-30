@@ -3,10 +3,11 @@ import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-offers',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './offers.component.html',
   styleUrl: './offers.component.css'
 })
@@ -14,18 +15,18 @@ export class OffersComponent implements OnInit {
 
 
   currentPage: number = 1;
-  itemsPerPage: number = 4;
+  itemsPerPage: number = 10;
   totalCount: number = 0;
   totalPages: number = 0;
   isLoading = true;
   imageBaseUrl:string = environment.baseImageURL;
   allProducts: any[] = [];
 
-  filters = {
-    categoryId: null,
-    maxPrice: null,
-    minPrice: null
-  };
+  // filters = {
+  //   categoryId: null,
+  //   maxPrice: null,
+  //   minPrice: null
+  // };
 
   constructor(public _productService: ProductService) {}
 
@@ -36,12 +37,7 @@ export class OffersComponent implements OnInit {
   filterProducts() {
     this.isLoading = true;
     this._productService.getProductinOffer(
-      this.itemsPerPage,
-      this.currentPage,
-      this.filters.categoryId,
-      this.filters.maxPrice,
-      this.filters.minPrice
-    ).pipe(
+      this.itemsPerPage, this.currentPage).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({
       next: (response) => {

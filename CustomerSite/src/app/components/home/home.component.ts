@@ -26,10 +26,7 @@ export class HomeComponent implements OnInit {
   isLoading = true;
   imageBaseUrl:string = environment.baseImageURL;
   allProducts: any[] = [];
-
-
   categories : any[] = [];
-
 
   filters = {
     categoryId: null,
@@ -131,10 +128,12 @@ export class HomeComponent implements OnInit {
   }
 
   product :any = {};
-  ;
+
   addToCart(id:number, quantity:number) {
 
-    this.product= this._productService.getProductById(id).subscribe((response) =>
+
+    this.product= this._productService.getProductById(id)
+    .subscribe((response) =>
       {
         // console.log(response);
         this.product = response;
@@ -150,6 +149,7 @@ export class HomeComponent implements OnInit {
           customizeInfo: this.product.customizeInfo,
           price: this.product.sellingPrice,
           color: this.product.color,
+          sellingPrice: this.product.sellingPrice,
           priceAfterSale: this.product.discountedPrice,
           unitPrice: this.product.sellingPrice,
           size: this.product.size,
@@ -162,4 +162,5 @@ export class HomeComponent implements OnInit {
 
 
   }
+
 }

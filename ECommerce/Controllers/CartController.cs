@@ -154,10 +154,29 @@ namespace ECommerce.Controllers
                 var result = await _cartRepository.UpdateCartAsync(cart);
             return Ok(result);
         }
-        [HttpDelete]
-        public async Task DeleteCart(string id)
+        [HttpDelete("DeleteCartAsync")]
+        public async Task<IActionResult> DeleteCartAsync( [FromQuery] string id)
         {
-             await _cartRepository.DeleteCartAsync(id);
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest("The cartId field is required.");
+                }
+
+                // Delete the cart from Redis (or your database)
+                bool deleted = await _cartRepository.DeleteCartAsync(id);
+                if (!deleted)
+                {
+                    return NotFound("Cart not found or could not be deleted.");
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
 

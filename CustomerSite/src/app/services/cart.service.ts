@@ -1,5 +1,5 @@
 import { Cart, CartItem } from './../interfaces/cart';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
@@ -70,53 +70,59 @@ export class CartService {
   }
  
   addItemToBasket(newItem: CartItem, quantity = 1) {
-    if (this.token !== '') {
-      this.getCartById().subscribe({
-        next: (res) => {
-          const cartdata = res;
-  
-          console.log('Cart data received:', cartdata);
-  
-          // Ensure cartItems is initialized (defensive coding)
-          cartdata.cartItems = cartdata.cartItems || [];
-  
-          const itemIndex = cartdata.cartItems.findIndex((item: CartItem) =>
-            item.productId === newItem.productId &&
-            item.color === newItem.color &&
-            item.size === newItem.size
-          );
-  
-          if (itemIndex !== -1) {
-            
-            cartdata.cartItems[itemIndex].quantity += quantity;
-            console.log('Item quantity updated:', cartdata.cartItems[itemIndex]);
-          } else {
-            
-            newItem.quantity = quantity; // Set quantity before pushing
-            cartdata.cartItems.push(newItem);
-            console.log('New item added:', newItem);
-          }
-  
-          
-          this.AddToCart(cartdata).subscribe({
-            next: (res) => {
-              console.log('Cart updated successfully:', res);
-            },
-            error: (err) => {
-              console.error('Error adding item to cart:', err);
-            }
-          });
-        },
-        error: (err) => {
-          console.error('Error fetching cart:', err);
-        }
-      });
-    } else {
+    if (!this.token) {
       console.warn('No token found — user might not be authenticated');
+      return;
     }
   
-    console.log('Item processed for cart:', newItem, 'Quantity:', quantity);
+    this.getCartById().subscribe({
+      next: (responseCart) => {
+        const cart = responseCart;
+        cart.cartItems = cart.cartItems || [];
+  
+        // Find if the same item already exists by productId, color, and size
+        const itemIndex = cart.cartItems.findIndex((item: CartItem) =>
+          item.productId === newItem.productId &&
+          (item.color ?? null) === (newItem.color ?? null) &&
+          (item.size ?? null) === (newItem.size ?? null)
+        );
+        
+  
+        if (itemIndex !== -1) {
+          // Item exists, increase its quantity
+          cart.cartItems[itemIndex].quantity += quantity;
+          console.log('Item quantity updated:', cart.cartItems[itemIndex]);
+  
+          this.updateCart(cart).subscribe({
+            next: (res) => console.log('Cart updated successfully:', res),
+            error: (err) => console.error('Error updating cart:', err)
+          });
+        } else {
+          // New item, add to cart with specified quantity
+          newItem.quantity = quantity;
+          cart.cartItems.push(newItem);
+          console.log('New item added:', newItem);
+  
+          this.AddToCart(cart).subscribe({
+            next: (res) => console.log('Cart updated successfully:', res),
+            error: (err) => console.error('Error adding item to cart:', err)
+          });
+        }
+  
+        console.log('Item processed for cart:', newItem, 'Quantity:', quantity);
+      },
+      error: (err) => {
+        console.error('Error fetching cart:', err);
+      }
+    });
   }
   
   
+  
+  clearCart(id: string): Observable<void> {
+    const headers = this.getAuthHeaders();
+    const params = new HttpParams().set('id', id);
+    return this.http.delete<void>(`${this.baseUrl}/DeleteCartAsync`, { headers, params });
+ 
+  }
 }

@@ -2,8 +2,12 @@
 using ECommerce.Core.Models;
 using ECommerce.DTOs.ReviewDtos;
 using ECommerce.Repository.Repositories;
+using ECommerce.Services.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ECommerce.Controllers
 {
@@ -26,15 +30,25 @@ namespace ECommerce.Controllers
             return Ok(review);
         }
 
-
+        [Authorize(Roles =SD.CustomerRole)]
         [HttpPost("AddReview")]
-        public async Task<IActionResult> AddReview([FromBody] Review review)
+        public async Task<IActionResult> AddReview([FromBody] AddReviewDTO review)
         {
+            try
+            {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            await _unitOfWork.Reviews.AddAsync(review);
-            await _unitOfWork.SaveAsync();
-            return CreatedAtAction(nameof(GetReview), new { reviewId = review.Id }, review);
+            var rev = await _unitOfWork.Reviews.AddReview(review.ProductId,userId,review.ReviewContent,review.Rating);
+           
+            return Ok(new { content=review.ReviewContent,rate=review.Rating });
+            }
+            catch 
+            {
+                return BadRequest("You Are not a customer.");
+            }
+             
         }
 
         [HttpGet("EditReview/{ReviewId}")]

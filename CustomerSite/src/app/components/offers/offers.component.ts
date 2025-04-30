@@ -37,10 +37,7 @@ export class OffersComponent implements OnInit {
     this.isLoading = true;
     this._productService.getProductinOffer(
       this.itemsPerPage,
-      this.currentPage,
-      this.filters.categoryId,
-      this.filters.maxPrice,
-      this.filters.minPrice
+      this.currentPage
     ).pipe(
       finalize(() => this.isLoading = false)
     ).subscribe({

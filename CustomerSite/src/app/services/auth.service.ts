@@ -73,6 +73,7 @@ export class AuthService {
 
   signout() {
     this._CookieService.delete('userData', '/');
+    this._CookieService.delete('theme', '/');
     this.userData.next(null);
     // this._Router.navigate(['/home']);
     window.location.href = '/home';

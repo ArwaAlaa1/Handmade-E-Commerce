@@ -24,7 +24,19 @@ namespace ECommerce.Repository.Repositories
             return await _db.Reviews.CountAsync(z=>z.ProductId==productId);
         }
 
-
+        public async Task<Review> AddReview(int productid,string userid,string content,int rate)
+        {
+            Review rev = new Review()
+            {
+                ProductId = productid,
+                UserId = userid,
+                ReviewContent = content,
+                Rating = rate
+            };
+           var res= await _db.Reviews.AddAsync(rev);
+           var ress= await _db.SaveChangesAsync();
+            return rev;
+        }
         public async Task<int> SumRatingOnProductWithId(int productId)
         {
             return await _db.Reviews
@@ -33,7 +45,7 @@ namespace ECommerce.Repository.Repositories
         }
 
 
-        public async Task<IEnumerable<Review>> GetReviewsWithProductAsync(int productId)
+        public async Task<List<Review>> GetReviewsWithProductAsync(int productId)
         {
             return await _db.Reviews.Where(x=>x.ProductId==productId).Include(z=>z.user).ToListAsync();
         }
@@ -41,7 +53,7 @@ namespace ECommerce.Repository.Repositories
         public async Task<Review> GetReviewWithProductAsync(int reviewId, int productId)
         {
             return await
-                _db.Reviews
+                _db.Reviews 
                 .FirstOrDefaultAsync(r => r.Id == reviewId && r.ProductId == productId);
         }
 

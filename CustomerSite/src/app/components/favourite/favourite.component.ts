@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
 import { finalize } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-favourite',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, RouterLink],
     templateUrl: './favourite.component.html',
     styleUrl: './favourite.component.css'
 })

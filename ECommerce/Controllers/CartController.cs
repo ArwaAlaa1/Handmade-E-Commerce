@@ -5,6 +5,8 @@ using ECommerce.Core.Services.Contract;
 using ECommerce.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Security.Claims;
 using static StackExchange.Redis.Role;
 
@@ -27,6 +29,24 @@ namespace ECommerce.Controllers
             var userId = User.Identity.IsAuthenticated
                 ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                 : null;
+            //if (cartId!=null && !cartId.StartsWith("cart") && userId != null)
+            //{
+
+            //    Cart cart1 = new Cart();
+            //    if (userId != null)
+            //    {
+            //       var cartguest = await _cartRepository.GetCartAsync($"{cartId}");
+                   
+                       
+            //        cart1.Id = $"cart:{userId}";
+            //        cart1.CartItems = cartguest.CartItems;
+            //        var Createdfromguest = await _cartRepository.AddCartAsync(cart1);
+
+            //        return Ok(Createdfromguest);
+
+            //    }
+            //}
+
             var cart =new Cart();
             if (userId !=null)
             {
@@ -52,6 +72,7 @@ namespace ECommerce.Controllers
         [HttpPost]
         public async Task<IActionResult> AddCart([FromBody] Cart cart)
         {
+            
             //var mappedcustomerbasket = mapper.Map<CustomerBasketDto, CustomerBasket>(basket);
             var CreateOrUpdateBasket = await _cartRepository.AddCartAsync(cart);
             //if (CreateOrUpdateBasket is null) return BadRequest(new ApiResponse(400));
@@ -151,6 +172,7 @@ namespace ECommerce.Controllers
             var userId = User.Identity.IsAuthenticated
                 ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                 : null;
+
                 var result = await _cartRepository.UpdateCartAsync(cart);
             return Ok(result);
         }

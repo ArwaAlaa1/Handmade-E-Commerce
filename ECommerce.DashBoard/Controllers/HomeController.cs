@@ -132,6 +132,7 @@ namespace ECommerce.DashBoard.Controllers
                 .ToList();
             var totalproducts = products.Count();
             var totalSales = sales.Count();
+            
 
             var dashboardVM = new DashboardReportVM
             {

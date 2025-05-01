@@ -68,7 +68,7 @@ namespace ECommerce.Controllers
                 }
 
                 // Delete the cart
-               // var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
+                var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
 
                 // Send notification to each unique trader in the order
                 var traderIds = order.OrderItems

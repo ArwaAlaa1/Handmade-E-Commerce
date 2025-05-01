@@ -259,6 +259,7 @@
             item.className = "list-group-item";
             item.textContent = data.Message + " Order ID: " + data.OrderId;
             notificationBox.prepend(item);
+            console.log(data);
         });
 
         connection.start().then(() => {

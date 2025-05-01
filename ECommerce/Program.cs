@@ -72,30 +72,18 @@ namespace ECommerce
 
 
             builder.Services.AddIdentityServices(builder.Configuration);
-
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowDashBoard", policy =>
-                {
-                    policy.WithOrigins("https://localhost:7295") 
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
-                });
-            });
-
-
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyHeader()
-                               .AllowAnyMethod();
+                        builder.WithOrigins("https://localhost:7295", "http://localhost:4200")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader()
+                              .AllowCredentials();
                     });
             });
-
+           
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             //builder.Services.AddOpenApi();
@@ -156,7 +144,6 @@ namespace ECommerce
             app.UseStaticFiles();
             app.MapHub<NotificationHub>("/notificationHub");
             app.UseHttpsRedirection();
-            //app.UseCors("AllowDashBoard");
             app.UseCors("AllowAllOrigins");
             app.UseAuthentication();
             app.UseAuthorization();

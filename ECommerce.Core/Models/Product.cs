@@ -57,19 +57,7 @@ namespace ECommerce.Core.Models
 
                 return SellingPrice;
             }
-            /*get
-            {
-                var currentSale = Sales?.FirstOrDefault(s =>
-                    s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
-
-                if (currentSale != null)
-                {
-                    var discount = Cost * currentSale.Percent / 100;
-                    return Cost - discount;
-                }
-
-                return Cost;
-            }*/
+           
         }
 
         [NotMapped]
@@ -86,5 +74,7 @@ namespace ECommerce.Core.Models
         public int? SaleId => Sales?.FirstOrDefault(s =>
             s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today)?.Id;
 
+        [NotMapped]
+        public decimal FinalPrice => IsOnSale ? DiscountedPrice : SellingPrice; //==>Calculate the final price based on whether the product is on sale or not
     }
 }

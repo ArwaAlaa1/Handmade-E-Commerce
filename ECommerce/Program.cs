@@ -73,15 +73,27 @@ namespace ECommerce
 
             builder.Services.AddIdentityServices(builder.Configuration);
 
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowDashBoard", policy =>
+            //    {
+            //        policy.WithOrigins("https://localhost:7295") 
+            //              .AllowAnyHeader()
+            //              .AllowAnyMethod()
+            //              .AllowCredentials();
+            //    });
+            //});
+
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowDashBoard", policy =>
-                {
-                    policy.WithOrigins("https://localhost:7295") 
-                          .AllowAnyHeader()
-                          .AllowAnyMethod()
-                          .AllowCredentials();
-                });
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:7295", "http://localhost:4200")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader()
+                              .AllowCredentials();
+                    });
             });
 
 
@@ -91,10 +103,11 @@ namespace ECommerce
             //        builder =>
             //        {
             //            builder.AllowAnyOrigin()
-            //                   .AllowAnyHeader()
-            //                   .AllowAnyMethod();
+            //                   .AllowAnyMethod()
+            //                   .AllowAnyHeader();
             //        });
             //});
+
 
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -156,8 +169,7 @@ namespace ECommerce
             app.UseStaticFiles();
             app.MapHub<NotificationHub>("/notificationHub");
             app.UseHttpsRedirection();
-            app.UseCors("AllowDashBoard");
-            //app.UseCors("AllowAllOrigins");
+            app.UseCors("AllowAllOrigins");
             app.UseAuthentication();
             app.UseAuthorization();
 

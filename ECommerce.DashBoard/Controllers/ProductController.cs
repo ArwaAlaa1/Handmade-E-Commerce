@@ -107,7 +107,7 @@ namespace ECommerce.DashBoard.Controllers
 
             if (product == null) return NotFound();
             var currentSale = product.Sales?.FirstOrDefault(s =>
-               s.StartDate <= DateTime.Today && s.EndDate >= DateTime.Today);
+               s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
 
             var productVM = new ProductVM
             {

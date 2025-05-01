@@ -68,7 +68,18 @@ namespace ECommerce.Services
                         throw new ArgumentNullException(nameof(product), "Product not found");
                     }
 
-                    item.Price = product.SellingPrice;
+                    var currentSale = product.Sales?.FirstOrDefault(s =>
+                                              s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
+
+                    if (currentSale != null)
+                    {
+                        var discount = product.SellingPrice * currentSale.Percent / 100;
+                        item.Price = product.SellingPrice - discount;
+                    }
+                    else
+                    {
+                        item.Price = product.SellingPrice;
+                    }
                 }
                 PaymentIntentService paymentIntentService = new PaymentIntentService();
                 PaymentIntent _intent;

@@ -36,7 +36,7 @@ namespace ECommerce.Core.Models.Order
         
         public decimal SubTotal { get; set; }
         public decimal GetTotal()
-             => SubTotal + shippingCost.Cost;
+             => SubTotal + shippingCost?.Cost??0;
         public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
         public string PaymentId { get; set; } = "";
     }

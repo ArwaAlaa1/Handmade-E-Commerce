@@ -65,12 +65,13 @@
             {{ product.sellingPrice | currency }}
           </span>
           <div *ngIf="product.offer" class="mt-2">
+           
             <span class="badge bg-success">
               {{ product.offer.discount }}% Off
             </span>
-            <small class="text-muted">
-              ({{ product.offer.startDate | date : "mediumDate" }} -
-              {{ product.offer.endDate | date : "mediumDate" }})
+            <br>
+            <small class="badge bg-danger" >
+               Time Left: {{countdown}}
             </small>
           </div>
         </div>
@@ -139,6 +140,16 @@
               </p>
             </div>
           </div>
+        </div>
+
+        <div>
+          <button
+          class="btn btn-success   action-btn"
+          title="Add to Cart"
+          (click)="addToCart()"
+        >
+          add To Card
+        </button>
         </div>
       </div>
     </div>
@@ -231,11 +242,21 @@
       <div class="card-body p-4">
         <div class="d-flex align-items-center mb-3">
           <img
+          *ngIf="review.user.photo"
             [src]="imageBaseUrlAPI + '/images/' + review.user.photo"
             alt="User"
             class="rounded-circle me-3 border"
             style="width: 50px; height: 50px; object-fit: cover"
           />
+          
+        <img
+          *ngIf="!review.user.photo"
+          src="../../../../assets/img/ava.jpeg"
+          alt="User Photo"
+          alt="User"
+          class="rounded-circle me-3 border"
+          style="width: 50px; height: 50px; object-fit: cover"
+        />
           <div>
             <ng-container>
               <div>
@@ -266,18 +287,7 @@
           </div>
         </div>
 
-        <div class="mb-2">
-          <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
-            <i
-              class="bi"
-              [ngClass]="
-                i <= Math.round(review.rating / 2)
-                  ? 'bi-star-fill text-warning'
-                  : 'bi-star text-muted'
-              "
-            ></i>
-          </ng-container>
-        </div>
+      
 
         <p class="mb-0 text-muted">{{ review.reviewContent }}</p>
       </div>

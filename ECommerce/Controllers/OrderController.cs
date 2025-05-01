@@ -59,9 +59,19 @@ namespace ECommerce.Controllers
             try
             {
                 var address = await _addressRepository.GetByIdAsync(orderDto.AddressId);
-                var user = await _userManager.GetUserAsync(User);
 
-                var order = await _orderService.CreateOrderAsync(user.Email, orderDto.CartId, orderDto.ShippingCostId, orderDto.AddressId);
+                if (address == null)
+                {
+                    return BadRequest(new { Message = "Address Not Found" });
+                }
+                var user = await _userManager.GetUserAsync(User);
+                if(user == null)
+                {
+                    return BadRequest(new { Message = "User Not Found" });
+                }
+                var order = await _orderService.CreateOrderAsync(user.Email, orderDto.CartId, orderDto.ShippingCostId,orderDto.AddressId,orderDto.PaymentId);
+
+         
                 if (order == null)
                 {
                     return BadRequest(new { Message = "Failure in Order Process" });
@@ -69,6 +79,12 @@ namespace ECommerce.Controllers
 
                 // Delete the cart
                 var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
+
+                //if (!deletedcart)
+                //{
+                //    return BadRequest(new { Message = "Failure in Cart Deletion" });
+                //}
+
 
                 // Send notification to each unique trader in the order
                 var traderIds = order.OrderItems
@@ -88,12 +104,18 @@ namespace ECommerce.Controllers
                         });
                 }
 
-                return Ok(new { Message = "Order Created Successfully" });
+                return Ok(new { Message= "Order Created Successfully",orderId=order.Id });
+              
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while creating the order.");
-                return BadRequest(new { Message = "failed!" });
+
+
+                return BadRequest(new { Message = "Failed to create order.", Error = ex.Message });
+
+             
             }
         }
 

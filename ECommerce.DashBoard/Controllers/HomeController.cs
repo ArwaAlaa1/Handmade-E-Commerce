@@ -36,6 +36,7 @@ namespace ECommerce.DashBoard.Controllers
 
 
             var user = await _userManager.GetUserAsync(User);
+            ViewBag.userId = user.Id;
             var isAdmin = User.IsInRole(SD.AdminRole);
             var isSupplier = User.IsInRole(SD.SuplierRole);
 

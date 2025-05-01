@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators  } from '@angular/forms';
 import { response } from 'express';
+import { CartItem } from '../../interfaces/cart';
+import { CartService } from '../../services/cart.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-details',
@@ -30,7 +33,7 @@ export class DetailsComponent implements OnInit {
 
   newreviewcontent:string='';
   inputrate:number=0;
-Math: any;
+
   reviewForm: FormGroup = new FormGroup(
     {
       rating: new FormControl(null, { validators: [Validators.required,Validators.min(1), Validators.max(10)] }),
@@ -38,13 +41,44 @@ Math: any;
     },
   );
 
-  constructor(private _route: ActivatedRoute, private _service: ProductService) {
+  constructor(private _route: ActivatedRoute, private _service: ProductService,private _cartService:CartService ) {
     this.ProductId=this._route.snapshot.params['ProductId'];
   }
+
+  countdown: string = '';
+  private timer: any;
+  isOfferExpired: boolean = false;
+
 
   ngOnInit(): void {
     this.filterProducts();
     this.getreviews(this.ProductId);
+    
+  }
+  startCountdown() {
+    this.timer = setInterval(() => {
+      const now = new Date();
+      const endDate = new Date(this.product.offer.endDate);
+      
+      if (now > endDate) {
+        this.countdown = 'انتهى العرض';
+        this.isOfferExpired = true;
+        clearInterval(this.timer);
+        return;
+      }
+
+      const diff = endDate.getTime() - now.getTime();
+      this.countdown = this.formatCountdown(diff);
+    }, 1000);
+  }
+
+  formatCountdown(diff: number): string {
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    return `${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
   }
 
   filterProducts() {
@@ -54,6 +88,9 @@ Math: any;
         next: (response) => {
           this.product = response;
           console.log(response);
+          if (this.product.offer) {
+            this.startCountdown();
+          }
           this.isLoading = false;
       },
       error: (error) => {
@@ -157,5 +194,37 @@ Math: any;
     this.voteValue = value;
     this.reviewForm.controls['rating'].setValue(value * 2);
   }
+  getRoundedRating(rating: number): number {
+    return Math.round(rating / 2);
+  }
 
+
+
+  addToCart() {
+
+    const cartItem: CartItem = {
+      itemId: uuidv4().toString(),
+      productId: this.product.id,
+      productName: this.product.name,
+      sellerName: this.product.seller.name,
+      sellerId: this.product.seller.id,
+      photoUrl: this.product.photos[0].url,
+      category: this.product.category.name,
+      customizeInfo: this.product.customizeInfo,
+      price: this.product.sellingPrice,
+      color: this.product.color,
+      sellingPrice: this.product.sellingPrice,
+      priceAfterSale: this.product.discountedPrice,
+      unitPrice: this.product.sellingPrice,
+      size: this.product.size,
+      activeSale: this.product.salePercent,
+      quantity: 1
+    };
+    
+     this._cartService.addItemToBasket(cartItem,1);
+      alert("Product added to your Cart")
+
+
+
+  }
 }

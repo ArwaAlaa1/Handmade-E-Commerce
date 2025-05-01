@@ -94,7 +94,6 @@ namespace ECommerce.Controllers
 
                 foreach (var traderId in traderIds)
                 {
-                    //var x = "2d688bd2-5b8f-4193-84c4-07541137ec3f";
                     await _hubContext.Clients
                         .Group($"Trader_{traderId}")
                         .SendAsync("ReceiveOrderNotification", new

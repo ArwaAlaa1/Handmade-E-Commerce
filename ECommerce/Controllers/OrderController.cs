@@ -78,12 +78,12 @@ namespace ECommerce.Controllers
                 }
 
                 // Delete the cart
-               // var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
+                var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
 
-                //if (!deletedcart)
-                //{
-                //    return BadRequest(new { Message = "Failure in Cart Deletion" });
-                //}
+                if (!deletedcart)
+                {
+                    return BadRequest(new { Message = "Failure in Cart Deletion" });
+                }
 
 
                 // Send notification to each unique trader in the order

@@ -77,9 +77,10 @@ namespace ECommerce
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
+                        builder.WithOrigins("https://localhost:7295", "http://localhost:4200")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader()
+                              .AllowCredentials();
                     });
             });
            

@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from './auth.service';
 import { Cart, CartItem } from '../interfaces/cart';
+import { OrderResponse } from '../interfaces/order-response';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -63,5 +65,13 @@ export class PaymentService {
       null, 
       { headers, params }
     );
+  }
+
+  createOrder(cartId: string, shippingCostId: number, addressId: number,paymentId: string): Observable<OrderResponse> {
+    const url = `https://localhost:7223/api/Order`;
+    // const url = `${environment.baseURL}/Order`;
+
+    const body = { cartId, shippingCostId, addressId, paymentId };
+    return this.http.post<any>(url, body, { headers: this.getAuthHeaders() });
   }
 }

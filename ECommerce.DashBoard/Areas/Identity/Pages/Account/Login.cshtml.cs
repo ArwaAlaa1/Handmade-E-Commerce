@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using ECommerce.Core.Models;
 using ECommerce.DashBoard.Data;
 using Microsoft.EntityFrameworkCore;
+using ECommerce.Services.Utility;
 
 namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
 {
@@ -139,12 +140,20 @@ namespace ECommerce.DashBoard.Areas.Identity.Pages.Account
                     return Page();
                 }
 
+                if (role01.ToString() == SD.CustomerRole)
+                {
+                    TempData["Error"] = "Invalid Email or Password.";
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    return Page();
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(user01, Input.Password, Input.RememberMe,false);
-                if (result.Succeeded && role01.Name == "Admin" || role01.Name == "Supplier")
+                if (result.Succeeded && (role01.Name == SD.AdminRole || role01.Name == SD.SuplierRole))
                 {
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
+
                 if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });

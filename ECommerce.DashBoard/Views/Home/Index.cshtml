@@ -12,7 +12,7 @@
             <li class="list-group-item text-muted">No notifications yet</li>
         </ul>
     </div>
-</div> 
+</div>
 
 <div class="container-fluid mt-4">
     <h1 class="mb-4">E-Commerce Dashboard</h1>
@@ -246,17 +246,15 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
-        const traderId = '@User.FindFirst("Id")?.Value'; 
-
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/notificationHub?traderId=" + traderId)
-            .build();
+           .withUrl("https://localhost:7223/notificationHub?traderId=@ViewBag.userId")
+             .build();
 
         connection.on("ReceiveOrderNotification", function (data) {
             const notificationBox = document.getElementById("notifications");
             const item = document.createElement("li");
             item.className = "list-group-item";
-            item.textContent = data.Message + " Order ID: " + data.OrderId;
+            item.textContent = data.message + " Order ID: " + data.orderId;
             notificationBox.prepend(item);
         });
 

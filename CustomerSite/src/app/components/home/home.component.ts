@@ -157,9 +157,11 @@ export class HomeComponent implements OnInit {
           quantity: quantity
         };
         this._cartService.addItemToBasket(cartItem,quantity);
+       
+
       });
 
-
+      
 
   }
 

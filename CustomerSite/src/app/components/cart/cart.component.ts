@@ -3,7 +3,7 @@ import { CartService } from './../../services/cart.service';
 import { environment } from './../../../environments/environment.development';
 import { ShippingService } from './../../services/shipping.service';
 import { ChangeDetectorRef, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 import { CookieService } from 'ngx-cookie-service';
@@ -20,7 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 declare var bootstrap: any;
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, AddressPopUpComponent],
+  imports: [CommonModule, AddressPopUpComponent,RouterLink, RouterLinkActive],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
@@ -38,8 +38,10 @@ declare var bootstrap: any;
  subTotal : number = 0;
   total: number = 0;
   subscriptions: Subscription[] = [];
+  imageBaseUrl:string = environment.baseImageURL;
+  // imageBaseUrl: string = `${environment.baseImageURL}images/`;
 
-  imageBaseUrl: string = `${environment.baseImageURL}images/`;
+
   isLogin: boolean = false;
   isLoading: boolean = false;
 
@@ -574,8 +576,15 @@ async ngOnInit(): Promise<void> {
     });
   }
 }
-    
-  
+trackByItemId(index: number, item: any): string {
+  return item.itemId; 
+}
+proceedToCheckout(): void {
+  const paymentTab = document.getElementById('payment-tab');
+  if (paymentTab) {
+    paymentTab.click(); 
+  }
+}
 
   clearAllCart(): void {
     if (!this.cartData || !this.cartData.id) {

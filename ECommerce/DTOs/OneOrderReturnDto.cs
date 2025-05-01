@@ -10,7 +10,7 @@ namespace ECommerce.DTOs
         public string Status { get; set; }
         public int ItemsCount { get; set; }
 
-
+        public decimal Total { get; set; }
         public ICollection<OneItemInOrderReturnDto> OrderItems { get; set; }
         public AddressReturnDto ShippingAddress { get; set; }
        

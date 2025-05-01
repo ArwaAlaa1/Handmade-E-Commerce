@@ -12,7 +12,8 @@
     />
     </div>
   
-    <div *ngFor="let order of filteredOrders" class="card shadow-lg mb-3 border-0">
+    <div *ngFor="let order of filteredOrders" (click)="viewOrderDetails(order.id)"
+    style="cursor: pointer;"  class="card shadow-lg mb-3 border-0">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div>

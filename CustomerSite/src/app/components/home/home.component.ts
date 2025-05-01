@@ -130,8 +130,6 @@ export class HomeComponent implements OnInit {
   product :any = {};
 
   addToCart(id:number, quantity:number) {
-
-
     this.product= this._productService.getProductById(id)
     .subscribe((response) =>
       {

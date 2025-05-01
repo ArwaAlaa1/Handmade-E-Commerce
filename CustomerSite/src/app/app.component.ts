@@ -17,5 +17,5 @@ export class AppComponent {
     this._AuthService.loadUserData();
   }
   
-  title = 'Handmade E-Commerce';
+  title = 'HandOra';
 }

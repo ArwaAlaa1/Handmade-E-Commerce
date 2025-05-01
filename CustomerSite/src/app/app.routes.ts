@@ -18,6 +18,8 @@ import { OffersComponent } from './components/offers/offers.component';
 import { DetailsComponent } from './components/details/details.component';
 import { FavouriteComponent } from './components/favourite/favourite.component';
 import { OrderConfirmationComponent } from './components/order-confirmation/order-confirmation.component';
+import { OrderComponent } from './components/order/order.component';
+import { OrderDetailsComponent } from './components/order-details/order-details.component';
 
 
 export const routes: Routes = [
@@ -38,7 +40,11 @@ export const routes: Routes = [
   {path:'editAddress/:id', canActivate:[AuthGuard], component:EditAddressComponent, title:'Edit Address Page'},
 
   {path:'register', component:RegisterComponent, title:'Register Page'},
+  {path:'orders', component:OrderComponent, title:'Orders Page'},
+  {path:'orderdetails/:id', component:OrderDetailsComponent, title:'OrdrrsDetails Page'},
+
   {path:'login', component:LoginComponent, title:'Login Page'},
+
   {path:'sendpin', component:SendPinComponent, title:'Send Pin Page'},
   {path:'enterpin/:email/:expireAt', component:EnterPinComponent, title:'Enter Pin Page'},
   {path:'resetpassword/:email', component:ResetPasswordComponent, title:'Forget Password Page'},

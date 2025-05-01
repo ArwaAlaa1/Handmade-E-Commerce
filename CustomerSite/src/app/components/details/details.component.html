@@ -65,12 +65,13 @@
             {{ product.sellingPrice | currency }}
           </span>
           <div *ngIf="product.offer" class="mt-2">
+           
             <span class="badge bg-success">
               {{ product.offer.discount }}% Off
             </span>
-            <small class="text-muted">
-              ({{ product.offer.startDate | date : "mediumDate" }} -
-              {{ product.offer.endDate | date : "mediumDate" }})
+            <br>
+            <small class="badge bg-danger" >
+               Time Left: {{countdown}}
             </small>
           </div>
         </div>
@@ -139,6 +140,16 @@
               </p>
             </div>
           </div>
+        </div>
+
+        <div>
+          <button
+          class="btn btn-success   action-btn"
+          title="Add to Cart"
+          (click)="addToCart()"
+        >
+          add To Card
+        </button>
         </div>
       </div>
     </div>
@@ -276,18 +287,7 @@
           </div>
         </div>
 
-        <div class="mb-2">
-          <ng-container *ngFor="let i of [1, 2, 3, 4, 5]">
-            <i
-              class="bi"
-              [ngClass]="
-                i <= getRoundedRating(review.rating)
-                  ? 'bi-star-fill text-warning'
-                  : 'bi-star text-muted'
-              "
-            ></i>
-          </ng-container>
-        </div>
+      
 
         <p class="mb-0 text-muted">{{ review.reviewContent }}</p>
       </div>

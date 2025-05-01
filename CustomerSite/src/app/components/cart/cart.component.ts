@@ -20,7 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 declare var bootstrap: any;
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, AddressPopUpComponent,RouterLink, RouterLinkActive],
+  imports: [CommonModule ,RouterLink,RouterLinkActive],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })

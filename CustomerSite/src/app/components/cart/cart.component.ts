@@ -11,13 +11,11 @@ import { CommonModule } from '@angular/common';
 import { Cart } from '../../interfaces/cart';
 import { UserService } from '../../services/user.service';
 import { AddressPopUpComponent } from "../../address-pop-up/address-pop-up.component";
-import { v4 as uuidv4 } from 'uuid';
 import { PaymentService } from '../../services/payment.service';
 import { Subscription } from 'rxjs';
 import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
-import { log } from 'console';
-
 import { OrderResponse } from '../../interfaces/order-response';
+import { HttpErrorResponse } from '@angular/common/http';
  
 declare var bootstrap: any;
 @Component({
@@ -216,9 +214,7 @@ async ngOnInit(): Promise<void> {
           console.error('Failed to load guest cart:', err);
         }
       });
-    }
-
-   
+    }  
   }
 }
 
@@ -228,18 +224,6 @@ async ngOnInit(): Promise<void> {
       this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
-    // calculateTotal(cartData: Cart): void {
-    //   this.subTotal = 0;
-    //   for (const item of cartData.cartItems) {
-    //     if (item.priceAfterSale != 0) {
-    //       this.subTotal += item.priceAfterSale??0;
-    //     } else {
-    //       this.subTotal += item.price??0;
-    //     }
-    //     // this.subTotal += item.priceAfterSale ?? item.price;
-    //   }
-    //   this.total = this.subTotal + this.deliveryCost;
-    // }
     calculateTotal(cartData: Cart): void {
       this.subTotal = 0;
 
@@ -356,19 +340,6 @@ async ngOnInit(): Promise<void> {
       }
     }
 
-    // updateCartAndTotals(): void {
-    //   this.cartService.updateCart(this.cartData).subscribe({
-    //     next: (res) => {
-    //       this.cartData = res;
-    //       if (this.cartData.addressId != 0) {
-    //         this.updateAddress(this.cartData.addressId);
-    //       }
-    //       this.calculateTotal(this.cartData);
-    //     },
-    //     error: (err) => console.error('Error updating cart:', err)
-    //   });
-    // }
-
     updateCartAndTotals(): void {
 
       console.log('Updating cart from null:', this.cartData);
@@ -388,8 +359,7 @@ async ngOnInit(): Promise<void> {
 
             this.calculateTotal(this.cartData);
           } else {
-            // If response is null, initialize empty cart
-            // this.cartData = { cartItems: [] } as Cart;
+           
             this.subTotal = 0;
             this.total = this.deliveryCost; // only delivery if any
           }
@@ -436,7 +406,6 @@ async ngOnInit(): Promise<void> {
     next: (res) => {
       console.log('Update Delivry Address:', res);
       this.cartData = res;
-      // this.getDeliveryCost(this.addresses[index].city);
       if(this.cartData.addressId != null) {
         this.updateAddress(this.cartData.addressId);
       }
@@ -474,7 +443,7 @@ async ngOnInit(): Promise<void> {
 
 
 
-    this.PaymentService.createOrUpdatePayment(cartId, 35).subscribe({
+    this.PaymentService.createOrUpdatePayment(cartId, shippingCostId).subscribe({
       next: (response: Cart) => {
         this.isLoading = false;
         this.cartData = response;
@@ -598,7 +567,7 @@ async ngOnInit(): Promise<void> {
      
         });
       },
-      error: (err : OrderResponse) => {
+      error: (err : HttpErrorResponse) => {
         console.error('Error creating order in the backend:', err);
         this.errorMessage = 'Payment succeeded, but failed to create order. Please contact support.';
       }
@@ -613,9 +582,6 @@ async ngOnInit(): Promise<void> {
       console.warn('No cart data to clear');
       return;
     }
-  
-
-
       // Clear the cart in the backend
 
     this.cartService.clearCart(this.cartData.id).subscribe({
@@ -636,19 +602,6 @@ async ngOnInit(): Promise<void> {
         console.error('Error clearing cart in the backend:', err);
         this.errorMessage = 'Failed to clear cart. Please try again.';
       }
-
-
-      });
-      // Clear the cart in the frontend
-    this.cartData = {} as Cart;
-    this.cartData.cartItems = [];
-    this.subTotal = 0;
-    this.total = 0;
-    this.deliveryCost = 0;
-
-    this.router.navigate(['/order-confirmation'], {
-      queryParams: { paymentId: 10 }
-
     });
   }
 }

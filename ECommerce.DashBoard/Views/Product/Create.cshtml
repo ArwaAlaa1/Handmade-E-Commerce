@@ -132,7 +132,7 @@
                         <label class="form-label" asp-for="Photos">Upload Product Images</label>
                         <div class="input-group input-group-merge">
                             <span class="input-group-text"><i class="bx bx-upload"></i></span>
-                            <input asp-for="Photos" type="file" class="form-control" multiple />
+                            <input asp-for="Photos" type="file" class="form-control" multiple  required/>
                         </div>
                         <span asp-validation-for="Photos" class="text-danger"></span>
                     </div>

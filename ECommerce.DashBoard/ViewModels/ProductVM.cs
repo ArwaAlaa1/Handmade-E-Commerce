@@ -48,7 +48,7 @@ namespace ECommerce.DashBoard.ViewModels
 
         //  Handle new uploaded photos
         [ValidateNever]
-        public List<IFormFile> Photos { get; set; } = new List<IFormFile>();
+        public List<IFormFile>? Photos { get; set; } = new List<IFormFile>();
 
         // Display existing photos in edit view
         public List<string> ExistingPhotoLinks { get; set; } = new List<string>();

@@ -249,8 +249,9 @@
         const traderId = '@User.FindFirst("Id")?.Value'; 
 
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/notificationHub?traderId=" + traderId)
-            .build();
+                 .withUrl("https://localhost:7223/notificationHub?traderId=" + traderId, {
+            withCredentials: true
+        }).build();
 
         connection.on("ReceiveOrderNotification", function (data) {
             const notificationBox = document.getElementById("notifications");

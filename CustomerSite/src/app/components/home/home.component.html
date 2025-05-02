@@ -115,17 +115,70 @@
     </div>
   </div>
 
-  <!-- Carousel Controls -->
-  <!-- <button class="carousel-control-prev bg-danger" type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-
-  <button class="carousel-control-next bg-danger" type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button> -->
 </div>
+
+
+    <!-- Category -->
+    <section class="section-category padding-tb-50">
+      <div class=" m-auto p-3" style="width: 85%;">
+          <div class="row mb-minus-24">
+              <div class="col-lg-4 col-12 mb-24">
+                  <div class="bb-category-img">
+                      <img src="../../../assets/img/Gifts-pana.png" class="w-100" alt="category">
+                      <div class="bb-offers">
+                          <span>50% Off</span>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-lg-8 col-12 mb-24">
+                  <div class="bb-category-contact">
+                      <div class="category-title" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+                          <h2 style="color: #5069d8;">Explore Categories</h2>
+                      </div>
+                      <div >
+                      
+                        
+                        <div id="categoryCarousel" class="carousel slide w-100" data-bs-ride="carousel">
+                          <div class="carousel-inner p-4">
+                            <div *ngFor="let group of categorySlides; let i = index" [class]="i === 0 ? 'carousel-item active' : 'carousel-item'">
+                              <div class="d-flex justify-content-center gap-4 py-4">
+                                <div *ngFor="let category of group"  class="text-center bg-light rounded p-3 shadow" style="min-width: 200px;">
+                                  <div (click)="GetProductsWithThisCategory(category.id)"  style="cursor: pointer;">
+                                 <div class="mb-2">
+                                    <img style="width: 30px; height: 35px;" src="{{imageBaseUrl+categoryPhoto}}{{category.photo}}"/>
+                                  </div>
+                                  <h5 class="mb-1">{{ category.name }}</h5>
+                                  <!-- <p class="text-muted">{{ category.count }} items</p> -->
+                                  </div>
+                                
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        
+                          <button class="carousel-control-prev " style="margin-right: 200px;" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                          </button>
+                          <button class="carousel-control-next ms-5" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                          </button>
+                        </div>
+                        
+                    </div>
+                
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+
+  
+    
+  
+
 <section class="py-5 bg-white">
   <div class="container">
     <div *ngIf="isLoading" class="text-center">
@@ -496,20 +549,3 @@
     </div>
   </div>
 </section>
-<div
-  id="carouselExampleSlidesOnly"
-  class="carousel slide"
-  data-bs-ride="carousel"
-  style="background-color: #f8f8fb"
->
-  <!-- Carousel Controls -->
-  <!-- <button class="carousel-control-prev bg-danger" type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-
-  <button class="carousel-control-next bg-danger" type="button" data-bs-target="#carouselExampleSlidesOnly" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button> -->
-</div>

@@ -136,5 +136,9 @@ export class ProductService {
     return this._HttpClient.post(`${environment.baseURL}Review/AddReview`,{ProductId:proId,ReviewContent:Content, Rating:rate }, { headers: this.getAuthHeaders()});
   }
 
+  getAllProductsByCategory(catId:number): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this._HttpClient.get(`${environment.baseURL}Products/GetProductsByCategory?categoryId=${catId}`, { headers });
+  }
 }
 

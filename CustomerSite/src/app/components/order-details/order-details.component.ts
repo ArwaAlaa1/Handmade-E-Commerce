@@ -22,7 +22,7 @@ export class OrderDetailsComponent {
       this.route.paramMap.subscribe(params => {
         const idParam = params.get('id');
         if (idParam) {
-          this.orderId = +idParam; // convert to number
+          this.orderId = +idParam; 
           console.log('Received Order ID:', this.orderId);
           this.orderService.getOrder(this.orderId).subscribe({
             next: (data) => {

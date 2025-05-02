@@ -1,29 +1,25 @@
-import { CartItem } from './../../interfaces/cart';
+import { ProductService } from './../services/product.service';
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from '../../services/product.service';
-import { CommonModule } from '@angular/common';
-import { environment } from '../../../environments/environment';
-import { error } from 'node:console';
+import { environment } from '../../environments/environment.development';
 import { finalize } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { CartService } from '../../services/cart.service';
+import { CommonModule } from '@angular/common';
+import { CartService } from '../services/cart.service';
+import { AuthService } from '../services/auth.service';
+import { CartItem } from '../interfaces/cart';
 import { v4 as uuidv4 } from 'uuid';
-import { Router, RouterLink } from '@angular/router';
-
+import { FormsModule, NgModel } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  selector: 'app-products-with-category',
+  imports: [CommonModule, RouterModule,FormsModule],
+  templateUrl: './products-with-category.component.html',
+  styleUrl: './products-with-category.component.css'
 })
-export class HomeComponent implements OnInit {
-categoryPhoto:string="/Images/Categories/";
-  currentPage: number = 1;
-  itemsPerPage: number = 4;
-  totalCount: number = 0;
-  totalPages: number = 0;
+export class ProductsWithCategoryComponent {
+  // currentPage: number = 1;
+  // itemsPerPage: number = 4;
+  // totalCount: number = 0;
+  // totalPages: number = 0;
   isLoading = true;
   imageBaseUrl:string = environment.baseImageURL;
   allProducts: any[] = [];
@@ -36,19 +32,36 @@ categoryPhoto:string="/Images/Categories/";
   selectedQuantity: number = 0;
   showValidation = false;
 
-  filters = {
-    categoryId: null,
-    maxPrice: null,
-    minPrice: null
-  };
-
+ 
+  categoryId: number = 0;
   constructor(public _productService: ProductService, private _authService: AuthService
-    ,private _cartService:CartService,private route:Router) {}
-
+      ,private _cartService:CartService, private activatedRoute: ActivatedRoute, private route: Router) {}
+  
   ngOnInit(): void {
-    this.filterProducts();
-    this.getCategories();
-    this._authService.checktheme();
+      
+     
+      this._authService.checktheme();
+      this.activatedRoute.paramMap.subscribe(params => {
+      const idParam = params.get('id');
+      this.isLoading = true;
+      if (idParam) {
+        this.categoryId = +idParam; 
+        console.log('Received Category ID:', this.categoryId);
+      this._productService.getAllProductsByCategory(this.categoryId).subscribe({
+        next: (data) => {
+       
+          this.allProducts = data.products;
+        
+          console.log("allProducts", this.allProducts.length);
+          console.log("products",this.allProducts);
+          this.isLoading = false;
+        }
+        , error: (err) => {
+          console.log(err);
+        }
+      });
+      }
+    });
   }
 
   compareSizes(a: any, b: any): boolean {
@@ -71,63 +84,38 @@ categoryPhoto:string="/Images/Categories/";
     this.showValidation = false;
   }
 
-  applyFilters() {
-    this.currentPage = 1;
-    this.filterProducts();
-  }
+ 
+  
 
-  getCategories(){
-    this.isLoading = true;
-    this._productService.getAllCategories(
-    ).pipe(
-      finalize(() => this.isLoading = false)
-    ).subscribe({
-      next: (response) => {
-        this.categories = response;
-        console.log('categories', this.categories);
-      },
-      error: (error) => {
-        console.log(error);
-      }
-    });
-  }
-  get categorySlides() {
-    const chunkSize = 3;
-    const result = [];
-    for (let i = 0; i < this.categories.length; i += chunkSize) {
-      result.push(this.categories.slice(i, i + chunkSize));
-    }
-    return result;
-  }
 
-  filterProducts() {
-    this.isLoading = true;
-    this._productService.getAllProduct(
-      this.itemsPerPage,
-      this.currentPage,
-      this.filters.categoryId,
-      this.filters.maxPrice,
-      this.filters.minPrice
-    ).pipe(
-      finalize(() => this.isLoading = false)
-    ).subscribe({
-      next: (response) => {
-        this.allProducts = response.products;
-        this.totalCount = response.totalCount;
-        this.totalPages = Math.ceil(this.totalCount / this.itemsPerPage);
-        // console.log(response);
-      },
-      error: (error) => {
-        // console.log(error);
-      }
-    });
-  }
+  // filterProducts() {
+  //   this.isLoading = true;
+  //   this._productService.getAllProduct(
+  //     this.itemsPerPage,
+  //     this.currentPage,
+  //     this.filters.categoryId,
+  //     this.filters.maxPrice,
+  //     this.filters.minPrice
+  //   ).pipe(
+  //     finalize(() => this.isLoading = false)
+  //   ).subscribe({
+  //     next: (response) => {
+  //       this.allProducts = response.products;
+  //       this.totalCount = response.totalCount;
+  //       this.totalPages = Math.ceil(this.totalCount / this.itemsPerPage);
+  //       // console.log(response);
+  //     },
+  //     error: (error) => {
+  //       // console.log(error);
+  //     }
+  //   });
+  // }
 
-  changePage(page: number) {
-    if (page < 1 || page > this.totalPages) return;
-    this.currentPage = page;
-    this.filterProducts();
-  }
+  // changePage(page: number) {
+  //   if (page < 1 || page > this.totalPages) return;
+  //   this.currentPage = page;
+  //   this.filterProducts();
+  // }
 
   toggleFavorite(product: any) {
     product.isFavorite = !product.isFavorite;
@@ -233,4 +221,7 @@ categoryPhoto:string="/Images/Categories/";
   GetProductsWithThisCategory(categoryId:number){
     this.route.navigate(['/ProductsWithCategory',categoryId]);
   }
+ 
 }
+
+

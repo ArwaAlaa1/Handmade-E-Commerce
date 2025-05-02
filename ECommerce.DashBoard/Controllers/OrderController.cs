@@ -162,6 +162,7 @@ namespace ECommerce.DashBoard.Controllers
             var orderVM = new OrderDetailsVM
             {
                 OrderId = order.Id,
+                
                 CustomerEmail = order.CustomerEmail,
                 Address = orderaddress.City + " - " + orderaddress.Region + " - " + orderaddress.AddressDetails,
                 TotalAmount = order.OrderItems

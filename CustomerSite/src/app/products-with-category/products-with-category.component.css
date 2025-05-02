@@ -1,0 +1,98 @@
+.product-card {
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .product-image-container {
+    position: relative;
+    background: #f8f9fa;
+  }
+  
+  .default-img {
+    transition: opacity 0.4s ease;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .hover-img {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .product-card:hover .hover-img {
+    opacity: 1;
+  }
+  
+  .product-card:hover .default-img {
+    opacity: 0;
+  }
+  
+  .hover-buttons {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    background: rgba(206, 199, 199, 0.8);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  
+  .product-card:hover .hover-buttons {
+    opacity: 1;
+    transform: translateY(0);
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+  }
+  
+  .action-btn {
+    border-radius: 50%;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .action-btn:hover {
+    background-color: #0d6efd !important;
+    color: #fff;
+  }
+  
+  .active-favorite {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  .active-favorite:hover {
+    background-color: #bb2d3b;
+    color: #fff;
+  }
+  
+  
+  
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .modal-box {
+    width: 90%;
+    max-width: 400px;
+  }
+  .discount-banner {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+  }

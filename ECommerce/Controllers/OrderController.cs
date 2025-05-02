@@ -7,6 +7,7 @@ using ECommerce.Core.Services.Contract;
 using ECommerce.DTOs;
 using ECommerce.DTOs.OrderDtos;
 using ECommerce.Hubs;
+using ECommerce.Repository.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +29,7 @@ namespace ECommerce.Controllers
 
         private readonly ILogger<OrderController> _logger;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INotificationRepository _notificationRepository;
 
         public OrderController(IOrderService orderService
             , ICartRepository cartRepository
@@ -78,12 +80,12 @@ namespace ECommerce.Controllers
                 }
 
                 // Delete the cart
-               // var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
+                var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
 
-                //if (!deletedcart)
-                //{
-                //    return BadRequest(new { Message = "Failure in Cart Deletion" });
-                //}
+                if (!deletedcart)
+                {
+                    return BadRequest(new { Message = "Failure in Cart Deletion" });
+                }
 
 
                 // Send notification to each unique trader in the order
@@ -94,6 +96,12 @@ namespace ECommerce.Controllers
 
                 foreach (var traderId in traderIds)
                 {
+                    await _notificationRepository.AddNotificationAsync(new Notification
+                    {
+                        AppUserId = traderId,
+                        Message = "You have a new order!",
+                    });
+
                     await _hubContext.Clients
                         .Group($"Trader_{traderId}")
                         .SendAsync("ReceiveOrderNotification", new

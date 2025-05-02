@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { v4 as uuidv4 } from 'uuid';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -19,7 +19,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit {
-
+categoryPhoto:string="/Images/Categories/";
   currentPage: number = 1;
   itemsPerPage: number = 4;
   totalCount: number = 0;
@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit {
   };
 
   constructor(public _productService: ProductService, private _authService: AuthService
-    ,private _cartService:CartService) {}
+    ,private _cartService:CartService,private route:Router) {}
 
   ngOnInit(): void {
     this.filterProducts();
@@ -84,12 +84,20 @@ export class HomeComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         this.categories = response;
-        console.log(response);
+        console.log('categories', this.categories);
       },
       error: (error) => {
         console.log(error);
       }
     });
+  }
+  get categorySlides() {
+    const chunkSize = 3;
+    const result = [];
+    for (let i = 0; i < this.categories.length; i += chunkSize) {
+      result.push(this.categories.slice(i, i + chunkSize));
+    }
+    return result;
   }
 
   filterProducts() {
@@ -222,4 +230,7 @@ export class HomeComponent implements OnInit {
       });
   }
 
+  GetProductsWithThisCategory(categoryId:number){
+    this.route.navigate(['/ProductsWithCategory',categoryId]);
+  }
 }

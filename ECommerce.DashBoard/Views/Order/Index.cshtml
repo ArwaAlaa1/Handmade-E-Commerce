@@ -73,7 +73,13 @@
                                     <i class="bx bx-dots-vertical-rounded"></i>
                                 </button>
                                 <div class="dropdown-menu">
+
                                     <a class="dropdown-item" asp-action="Details" asp-route-id="@order.OrderId"><i class="bx bx-info-circle me-1"></i> Details</a>
+                                    
+                                    <a class="dropdown-item" asp-action="InvoiceDetails" asp-route-id="@order.OrderId" target="_blank">
+                                        <i class="bx bx-printer me-1"></i>
+                                        Print
+                                    </a>
                                     @* order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress *@
                                     @if (order.Status != OrderStatus.Pending && order.Status != OrderStatus.InProgress && order.Status != OrderStatus.Ready)
                                     {

@@ -76,10 +76,11 @@ namespace ECommerce.Services
                 {
                     throw new InvalidOperationException($"Product with ID {item.ProductId} not found.");
                 }
-
+                var extraCost = item.ExtraCost ?? 0;
+                var totalItemPrice = (finalPrice + extraCost) * item.Quantity;
                 var orderItem = new OrderItem(item.ProductId, item.CustomizeInfo, item.Color, item.Size, product.SellerId, item.Quantity)
                 {
-                    TotalPrice = finalPrice * item.Quantity 
+                    TotalPrice = totalItemPrice
                 };
 
                 OrderItems.Add(orderItem);
@@ -140,6 +141,7 @@ namespace ECommerce.Services
             order.Status = OrderStatus.Cancelled;
             foreach (var item in order.OrderItems)
             {
+                item.Product.Seller = null;
                 item.OrderItemStatus = ItemStatus.Cancelled;
             }
             _unitOfWork.Repository<Order>().Update(order);
@@ -151,7 +153,8 @@ namespace ECommerce.Services
         public async Task<OrderItem> CancelItemOrder(int orderItemId)
         {
             var orderitem = await _orderRepo.GetItemInOrderAsync(orderItemId);
-
+            var product = await _unitOfWork.Repository<Product>().GetByIdAsync(orderitem.ProductId);
+            product.Stock += 1;
             orderitem.IsDeleted = true;
             orderitem.OrderItemStatus = ItemStatus.Cancelled;
           

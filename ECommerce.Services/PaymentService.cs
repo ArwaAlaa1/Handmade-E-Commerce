@@ -80,14 +80,18 @@ namespace ECommerce.Services
                     {
                         item.Price = product.SellingPrice;
                     }
+
+                    item.ExtraCost??= 0;
                 }
                 PaymentIntentService paymentIntentService = new PaymentIntentService();
                 PaymentIntent _intent;
+                var itemsTotal = cart.CartItems.Sum(m => ((m.Price + (m.ExtraCost ?? 0)) * m.Quantity));
+                var totalAmount = (long)((itemsTotal + shippingPrice) * 100);
                 if (string.IsNullOrEmpty(cart.PaymentId))
                 {
                     var options = new PaymentIntentCreateOptions
                     {
-                        Amount = (long)cart.CartItems.Sum(m => (m.Price * 100) * m.Quantity) + (long)(shippingPrice * 100),
+                        Amount = totalAmount,
                         Currency = "USD",
                         PaymentMethodTypes = new List<string> { "card" }
                     };
@@ -106,7 +110,7 @@ namespace ECommerce.Services
                     {
                         var createOptions = new PaymentIntentCreateOptions
                         {
-                            Amount = (long)cart.CartItems.Sum(m => (m.Price * 100) * m.Quantity) + (long)(shippingPrice * 100),
+                            Amount = totalAmount,
                             Currency = "USD",
                             PaymentMethodTypes = new List<string> { "card" }
                         };
@@ -119,7 +123,7 @@ namespace ECommerce.Services
                         // If the PaymentIntent is not succeeded, update it
                         var updateOptions = new PaymentIntentUpdateOptions
                         {
-                            Amount = (long)cart.CartItems.Sum(m => (m.Price * 100) * m.Quantity) + (long)(shippingPrice * 100)
+                            Amount = totalAmount
                         };
                         _intent = await paymentIntentService.UpdateAsync(cart.PaymentId, updateOptions);
                         cart.ClientSecret = _intent.ClientSecret;
@@ -129,7 +133,7 @@ namespace ECommerce.Services
                 {
                     var options = new PaymentIntentCreateOptions
                     {
-                        Amount = (long)cart.CartItems.Sum(m => (m.Price * 100) * m.Quantity) + (long)(shippingPrice * 100),
+                        Amount = totalAmount,
                         Currency = "USD",
                         PaymentMethodTypes = new List<string> { "card" }
                     };

@@ -68,8 +68,8 @@ export class PaymentService {
   }
 
   createOrder(cartId: string, shippingCostId: number, addressId: number,paymentId: string): Observable<OrderResponse> {
-    const url = `https://localhost:7223/api/Order`;
-    // const url = `${environment.baseURL}/Order`;
+    // const url = `https://localhost:7223/api/Order`;
+    const url = `${environment.baseURL}Order`;
 
     const body = { cartId, shippingCostId, addressId, paymentId };
     return this.http.post<any>(url, body, { headers: this.getAuthHeaders() });

@@ -230,6 +230,35 @@ namespace ECommerce.Repository.Data.Migrations
                     b.ToTable("Favorites");
                 });
 
+            modelBuilder.Entity("ECommerce.Core.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("ECommerce.Core.Models.Order.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -809,6 +838,17 @@ namespace ECommerce.Repository.Data.Migrations
                     b.Navigation("product");
 
                     b.Navigation("user");
+                });
+
+            modelBuilder.Entity("ECommerce.Core.Models.Notification", b =>
+                {
+                    b.HasOne("ECommerce.Core.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("ECommerce.Core.Models.Order.Order", b =>

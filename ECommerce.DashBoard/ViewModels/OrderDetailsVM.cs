@@ -6,6 +6,7 @@ namespace ECommerce.DashBoard.ViewModels
     {
         public int OrderId { get; set; }
         public string CustomerEmail { get; set; }
+        public string Address { get; set; }
         public decimal TotalAmount { get; set; }
         public DateTimeOffset OrderDate { get; set; }
         public OrderStatus Status { get; set; }

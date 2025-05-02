@@ -4,7 +4,7 @@ import { OrderService } from '../../services/order.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SharedIdService } from '../../services/shared-id.service';
+
 
 @Component({
   selector: 'app-order',
@@ -14,7 +14,7 @@ import { SharedIdService } from '../../services/shared-id.service';
 })
 export class OrderComponent {
 
-  constructor(private _orderServices:OrderService,private router:Router,private sharedIdService:SharedIdService) { }
+  constructor(private _orderServices:OrderService,private router:Router) { }
  orders:any[] = [];
   searchItem: string = '';
   ngOnInit(): void {
@@ -38,8 +38,8 @@ export class OrderComponent {
   }
 
   viewOrderDetails(orderId: number) {
-    this.sharedIdService.setOrderId(orderId);
-    this.router.navigate(['/orderdetails']);
+    
+    this.router.navigate(['/orderdetails',orderId]);
   }
 
 }

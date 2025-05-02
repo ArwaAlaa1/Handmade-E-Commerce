@@ -43,9 +43,7 @@ export class CartService {
   AddToCart(cart:Cart): Observable<any>{
     // const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     if  (this.token) {
-      console.log('Token:', this.token); // Log the token to check if it's being set correctly
-      console.log('Cart payload:', JSON.stringify(cart));
-
+     
       // const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization': `Bearer ${this.token}` });
       return this.http.post(`${this.baseUrl}`,cart, { headers:this.getAuthHeaders() });
     }

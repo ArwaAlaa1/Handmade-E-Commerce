@@ -1,223 +1,258 @@
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  rel="stylesheet"
-/>
+<section class="h-100 h-custom" style="background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%); min-height: 100vh;">
+  <div class="container-fluid py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-lg-10 mx-auto">
+        <div class="card card-registration card-registration-2 animate__animated animate__fadeIn" style="border: none; background-color: #ffffff; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); border-radius: 15px; overflow: hidden;">
+          <div class="card-body p-0" style="background-color: #ffffff;">
+            <div class="row g-0">
+              <!-- Cart Section -->
+              <div class="col-lg-8">
+                <div class="p-5" style="background-color: #ffffff;">
+                  <div class="d-flex justify-content-between align-items-center mb-5">
+                    <h1 class="fw-bold mb-0" style="font-size: 2.5rem; color: #2c3e50; letter-spacing: 1px;">Shopping Cart</h1>
+                    <div class="d-flex align-items-center gap-3">
+                      <h6 class="mb-0 text-muted" style="font-size: 1rem;">{{ cartData.cartItems?.length || 0 }} items</h6>
+                      <a href="javascript:void(0)" class="text-decoration-none text-muted" (click)="clearAllCart()" style="font-size: 1.7rem; transition: color 0.3s ease;">
+                        <i class="fa-solid fa-trash"></i>
+                      </a>
+                      <style>
+                        a.text-muted:hover { color: #e74c3c !important; }
+                      </style>
+                    </div>
+                  </div>
+                  <hr class="my-4" style="border: none; border-top: 1px solid #e0e0e0;">
 
-<div class="container py-5">
-  <div class="row">
-    <!-- Cart Section -->
-    <div class="col-md-7">
-      <div
-        class="d-flex shadow-sm bg-light align-items-center justify-content-between mb-4 p-3 rounded-3"
-      >
-        <h5 class="fw-bold">Shopping Cart</h5>
-        <a href="#" class="text-decoration-none text-muted">Clear All</a>
-      </div>
+                  <!-- Empty Cart -->
+                  <div *ngIf="!cartData.cartItems || cartData.cartItems.length === 0" class="text-center py-5 animate__animated animate__bounceIn" style="background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                    <i class="bi bi-cart-x" style="font-size: 6rem; color: #bdc3c7; animation: pulse 2s infinite;"></i>
+                    <p class="mt-3" style="font-size: 1.2rem; color: #7f8c8d;">Your cart is empty.</p>
+                    <a routerLink="/home" class="btn btn-primary" style="background: linear-gradient(90deg, #3498db, #2980b9); border: none; padding: 10px 30px; border-radius: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                      Continue Shopping
+                    </a>
+                    <style>
+                      .btn-primary:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+                      }
+                      @keyframes pulse {
+                        0% { transform: scale(1); }
+                        50% { transform: scale(1.05); }
+                        100% { transform: scale(1); }
+                      }
+                    </style>
+                  </div>
 
-      <div class="p-3 bg-light">
-        <!-- <button type="button" class="btn btn-primary" (click)="openAddressModal()">
-    Open Address Modal
-  </button> -->
-  
-
-  <!-- Item 1 -->
-  @if (cartData.cartItems?.length == 0 || cartData.id== null) {
-    <div class="text-center py-5">
-      <h4 class="text-muted">Your cart is empty</h4>
-      <a href="#" class="btn btn-primary">Continue Shopping</a>
-    </div>
-}@else {
-  
-  @for (item of cartData.cartItems; track $index) {
-    <div class="rounded-2 p-2 border">
-      <div class="d-flex align-items-center gap-2 mb-3 ">
-        <img src={{imageBaseUrl}}{{item.photoUrl}} class="rounded-circle" alt="shop logo">
-        <!-- onclick="getTrader(item.sellerId)" -->
-        <h6 class="mb-0" 
-        
-        >{{item.sellerName}}</h6>
-        <i class="bi bi-three-dots-vertical ms-auto"></i>
-      </div>
-      <div class="d-flex gap-3 mb-3">
-        <img src={{imageBaseUrl}}{{item.photoUrl}} class="rounded" alt="Product Image" width="100" height="100">
-        <div class="flex-grow-1">
-          <h6 class="fw-semibold">{{item.productName}}</h6>
-          <div class="d-flex flex-wrap gap-2 my-1">
-           <div>
-            <div class="d-flex flex-wrap gap-2 my-1">
-              @if (item.color !=null) {
-                <span class="badge bg-secondary">Color: {{item.color}}</span>
-              }
-              @if (item.size !=null) {
-                <span class="badge bg-secondary">Size: {{item.size}} </span>
-              }
-           
+                  <!-- Cart Items -->
+                  <div *ngIf="cartData.cartItems && cartData.cartItems.length > 0">
+                    <div *ngFor="let item of cartData.cartItems; trackBy: trackByItemId" class="row mb-4 d-flex justify-content-between align-items-center animate__animated animate__fadeInUp" style="background-color: #fafafa; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);">
+                      <div class="col-md-2 col-lg-2 col-xl-2">
+                        <img [src]="imageBaseUrl + item.photoUrl" [alt]="item.productName" class="img-fluid" style="border-radius: 8px; width: 80px; height: 80px; object-fit: cover;">
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-3">
+                        <h6 class="mb-0" style="font-size: 1.1rem; color: #2c3e50;">{{ item.productName }}</h6>
+                        <div class="d-flex flex-wrap gap-2 my-1">
+                          @if (item.color != null && item.color.trim() !== '') {
+                            <span class="badge bg-secondary">Color: {{ item.color }}</span>
+                          }
+                          @if (item.size != null && item.size.trim() !== '') {
+                            <span class="badge bg-secondary">Size: {{ item.size }}</span>
+                          }
+                        </div>
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-2 d-flex align-items-center">
+                        <button class="btn btn-outline-primary btn-sm px-2" (click)="Decrease(item.itemId)" [disabled]="item.quantity <= 1" style="border-radius: 50%; width: 35px; height: 35px; transition: all 0.3s ease;">-</button>
+                        <span class="form-control form-control-sm text-center mx-2" style="width: 50px; border: none; font-size: 1rem; color: #34495e;">{{ item.quantity }}</span>
+                        <button class="btn btn-outline-primary btn-sm px-2" (click)="Increase(item.itemId)" style="border-radius: 50%; width: 35px; height: 35px; transition: all 0.3s ease;">+</button>
+                      </div>
+                      <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                        @if (item.activeSale && item.priceAfterSale) {
+                          <h6 class="mb-0" style="font-size: 1.1rem; color: #27ae60;">{{ item.priceAfterSale | currency:'EGP' }}</h6>
+                          <small class="text-muted text-decoration-line-through" style="font-size: 0.9rem;">{{ item.price | currency:'EGP' }}</small>
+                        } @else {
+                          <h6 class="mb-0" style="font-size: 1.1rem; color: #2c3e50;">{{ item.price | currency:'EGP' }}</h6>
+                        }
+                        @if (item.extraCost && item.extraCost > 0) {
+                          <small style="font-size: 0.8rem; color: #6c757d;">
+                            +{{ (item.extraCost * item.quantity) | currency:'EGP' }}
+                          </small>
+                        }
+                      </div>
+                      <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                        <button class="btn btn-danger btn-sm ms-3" (click)="RemoveItem(item.itemId)" style="border-radius: 50%; width: 35px; height: 35px; transition: all 0.3s ease;">×</button>
+                      </div>
+                      <style>
+                        .btn-outline-primary:hover {
+                          background-color: #3498db;
+                          color: #fff;
+                          border-color: #3498db;
+                        }
+                        .btn-danger:hover {
+                          background-color: #c0392b;
+                          border-color: #c0392b;
+                        }
+                      </style>
+                    </div>
+                    <hr class="my-4" style="border: none; border-top: 1px solid #e0e0e0;">
+                  </div>
+                </div>
               </div>
-              @if (item.customizeInfo !=null) {
-                <span class="badge bg-secondary">Customize Info: {{item.customizeInfo}}</span>
-              }
-           
-             
-           </div>
-            <div class="ms-auto text-end ">
-              @if (item.activeSale !=null && item.priceAfterSale !=null) {
-                <span class="badge bg-success">{{item.activeSale}} % off</span><br>
-                <strong class="text-success">EGP {{ item.priceAfterSale}}</strong><br>
-                <small class="text-muted text-decoration-line-through">EGP {{item.price}}</small>
-              }
-              @else{
-                <strong class="text-success">EGP {{item.price}}</strong><br>
-              }
-            
-              <!-- <small class="text-muted text-decoration-line-through">EGP {{item.price}}</small> -->
-            </div>
-          </div>
-         
-    
-          <div class="d-flex align-items-center gap-2 mt-2">
-            <div class="quantity-selector">
-              <span (click)="Decrease(item.itemId)">&#8722;</span>
-              <span>{{ item.quantity }}</span>
-              <span (click)="Increase(item.itemId)">&#43;</span>
-            </div>
-            
-            <a href="#" class="text-decoration-underline small">Edit</a>
-            <a href="#" class="text-decoration-underline small">Save for later</a>
-            
-              <button (click)="RemoveItem(item.itemId)" class="btn btn-danger">Remove
 
-            </button>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-    
+              <!-- Summary Section -->
+              <div class="col-lg-4" style="background: linear-gradient(145deg, #ffffff, #f5f5f5); box-shadow: -5px 0 15px rgba(0, 0, 0, 0.05);">
+                <div class="p-5">
+                  <h3 class="fw-bold mb-5 mt-2 pt-1 animate__animated animate__fadeInDown" style="font-size: 2rem; color: #2c3e50;">Summary</h3>
+                  <hr class="my-4" style="border: none; border-top: 1px solid #e0e0e0;">
 
-    <hr class="border-top my-3 " />
-  }
-}
+                  <!-- Deliver To -->
+                  <div class="mb-4 animate__animated animate__fadeIn">
+                    <h5 class="text-uppercase mb-3" style="color: #34495e;">
+                      <i class="fa-solid fa-location-dot me-2" style="color: #3498db;"></i>Deliver To
+                    </h5>
+                    <div *ngIf="addressSelected" class="alert alert-info mt-3" style="border: none; background: linear-gradient(90deg, #e6f7ff, #d0e8ff); border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
+                      <strong style="color: #2c3e50;">{{ addressSelected.city }} - {{ addressSelected.country }}</strong><br />
+                      <span style="color: #7f8c8d;">{{ addressSelected.region }}</span><br />
+                      <span style="color: #7f8c8d;"><i class="fa-solid fa-phone me-1"></i>{{ addressSelected.phoneNumber }}</span>
+                    </div>
+                    <button class="btn btn-outline-primary mt-3" (click)="openModal()" style="border-radius: 25px; padding: 8px 20px; transition: all 0.3s ease;">
+                      <i class="fa-solid fa-map-marker-alt me-2"></i>Change Address
+                    </button>
+                    <style>
+                      .btn-outline-primary:hover {
+                        background-color: #3498db;
+                        color: #fff;
+                        border-color: #3498db;
+                        box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+                      }
+                    </style>
+                  </div>
 
- 
-  
-</div>
-    </div>
-    <!-- Summary Section -->
-    <div class="col-md-5">
-      <div class="bg-light p-3 rounded shadow-sm mb-3">
-        @if(this.token != null) {
-          <h5 class="fw-bold" (click)="openModal()">
-            <i class="fa-solid fa-location-dot"></i> Deliver To
-          </h5>
-        } @else {
-          <h5 class="fw-bold" *ngIf="token == null" (click)="redirectToLogin()">
-            <i class="fa-solid fa-location-dot"></i> Deliver To
-          </h5>
-        }
-       
-        <div *ngIf="addressSelected" class="alert alert-info mt-3">
-          Selected Delivery Address: <br />
-          <strong>{{ addressSelected.city }} - {{ addressSelected.country }}</strong><br />
-          {{ addressSelected.region }}<br />
-          {{ addressSelected.phoneNumber }}
-        </div>
-        
-        
-      </div>
-
-      <div class="bg-light p-4 rounded shadow-sm">
-        <h5 class="fw-bold mb-4">Order Summary</h5>
-
-          <div class="d-flex justify-content-between mb-2">
-            <span>Sub Total</span>
-            <span>{{subTotal}}</span>
-          </div>
-          <div class="d-flex justify-content-between mb-2">
-            <span>Delivery Charges</span>
-            <span>{{deliveryCost}}</span>
-          </div>
-          <hr> 
-          <div class="d-flex justify-content-between fw-bold">
-            <span>Total Amount</span>
-            <span>EGP {{total}}</span>
-          </div>
-          <div class="d-flex justify-content-lg-center fw-bold w-100 mt-4">
-            <!-- <button class="btn btn-success btn-lg w-100">Check out →</button> -->
-
-            <button class="btn btn-primary" (click)="onCheckout()" [disabled]="isLoading">
-              {{ isLoading ? 'Processing...' : 'Checkout' }}
-            </button>
-          </div>
-          <div *ngIf="clientSecret" class="mt-4">
-          <div *ngIf="clientSecret" class="mt-4">
-            <h4>Enter Payment Details</h4>
-            <div *ngIf="errorMessage" class="alert alert-danger mt-2">{{ errorMessage }}</div>
-            <div #paymentElement></div>
-            <button class="btn btn-success mt-3" (click)="confirmPayment()" [disabled]="isLoading">
-              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              {{ isLoading ? 'Processing...' : 'Confirm Payment' }}
-            </button>
-          </div>
-
-          </div>
-        </div>
-        
-      
-    </div>
-  </div>
+                 <!-- Items and Subtotal -->
+<div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn">
+  <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-shopping-cart me-2" style="color: #3498db;"></i>Items {{ cartData.cartItems?.length || 0 }}</h5>
+  <h5 style="color: #27ae60;">{{ subTotal | currency:'EGP' }}</h5>
 </div>
 
-<!-- Button to open modal -->
-<!-- <button type="button" class="btn btn-primary" (click)="openModal()">Open Popup</button> -->
+<!-- Extra Cost -->
+<div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn" *ngIf="extraCostTotal > 0">
+  <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-tags me-2" style="color: #f39c12;"></i>Extra Cost (Size)</h5>
+  <h5 style="color: #f39c12;">{{ extraCostTotal | currency:'EGP' }}</h5>
+</div>
 
-<!-- Modal HTML -->
-<div
-  class="modal fade w-100 p-5"
-  id="myModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="popupTitle"
-  aria-hidden="true"
->
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div
-        class="modal-header d-flex justify-content-between align-items-center"
-      >
-        <h5 class="modal-title" id="popupTitle">Delivery Locations</h5>
-        <button
-          type="button"
-          class="close"
-          (click)="closeModal()"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+<!-- Delivery Cost -->
+<div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn">
+  <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-truck me-2" style="color: #3498db;"></i>Delivery Cost</h5>
+  <h5 style="color: #34495e;">{{ deliveryCost | currency:'EGP' }}</h5>
+</div>
 
-      <div class="modal-body">
-        <!-- Here you can put your popup component or content -->
-        <app-address-pop-up
-          [addresses]="addresses"
-          (selectedAddress)="onSelectedAddress($event)"
-        ></app-address-pop-up>
-        <!-- OR just any content -->
-      </div>
+<hr class="my-4" style="border: none; border-top: 1px solid #e0e0e0;">
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="Confirm()">
-          Confirm
-        </button>
+<!-- Total Price -->
+<div class="d-flex justify-content-between mb-5 animate__animated animate__fadeIn">
+  <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-wallet me-2" style="color: #3498db;"></i>Total Price</h5>
+  <h5 style="color: #e74c3c; font-weight: bold;">{{ total | currency:'EGP' }}</h5>
+</div>
+                  <!-- Checkout Button -->
+                  <button type="button" class="btn btn-dark btn-block btn-lg animate__animated animate__pulse" (click)="onCheckout()" [disabled]="isLoading" style="background: linear-gradient(90deg, #2c3e50, #34495e); border: none; border-radius: 25px; padding: 12px; transition: all 0.3s ease;">
+                    <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {{ isLoading ? 'Processing...' : 'Checkout' }}
+                  </button>
+                  <style>
+                    .btn-dark:hover {
+                      background: linear-gradient(90deg, #34495e, #2c3e50);
+                      box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+                      transform: translateY(-3px);
+                    }
+                  </style>
+
+                  <!-- Payment Element -->
+                  <div *ngIf="clientSecret" class="mt-4 animate__animated animate__fadeIn">
+                    <h4 style="color: #2c3e50;">Enter Payment Details</h4>
+                    <div *ngIf="errorMessage" class="alert alert-danger mt-2" style="border: none; background: linear-gradient(90deg, #ffebee, #ffcdd2); border-radius: 8px;">{{ errorMessage }}</div>
+                    <div #paymentElement></div>
+                    <button class="btn btn-success mt-3" (click)="confirmPayment()" [disabled]="isLoading" style="background: linear-gradient(90deg, #27ae60, #2ecc71); border: none; border-radius: 25px; padding: 10px 20px; transition: all 0.3s ease;">
+                      <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      {{ isLoading ? 'Processing...' : 'Confirm Payment' }}
+                    </button>
+                    <style>
+                      .btn-success:hover {
+                        background: linear-gradient(90deg, #2ecc71, #27ae60);
+                        box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+                        transform: translateY(-3px);
+                      }
+                    </style>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- Icons -->
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-  rel="stylesheet"
-/>
+
+  <!-- Modal for Address Selection -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content" style="border: none; border-radius: 15px; box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);">
+        <!-- Modal Header -->
+        <div class="modal-header" style="background: linear-gradient(90deg, #3498db, #2980b9); color: #fff; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+          <h5 class="modal-title" id="myModalLabel">
+            <i class="fa-solid fa-location-dot me-2"></i>Select Delivery Address
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body" style="background-color: #f9f9f9;">
+          <ul class="list-group">
+            <li *ngFor="let address of addresses; let i = index" class="list-group-item d-flex justify-content-between align-items-center animate__animated animate__fadeIn" style="border: none; border-radius: 8px; margin-bottom: 10px; background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); transition: all 0.3s ease;">
+              <div>
+                <h6 class="fw-bold mb-1" style="color: #2c3e50;">
+                  <i class="fa-solid fa-map-marker-alt text-primary me-2"></i>{{ address.city }} - {{ address.country }}
+                </h6>
+                <p class="mb-0 text-muted" style="color: #7f8c8d;">
+                  {{ address.region }}<br />
+                  <i class="fa-solid fa-phone me-1"></i>{{ address.phoneNumber }}
+                </p>
+              </div>
+              <button class="btn btn-outline-primary" (click)="onSelectedAddress(i)" style="border-radius: 25px; padding: 6px 15px; transition: all 0.3s ease;">
+                <i class="fa-solid fa-check me-1"></i>Select
+              </button>
+              <style>
+                .list-group-item:hover {
+                  transform: translateY(-2px);
+                  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                }
+                .btn-outline-primary:hover {
+                  background-color: #3498db;
+                  color: #fff;
+                  border-color: #3498db;
+                }
+              </style>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer" style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" style="border-radius: 25px; padding: 8px 20px; transition: all 0.3s ease;">
+            <i class="fa-solid fa-times me-1"></i>Close
+          </button>
+          <button type="button" class="btn btn-primary" (click)="Confirm()" style="background: linear-gradient(90deg, #3498db, #2980b9); border: none; border-radius: 25px; padding: 8px 20px; transition: all 0.3s ease;">
+            <i class="fa-solid fa-check me-1"></i>Confirm
+          </button>
+          <style>
+            .btn-outline-secondary:hover {
+              background-color: #ecf0f1;
+              color: #2c3e50;
+            }
+            .btn-primary:hover {
+              background: linear-gradient(90deg, #2980b9, #3498db);
+              box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+            }
+          </style>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

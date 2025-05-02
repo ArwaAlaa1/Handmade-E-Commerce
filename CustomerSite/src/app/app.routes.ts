@@ -20,6 +20,7 @@ import { FavouriteComponent } from './components/favourite/favourite.component';
 import { OrderConfirmationComponent } from './components/order-confirmation/order-confirmation.component';
 import { OrderComponent } from './components/order/order.component';
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
+import { ProductsWithCategoryComponent } from './products-with-category/products-with-category.component';
 
 
 export const routes: Routes = [
@@ -41,9 +42,10 @@ export const routes: Routes = [
 
   {path:'register', component:RegisterComponent, title:'Register Page'},
   {path:'orders', component:OrderComponent, title:'Orders Page'},
-  {path:'orderdetails', component:OrderDetailsComponent, title:'OrdrrsDetails Page'},
+  {path:'orderdetails/:id', component:OrderDetailsComponent, title:'OrdrrsDetails Page'},
 
   {path:'login', component:LoginComponent, title:'Login Page'},
+  {path:'ProductsWithCategory/:id', component:ProductsWithCategoryComponent, title:'Product Category Page'},
 
   {path:'sendpin', component:SendPinComponent, title:'Send Pin Page'},
   {path:'enterpin/:email/:expireAt', component:EnterPinComponent, title:'Enter Pin Page'},

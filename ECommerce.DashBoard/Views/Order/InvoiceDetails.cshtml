@@ -30,53 +30,73 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    </head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
+</head>
 <body>
     
-    <div class="card" id="print">
-        <button onclick="PrintDoc()" onabort="" class="btn btn-link" style="align-items:end;">Print</button>
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center px-3 pt-3">
-            <h5 class="card-header mb-0">Order Details - @Model.OrderId</h5>
+    <div class="card shadow" id="print">
+        <!-- زر الطباعة -->
+        <div class="d-flex justify-content-end p-3">
+            <button onclick="PrintDoc()" class="btn btn-primary">
+                <i class="bi bi-printer"></i> Print Invoice
+            </button>
         </div>
 
-        <!-- Order Details -->
-        <div class="card-body">
-            <div class="mb-3">
-                <strong>Customer Email:</strong> @Model.CustomerEmail
-            </div>
-            <div class="mb-3">
-                <strong>Order Date:</strong> @Model.OrderDate.ToString("yyyy-MM-dd")
-            </div>
-            <div class="mb-3">
-                <strong>Order Address:</strong> @Model.Address
-            </div>
-            <div class="mb-3">
-                <strong>Status:</strong> @Model.Status
-            </div>
-            <div class="mb-3">
-                <strong>Shipping Cost:</strong> @Model.ShippingCost.ToString("C")
-            </div>
-            <div class="mb-3">
-                <strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")
-            </div>
+        <!-- رأس الفاتورة -->
+        <div class="card-header text-center bg-dark text-white">
+            <h4>Order Invoice - @Model.OrderId</h4>
+        </div>
 
-            <!-- Order Items -->
+        <!-- بيانات الطلب -->
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>Customer Email:</strong> @Model.CustomerEmail
+                </div>
+                <div class="col-md-6">
+                    <strong>Order Date:</strong> @Model.OrderDate.ToString("yyyy-MM-dd")
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>Order Address:</strong> @Model.Address
+                </div>
+                <div class="col-md-6">
+                    <strong>Status:</strong> @Model.Status
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>Shipping Cost:</strong> @Model.ShippingCost.ToString("C")
+                </div>
+                <div class="col-md-6">
+                    <strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <strong>Date Time :</strong> @DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+                </div>
+               
+            </div>
+            <!-- عناصر الطلب -->
             <h6 class="mt-4">Order Items:</h6>
-            <table class="table table-hover align-middle">
-                <thead>
+            <table class="table table-bordered mt-3">
+                <thead class="table-light text-center">
                     <tr>
                         <th>Product Name</th>
                         <th>Trader Name</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
                         <th>Total Price</th>
-                        @* <th>Customize Info</th> *@
                         <th>Color</th>
                         <th>Size</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-center">
                     @foreach (var item in Model.OrderItems)
                     {
                         <tr>
@@ -85,24 +105,21 @@
                             <td>@item.Quantity</td>
                             <td>@item.ProductCost.ToString("C")</td>
                             <td>@item.TotalCost.ToString("C")</td>
-                            
-                            @* <td>@item.CustomizeInfo</td> *@
                             <td>@item.Color</td>
                             <td>@item.Size</td>
                         </tr>
-                        
                     }
-                        <tr>
-                            <td  colspan="8" style="text-align:center">
-                                <strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")
-                            </td>
-
-                        </tr>
+                    <tr class="fw-bold bg-light">
+                        <td colspan="7" class="text-center">
+                            Total Amount: @Model.TotalAmount.ToString("C")
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
+    
 
 
 

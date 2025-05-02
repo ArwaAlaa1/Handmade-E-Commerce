@@ -277,6 +277,7 @@ export class DetailsComponent implements OnInit {
 
       this.product.stock = this.product.stock - this.selectedQuantity;
 
+      this.isModalOpen = false
       this.showValidation = false;
     }
 

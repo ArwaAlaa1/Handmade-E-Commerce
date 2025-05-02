@@ -5,7 +5,7 @@ import { ShippingService } from './../../services/shipping.service';
 import { ChangeDetectorRef, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-
+import Swal from 'sweetalert2';
 import { CookieService } from 'ngx-cookie-service';
 import { CommonModule } from '@angular/common';
 import { Cart } from '../../interfaces/cart';
@@ -445,9 +445,17 @@ private loadCartDetails(): void {
   async onCheckout(): Promise<void> {
     if (!this.cartData.addressId) {
       this.errorMessage = 'Please select a delivery address before proceeding to checkout.';
-      alert('Please select a valid delivery address before proceeding to checkout.');
-    return;
-   
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Address Required',
+        text: this.errorMessage??undefined,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+        customClass: {
+          popup: 'animated fadeInDown'
+        }
+      });
+      return;
     }
 
     if (!this.cartData.cartItems || this.cartData.cartItems.length === 0) {
@@ -534,6 +542,16 @@ private loadCartDetails(): void {
         this.isLoading = false;
         this.errorMessage = err.error?.message || 'Failed to initialize payment. Please try again.';
         console.error('Payment initialization error:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Payment Initialization Failed',
+          text: this.errorMessage ?? undefined,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#dc3545',
+          customClass: {
+            popup: 'animated fadeInDown'
+          }
+        });
       }
     });
   }
@@ -576,25 +594,52 @@ private loadCartDetails(): void {
 
       next: (response:OrderResponse) => {
         console.log('Order created in database:', response);
+
+         Swal.fire({
+          icon: 'success',
+          title: 'Checkout Successful!',
+          text: 'Your order has been placed successfully.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#28a745'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Clear the cart in the frontend
+            this.cartData = {} as Cart;
+            this.cartData.cartItems = [];
+            this.subTotal = 0;
+            this.total = 0;
+            this.deliveryCost = 0;
+  
+           
+            this.router.navigate(['/home']); 
+          }
+        });
      
-        // Clear the cart in the frontend
-        this.cartData = {} as Cart;
-        this.cartData.cartItems = [];
-        this.subTotal = 0;
-        this.total = 0;
-        this.deliveryCost = 0;
+        // // Clear the cart in the frontend
+        // this.cartData = {} as Cart;
+        // this.cartData.cartItems = [];
+        // this.subTotal = 0;
+        // this.total = 0;
+        // this.deliveryCost = 0;
 
      
-          this.router.navigate(['/order-confirmation'], {
-          queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
-          });
+        //   this.router.navigate(['/order-confirmation'], {
+        //   queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
+        //   });
       
       
       },
       error: (err : HttpErrorResponse) => {
         console.error('Error creating order in the backend:', err);
         this.errorMessage = 'Payment succeeded, but failed to create order. Please contact support.';
-       
+        
+        Swal.fire({
+          icon: 'error',
+          title: 'failed to create order. Please contact support.',
+          text: this.errorMessage ?? undefined, 
+          confirmButtonText: 'Try Again',
+          confirmButtonColor: '#dc3545'
+        });
         }
     });
   }

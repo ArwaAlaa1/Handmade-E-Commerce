@@ -586,7 +586,7 @@ async ngOnInit(): Promise<void> {
 
      
           this.router.navigate(['/order-confirmation'], {
-            //queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
+          queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
           });
       
       

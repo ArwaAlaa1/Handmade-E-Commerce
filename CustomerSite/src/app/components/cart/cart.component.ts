@@ -60,194 +60,6 @@ declare var bootstrap: any;
   ,private PaymentService :PaymentService,private router: Router) {
 
 }
-
-// async ngOnInit(): Promise<void> {
-//   this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
-//   // toastr.options = {
-//   //   "closeButton": false,
-//   //   "debug": false,
-//   //   "newestOnTop": false,
-//   //   "progressBar": true,
-//   //   "positionClass": "toast-top-left",
-//   //   "preventDuplicates": true,
-//   //   "onclick": null,
-//   //   "showDuration": "300",
-//   //   "hideDuration": "1000",
-//   //   "timeOut": "12000",
-//   //   "extendedTimeOut": "1000",
-//   //   "showEasing": "swing",
-//   //   "hideEasing": "linear",
-//   //   "showMethod": "fadeIn",
-//   //   "hideMethod": "fadeOut",
-//   // };
-  
-//   const shippingSub = this._shipCost.getShippingCosts().subscribe({
-//     next: (res) => {
-//       this.shippingCosts = res;
-//     },
-//     error: (err) => console.error('Error loading Shipping Costs:', err)
-//   });
-//   this.subscriptions.push(shippingSub);
-//   const userSub = this._auth.userData.subscribe({
-//     next: (response) => {
-//       this.userData = response;
-//       this.token = this.userData?.token;
-//       this.isLogin = true;
-
-//       // Authenticated: get user cart
-      
-//       const existingCartId = this._cookie.get('cartId');
-
-//       if (this.token && existingCartId) {
-//         console.log('Guest cartId found in cookie:', existingCartId);
-      
-//         // Step 1: Get logged-in user's cart
-//         this.cartService.getCartById().subscribe({
-//           next: (userCart) => {
-//             this.cartData = userCart;
-      
-//             // Step 2: Get guest cart by cookie cartId
-//             console.log('Guest cartId found jjjjjin cookie:', existingCartId);
-      
-//             this.cartService.getCarteById(existingCartId).subscribe({
-//               next: (guestCart) => {
-//                 console.log('Guest cart items:', guestCart.cartItems);
-      
-//                 // Step 3: Merge guest cart items into user cart
-//                 if (guestCart.cartItems?.length) {
-//                   this.cartData.cartItems = [...this.cartData.cartItems, ...guestCart.cartItems];
-      
-//                   // Step 4: Update user's cart with merged items
-//                   this.cartService.updateCart(this.cartData).subscribe({
-//                     next: () => {
-//                       console.log('Merged guest cart items into user cart.');
-      
-//                       // Step 5: Clear guest cart and delete cookie
-//                       this.cartService.clearCart(existingCartId).subscribe({
-//                         next: () => {
-//                           this._cookie.delete('cartId');
-//                           console.log('Guest cart cleared and cookie removed.');
-//                         },
-//                         error: (err) => console.error('Error clearing guest cart:', err)
-//                       });
-//                     },
-//                     error: (err) => console.error('Error updating user cart:', err)
-//                   });
-//                 } else {
-//                   console.log('Guest cart is empty. Skipping merge.');
-//                   this._cookie.delete('cartId');
-//                 }
-      
-//                 // Step 6: Load other user cart details
-//                 if (this.cartData.addressId != null) {
-//                   this.updateAddress(this.cartData.addressId);
-//                 }
-//                 this.calculateTotal(this.cartData);
-//               },
-//               error: (err) => console.error('Error fetching guest cart:', err)
-//             });
-//           },
-//           error: (err) => console.error('Error fetching user cart:', err)
-//         });
-            
-//     //   const existingCartId = this._cookie.get('cartId');
-//     //   if(existingCartId){
-//     //      // If cartId exists, fetch the cart and add the item to it
-//     //      console.log('Existing cartId:', existingCartId);
-//     // this.cartService.getCartById(existingCartId).subscribe({
-//     //   next: (responseCart) => {
-//     //     const cart = responseCart;
-      
-//     //         this.cartService.getCartById(existingCartId).subscribe({
-//     //           next: (res) => {
-//     //             this.cartData = res;
-//     //             this._cookie.delete('cartId');
-//     //             console.log('Cart updated successfully:', res);
-//     //             this.cartService.clearCart(existingCartId).subscribe({
-//     //               next: () => {
-//     //                 console.log('Cart cleared successfully:', existingCartId);
-                  
-//     //               },
-//     //               error: (err) => console.error('Error clearing cart:', err)
-//     //             });
-//     //             if (this.cartData.addressId != null) {
-//     //               this.updateAddress(this.cartData.addressId);
-//     //             }
-//     //             this.calculateTotal(this.cartData);
-
-//     //           },
-//     //           error: (err) => console.error('Failed to get cart:', err)
-//     //         });
-//     //       } ,
-//     //       error: (err) => console.error('Error updating cart:', err)
-//     //     });
-//     //   }else{
-//     //     this.cartService.getCartById().subscribe({
-//     //       next: (res) => {
-//     //         this.cartData = res;
-//     //         if (this.cartData.addressId != null) {
-//     //           this.updateAddress(this.cartData.addressId);
-//     //         }
-//     //         this.calculateTotal(this.cartData);
-//     //       },
-//     //       error: (err) => console.error('Failed to get cart:', err)
-//     //     });
-//     //   }
-    
-     
-//      }
-     
-//     if (this.token) {
-//       this.cartService.getCartById().subscribe({
-//         next: (res) => {
-//           this.cartData = res;
-//         console.log('User cart data:', this.cartData);
-//           if (this.cartData.addressId != null) {
-//             this.updateAddress(this.cartData.addressId);
-//           }
-//           this.calculateTotal(this.cartData);
-    
-//         },
-//         error: (err) => console.error('Failed to get cart:', err)
-//       });
-//     }
-//     },
-//     error: (err) => {
-//       console.error('Failed to get user data:', err);
-//     }
-//   });
-
-//   this.subscriptions.push(userSub);
-
-//   // Shipping cost
-//   // const shippingSub = this._shipCost.getShippingCosts().subscribe({
-//   //   next: (res) => {
-//   //     this.shippingCosts = res;
-//   //   },
-//   //   error: (err) => console.error('Error loading Shipping Costs:', err)
-//   // });
-
-//   // this.subscriptions.push(shippingSub);
-
-//   // Guest: if no token, use cartId from cookie or create new one
-//   if (!this.token) {
-//     let cartId = this._cookie.get('cartId');
-
-//     if (cartId) {
-//       this.cartService.getCartById(cartId).subscribe({
-//         next: (res) => {
-//           this.cartData = res;
-//           console.log('Guest cart data:', this.cartData);
-//           this.calculateTotal(this.cartData);
-//         },
-//         error: (err) => {
-//           console.error('Failed to load guest cart:', err);
-//         }
-//       });
-//     }  
-//   }
-// }
-
 async ngOnInit(): Promise<void> {
   this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
 
@@ -397,35 +209,6 @@ private loadCartDetails(): void {
     this.subscriptions.push(defaultAddressSub);
   }
 }
-// private loadCartDetails00(): void {
-//   if (this.cartData.addressId != null) {
-//     this.updateAddress(this.cartData.addressId);
-//   } else {
-//     const defaultAddressSub = this._userService.getAllAddress().pipe(
-//       first() // أخذ العنصر الأول
-//     ).subscribe({
-//       next: (addresses) => {
-//         if (addresses && addresses.length > 0) {
-//           this.addressSelected = addresses[0];
-//           this.cartData.addressId = this.addressSelected.id;
-//           this.getDeliveryCost(this.addressSelected.city);
-//           this.calculateTotal(this.cartData);
-
-//           const updateSub = this.cartService.updateCart(this.cartData).subscribe({
-//             next: (res) => {
-//               this.cartData = res;
-//               console.log('Cart updated with default address:', res);
-//             },
-//             error: (err) => console.error('Error updating cart with default address:', err)
-//           });
-//           this.subscriptions.push(updateSub);
-//         }
-//       },
-//       error: (err) => console.error('Error loading default address:', err)
-//     });
-//     defaultAddressSub.add(() => this.subscriptions.push(defaultAddressSub));
-//   }
-// }
     ngOnDestroy(): void {
       this.subscriptions.forEach(sub => sub.unsubscribe());
     }
@@ -458,31 +241,6 @@ private loadCartDetails(): void {
       console.log(`SubTotal: ${this.subTotal}, ExtraCostTotal: ${this.extraCostTotal}, DeliveryCost: ${this.deliveryCost}, Total: ${this.total}`);
     }
     }
-
-
-    // updateAddress(addressId: number): void {
-    //   if (addressId == 0 && this.token != null) {
-    //     const sub = this._userService.getAllAddress().subscribe({
-    //       next: (res) => {
-    //         this.addressSelected = res[0];
-    //         this.getDeliveryCost(this.addressSelected.city);
-    //       },
-    //       error: (err) => console.error('Error loading addresses:', err)
-    //     });
-    //     this.subscriptions.push(sub);
-    //   } else {
-    //     if(this.token !=null){
-    //       const sub = this._userService.getAddress(addressId).subscribe({
-    //         next: (res) => {
-    //           this.addressSelected = res;
-    //           this.getDeliveryCost(this.addressSelected.city);
-    //         },
-    //         error: (err) => console.error('Error loading address:', err)
-    //       });
-    //       this.subscriptions.push(sub);
-    //     }
-    //   }
-    // }
 
     updateAddress(addressId: number): void {
       if (!this.token || addressId === 0 || addressId == null) {
@@ -519,26 +277,6 @@ private loadCartDetails(): void {
       this.deliveryCost = selectedItem.cost;
     }
 
-    // Increase(itemId: string): void {
-    //   const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
-    //   if (!item) return;
-
-    //   item.quantity += 1;
-
-    //   this.calculateTotal(this.cartData);
-
-    //   this.cartService.updateCart(this.cartData).subscribe({
-    //     next: (res) => {
-    //       this.cartData = res;
-    //       if (this.cartData.addressId != null) {
-    //         this.updateAddress(this.cartData.addressId);
-    //       }
-    //       this.calculateTotal(this.cartData);
-    //     },
-    //     error: (err) => console.error('Error increasing item quantity:', err)
-    //   });
-    // }
-
     Increase(itemId: string): void {
       const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
       if (!item) return;
@@ -561,29 +299,6 @@ private loadCartDetails(): void {
       });
     }
 
-    // Decrease(itemId: string): void {
-    //   const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
-    //   if (!item) return;
-
-    //   if (item.quantity > 1) {
-    //     item.quantity -= 1;
-
-    //     this.calculateTotal(this.cartData);
-
-    //     this.cartService.updateCart(this.cartData).subscribe({
-    //       next: (res) => {
-    //         this.cartData = res;
-    //         if (this.cartData.addressId != null) {
-    //           this.updateAddress(this.cartData.addressId);
-    //         }
-    //         this.calculateTotal(this.cartData);
-    //       },
-    //       error: (err) => console.error('Error decreasing item quantity:', err)
-    //     });
-    //   } else {
-    //     console.warn('Minimum quantity is 1');
-    //   }
-    // }
 
     Decrease(itemId: string): void {
       const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
@@ -608,18 +323,6 @@ private loadCartDetails(): void {
       });
     }
 
-
-
-
-    // RemoveItem(itemId: string): void {
-    //   const index = this.cartData.cartItems?.findIndex(item => item.itemId === itemId);
-    //   if (index !== undefined && index !== -1) {
-    //     this.cartData.cartItems.splice(index, 1);
-    //     console.log('Item removed:', itemId);
-    //     this.updateCartAndTotals();
-    //   }
-    // }
-
     RemoveItem(itemId: string): void {
       const index = this.cartData.cartItems?.findIndex(item => item.itemId === itemId);
       if (index === undefined || index === -1) return;
@@ -627,37 +330,16 @@ private loadCartDetails(): void {
       this.cartData.cartItems.splice(index, 1);
       console.log('Item removed:', itemId);
       this.updateCartAndTotals();
+
+      // if (!this.cartData.cartItems?.length || !this.addressSelected?.city) {
+      //   this.getDeliveryCost(this.addressSelected?.city); 
+      // }
+
+      if (!this.cartData.cartItems?.length || !this.addressSelected?.city) {
+        this.deliveryCost = 0;
+        this.calculateTotal(this.cartData);
+      }
     }
-
-  //   updateCartAndTotals(): void {
-
-  //     console.log('Updating cart from null:', this.cartData);
-  //     this.cartService.updateCart(this.cartData).subscribe({
-  //       next: (res) => {
-  //         if (res != null) {
-  //           this.cartData = res;
-  //           console.log('Updating cart from null:', this.cartData);
-
-  //           if (!this.cartData.cartItems) {
-  //             this.cartData.cartItems = [];
-  //           }
-
-  //           if (this.cartData.addressId && this.cartData.addressId !== 0) {
-  //             this.updateAddress(this.cartData.addressId);
-  //           }
-
-  //           this.calculateTotal(this.cartData);
-  //         } else {
-           
-  //           this.subTotal = 0;
-  //           this.total = this.deliveryCost; // only delivery if any
-  //         }
-
-  //       },
-  //       error: (err) => console.error('Error updating cart:', err)
-  //     });
-
-  // }
 
   updateCartAndTotals(): void {
     console.log('Updating cart from null:', this.cartData);
@@ -691,23 +373,6 @@ private loadCartDetails(): void {
     this.router.navigate(['/login']);
   }
   
-
-  // openModal() {
-
-  //     this._userService.getAllAddress().subscribe({
-  //           next: (res) => {
-  //             console.log('Address data:', res);
-  //             this.addresses = res;
-  //           },
-  //           error: (err) => console.error('Error loading Address:', err)
-  //         });
-
-
-  //   const modalElement = document.getElementById('myModal');
-  //   this.modal = new bootstrap.Modal(modalElement);
-  //   this.modal.show();
-  // }
-
   openModal(): void {
    
     const sub = this._userService.getAllAddress().subscribe({
@@ -735,25 +400,6 @@ private loadCartDetails(): void {
     }
   }
 
-  // onSelectedAddress(index: number) {
-  //   this.selectedAddressIndex = index;
-  //   this.addressSelected= this.addresses[index];
-
-  // this.cartData.addressId= this.addresses[index].id;
-  // this.cartService.updateCart(this.cartData).subscribe({
-  //   next: (res) => {
-  //     console.log('Update Delivry Address:', res);
-  //     this.cartData = res;
-  //     if(this.cartData.addressId != null) {
-  //       this.updateAddress(this.cartData.addressId);
-  //     }
-  //    this.calculateTotal(this.cartData);
-
-  //   },
-  //   error: (err) => console.error('Error in Update Delivry Address:', err)
-  // });
-
-  // }
   onSelectedAddress(index: number): void {
     if (!this.addresses || index < 0 || index >= this.addresses.length) {
       console.error('Invalid address index:', index);
@@ -787,11 +433,6 @@ private loadCartDetails(): void {
     });
     this.subscriptions.push(sub); 
   }
-
-  // Confirm():void{
-  //   console.log('Selected Address Index from confirm:', this.selectedAddressIndex);
-  //   this.closeModal();
-  // }
 
   Confirm(): void {
     console.log('Selected Address Index from confirm:', this.selectedAddressIndex);
@@ -897,70 +538,6 @@ private loadCartDetails(): void {
     });
   }
 
-  // async onCheckout(): Promise<void> {
-  //   if (!this.cartData.addressId) {
-  //     this.errorMessage = 'Please select a delivery address before proceeding to checkout.';
-  //     return;
-  //   }
-  
-  //   if (!this.cartData.cartItems || this.cartData.cartItems.length === 0) {
-  //     this.errorMessage = 'Your cart is empty. Add items to proceed to checkout.';
-  //     return;
-  //   }
-  
-  //   this.isLoading = true;
-  //   this.errorMessage = null;
-  
-  //   const shippingCostId = this.shippingCosts.find(item => item.name === this.addressSelected?.city)?.id;
-  //   const cartId = this.cartData.id;
-  //   console.log('shippingCostId:', shippingCostId, 'cartId:', cartId);
-  
-  //   const sub = this.PaymentService.createOrUpdatePayment(cartId, shippingCostId).subscribe({
-  //     next: (response: Cart) => {
-  //       this.isLoading = false;
-  //       this.cartData = response;
-  //       this.clientSecret = response.clientSecret ?? null;
-  
-  //       // إعادة تفعيل التحقق من المجموع إذا كنت تريد
-  //       const backendTotal = response.cartItems.reduce((sum, item) => {
-  //         return sum + ((item.priceAfterSale ?? item.price ?? 0) * item.quantity);
-  //       }, 0) + this.deliveryCost;
-  
-  //       if (Math.abs(this.total - backendTotal) > 0.01) {
-  //         this.errorMessage = 'Total mismatch detected. Please refresh the cart and try again.';
-  //         return;
-  //       }
-  
-  //       if (!this.clientSecret || !this.stripe) {
-  //         this.errorMessage = 'Failed to initialize payment. Please try again.';
-  //         return;
-  //       }
-  
-  //       this.elements = this.stripe.elements({ clientSecret: this.clientSecret });
-  //       this.paymentElement = this.elements.create('payment');
-  
-  //       // استدعاء mount باستخدام ViewChild
-  //       if (this.paymentElementRef && this.paymentElementRef.nativeElement) {
-  //         this.paymentElement.mount(this.paymentElementRef.nativeElement);
-  //         this.paymentElement.on('ready', () => {
-  //           console.log('Payment Element is ready');
-  //           console.log('Payment Element:', this.paymentElement);
-  //           console.log(response.paymentId);
-  //           console.log(this.clientSecret);
-  //         });
-  //       } else {
-  //         console.error('Payment element reference not found in the DOM');
-  //         this.errorMessage = 'Payment setup failed. Please try again.';
-  //       }
-  //     },
-  //     error: (err) => {
-  //       this.isLoading = false;
-  //       this.errorMessage = err.error?.message || 'Failed to initialize payment. Please try again.';
-  //       console.error('Payment initialization error:', err);
-  //     }
-  //   });
-  //   this.subscriptions.push(sub); // إضافة الاشتراك
-  // }
 
   async confirmPayment(): Promise<void> {
     if (!this.stripe || !this.elements || !this.clientSecret) {
@@ -1094,38 +671,6 @@ proceedToCheckout(): void {
     paymentTab.click(); 
   }
 }
-// proceedToCheckout(): void {
-//   this.showPaymentTab = true;
-// }
-
-  // clearAllCart(): void {
-  //   if (!this.cartData || !this.cartData.id) {
-  //     console.warn('No cart data to clear');
-  //     return;
-  //   }
-  //     // Clear the cart in the backend
-
-  //   this.cartService.clearCart(this.cartData.id).subscribe({
-  //     next: () => {
-  //       console.log('Cart cleared in the backend');
-  
-  //       // Clear the cart in the frontend
-  //       this.cartData = {} as Cart;
-  //       this.cartData.cartItems = [];
-  //       this.subTotal = 0;
-  //       this.total = 0;
-  //       this.deliveryCost = 0;
-  
-  //       // Update the UI
-  //       this.cdr.detectChanges();
-  //     },
-  //     error: (err) => {
-  //       console.error('Error clearing cart in the backend:', err);
-  //       this.errorMessage = 'Failed to clear cart. Please try again.';
-  //     }
-  //   });
-  // }
-
   clearAllCart(): void {
     if (!this.cartData || !this.cartData.id) {
       console.warn('No cart data to clear');

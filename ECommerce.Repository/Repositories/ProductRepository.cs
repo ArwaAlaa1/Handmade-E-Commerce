@@ -21,7 +21,7 @@ namespace ECommerce.Repository.Repositories
 
         public async Task<IEnumerable<Product>> GetProductsWithCategoryAsync()
         {
-            return await _context.Products.Include(p => p.Category).ToListAsync();
+            return await _context.Products.Include(p => p.Category).Include(p=>p.ProductPhotos).ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetProductsWithFilters(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)

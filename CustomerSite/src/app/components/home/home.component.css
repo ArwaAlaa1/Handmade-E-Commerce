@@ -87,3 +87,29 @@
   width: 90%;
   max-width: 400px;
 }
+.discount-banner {
+  background-color: #ff6b6b;
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+}
+.category-card {
+  width: 40%;
+  min-width: 180px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #5f79ee;
+  border-radius: 50%;
+  padding: 10px;
+  
+}
+

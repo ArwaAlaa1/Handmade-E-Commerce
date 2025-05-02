@@ -277,7 +277,7 @@ namespace ECommerce.Controllers
         }
 
         [HttpGet("GetProductsByCategory")]
-        public async Task<IActionResult> GetProductsByCategory(int categoryId, int pageSize, int pageIndex)
+        public async Task<IActionResult> GetProductsByCategory(int categoryId, int? pageSize, int? pageIndex)
         {
             if (categoryId <= 0)
                 return BadRequest("Invalid category ID. The category ID must be greater than 0.");
@@ -300,10 +300,11 @@ namespace ECommerce.Controllers
                     favoriteProductIds = favoriteProducts.Select(f => f.ProductId).ToList();
                 }
             }
-            var totalCount = await productRepository.GetFilteredProductsCount(categoryId, null, null);
-            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            //var totalCount = await productRepository.GetFilteredProductsCount(categoryId, null, null);
+            //var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-            var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, categoryId, null, null);
+            var products = await productRepository.GetProductsWithCategoryAsync(); 
+            //.GetProductsWithFilters(pageSize, pageIndex, categoryId, null, null);
             if (products == null || !products.Any())
                 return NotFound(new { message = $"No products found for category ID {categoryId}." });
 
@@ -345,8 +346,8 @@ namespace ECommerce.Controllers
 
             return Ok(new
             {
-                TotalCount = totalCount,
-                TotalPage = totalPages,
+                //TotalCount = totalCount,
+                //TotalPage = totalPages,
                 Products = productList
             });
         }

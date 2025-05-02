@@ -78,6 +78,7 @@ namespace ECommerce.Services
                 }
                 var extraCost = item.ExtraCost ?? 0;
                 var totalItemPrice = (finalPrice + extraCost) * item.Quantity;
+                product.Stock -= item.Quantity;
                 var orderItem = new OrderItem(item.ProductId, item.CustomizeInfo, item.Color, item.Size, product.SellerId, item.Quantity)
                 {
                     TotalPrice = totalItemPrice
@@ -154,7 +155,7 @@ namespace ECommerce.Services
         {
             var orderitem = await _orderRepo.GetItemInOrderAsync(orderItemId);
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(orderitem.ProductId);
-            product.Stock += 1;
+            product.Stock +=orderitem.Quantity;
             orderitem.IsDeleted = true;
             orderitem.OrderItemStatus = ItemStatus.Cancelled;
           

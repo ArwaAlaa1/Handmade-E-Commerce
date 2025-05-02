@@ -15,31 +15,15 @@
                             <div class="cols">
                                 <a href="track-order.html">Track Order</a>
                             </div>
-                            <!-- <div class="cols">
-                                <div class="custom-dropdown">
-                                    <a class="bb-dropdown-toggle" href="#">Language</a>
-                                    <ul class="dropdown">
-                                        <li><a href="javascript:void(0)">English</a></li>
-                                        <li><a href="javascript:void(0)">Hindi</a></li>
-                                        <li><a href="javascript:void(0)">Gujarati</a></li>
-                                    </ul>
-                                </div>
-                            </div> -->
-                            <!-- <div class="cols">
-                                <div class="custom-dropdown">
-                                    <a class="bb-dropdown-toggle" href="#">Currency</a>
-                                    <ul class="dropdown">
-                                        <li><a href="javascript:void(0)">USD $</a></li>
-                                        <li><a href="javascript:void(0)">EUR €</a></li>
-                                    </ul>
-                                </div>
-                            </div> -->
+                         
+                              
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+   
     <div class="bottom-header">
         <div class="container">
             <div class="row">
@@ -47,12 +31,17 @@
                     <div class="inner-bottom-header">
                         <div class="cols bb-logo-detail">
                             <!-- Header Logo Start -->
-                            <div class="header-logo">
-                                <a href="index-2.html">
-                                    <img src="../../../assets/img/hand8.jpg"  alt="logo" class="light pe-3">
-                                    <img src="assets/img/logo/logo-dark.png" alt="logo" class="dark">
+                            <div class="">
+                                <a routerLinkActive="active"
+                                [routerLinkActiveOptions]="{ exact: true }"
+                                routerLink="home">
+                                    <img   src="../../../assets/img/04Oct24 Anis Free Upload (1).png"  alt="logo" style="width:37%;" class=" pe-3">
+                                    <!-- <img src="assets/img/logo/logo-dark.png" alt="logo" class="dark"> -->
                                 </a>
+                                <!-- <span class="logo-text">HandOra</span> -->
                             </div>
+
+
                             <!-- Header Logo End -->
                             <a  class="nav-link d-flex align-items-center gap-2"
                             routerLinkActive="active"
@@ -64,25 +53,8 @@
                                 </svg>
                             </a>
                         </div>
-                        <div class="cols">
-                            <div class="header-search">
-                                <form class="bb-btn-group-form" action="#">
-                                    <div class="inner-select">
-                                        <div class="custom-select">
-                                            <select>
-                                                <option value="option1">vegetables</option>
-                                                <option value="option2">Cold Drinks</option>
-                                                <option value="option3">Fruits</option>
-                                                <option value="option4">Bakery</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <input class="form-control bb-search-bar" placeholder="Search products..."
-                                        type="text">
-                                    <button class="submit" type="submit"><i class="ri-search-line"></i></button>
-                                </form>
-                            </div>
-                        </div>
+
+                        
                         <div class="cols bb-icons">
                             <div class="bb-flex-justify">
                                 <div class="bb-header-buttons">
@@ -165,6 +137,7 @@
    routerLinkActive="active"
    [routerLinkActiveOptions]="{ exact: true }"
    routerLink="orders"
+   *ngIf="isLogin"
    class="bb-header-btn bb-cart-toggle"
    title="Orders">
     <div class="header-icon">
@@ -179,6 +152,8 @@
         <span class="bb-btn-stitle">Orders</span>
     </div>
 </a>
+
+
 
                                     <a href="javascript:void(0)" class="bb-toggle-menu">
                                         <div class="header-icon">
@@ -226,7 +201,7 @@
                                 </a>
                                 </li>
                                 <li class="nav-item bb-main-dropdown">
-                                    <a class="nav-link bb-dropdown-item"  class="nav-link d-flex align-items-center gap-2"
+                                    <a class="nav-link bb-dropdown-item"  class="nav-link align-items-center gap-2"
                                     routerLinkActive="active"
                                     [routerLinkActiveOptions]="{ exact: true }"
                                     routerLink="category" >Categories</a>
@@ -244,80 +219,13 @@
                                                         column</a></li>
                                                 <li><a href="shop-full-width.html">Full width 4 column</a></li>
                                             </ul>
-                                            <ul class="mega-block">
-                                                <li class="menu_title"><a href="javascript:void(0)">Banner</a></li>
-                                                <li><a href="shop-banner-left-sidebar-col-3.html">left sidebar 3
-                                                        column</a></li>
-                                                <li><a href="shop-banner-left-sidebar-col-4.html">left sidebar 4
-                                                        column</a></li>
-                                                <li><a href="shop-banner-right-sidebar-col-3.html">right sidebar 3
-                                                        column</a></li>
-                                                <li><a href="shop-banner-right-sidebar-col-4.html">right sidebar 4
-                                                        column</a></li>
-                                                <li><a href="shop-banner-full-width.html">Full width 4 column</a>
-                                                </li>
-                                            </ul>
-                                            <ul class="mega-block">
-                                                <li class="menu_title"><a href="javascript:void(0)">Columns</a></li>
-                                                <li><a href="shop-full-width-col-3.html">3 Columns full width</a>
-                                                </li>
-                                                <li><a href="shop-full-width-col-4.html">4 Columns full width</a>
-                                                </li>
-                                                <li><a href="shop-full-width-col-5.html">5 Columns full width</a>
-                                                </li>
-                                                <li><a href="shop-full-width-col-6.html">6 Columns full width</a>
-                                                </li>
-                                                <li><a href="shop-banner-full-width-col-3.html">Banner 3 Columns</a>
-                                                </li>
-                                            </ul>
-                                            <ul class="mega-block">
-                                                <li class="menu_title"><a href="javascript:void(0)">List</a></li>
-                                                <li><a href="shop-list-left-sidebar.html">Shop left sidebar</a></li>
-                                                <li><a href="shop-list-right-sidebar.html">Shop right sidebar</a>
-                                                </li>
-                                                <li><a href="shop-list-banner-left-sidebar.html">Banner left
-                                                        sidebar</a></li>
-                                                <li><a href="shop-list-banner-right-sidebar.html">Banner right
-                                                        sidebar</a></li>
-                                                <li><a href="shop-list-full-col-2.html">Full width 2 columns</a>
-                                                </li>
-                                            </ul>
+                                            
+                                           
+                                           
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="nav-item bb-dropdown">
-                                    <a class="nav-link bb-dropdown-item" href="javascript:void(0)">Products</a>
-                                    <ul class="bb-dropdown-menu">
-                                        <li class="bb-mega-dropdown">
-                                            <a class="bb-mega-item" href="javascript:void(0)">Product page</a>
-                                            <ul class="bb-mega-menu">
-                                                <li><a class="dropdown-item"
-                                                        href="product-left-sidebar.html">Product left sidebar</a>
-                                                </li>
-                                                <li><a class="dropdown-item"
-                                                        href="product-right-sidebar.html">Product right sidebar</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="bb-mega-dropdown">
-                                            <a class="bb-mega-item" href="javascript:void(0)">Product Accordion</a>
-                                            <ul class="bb-mega-menu">
-                                                <li><a class="dropdown-item"
-                                                        href="product-accordion-left-sidebar.html">left sidebar</a>
-                                                </li>
-                                                <li><a class="dropdown-item"
-                                                        href="product-accordion-right-sidebar.html">right
-                                                        sidebar</a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="product-full-width.html">Product full width</a>
-                                        </li>
-                                        <li>
-                                            <a href="product-accordion-full-width.html">accordion full width</a>
-                                        </li>
-                                    </ul>
-                                </li>
+                               
                                 <li class="nav-item bb-dropdown">
                                     <a class="nav-link bb-dropdown-item" href="javascript:void(0)">Pages</a>
                                     <ul class="bb-dropdown-menu">
@@ -331,22 +239,7 @@
                                         <li><a class="dropdown-item" href="register.html">Register</a></li>
                                     </ul>
                                 </li>
-                                <li class="nav-item bb-dropdown">
-                                    <a class="nav-link bb-dropdown-item" href="javascript:void(0)">Blog</a>
-                                    <ul class="bb-dropdown-menu">
-                                        <li><a class="dropdown-item" href="blog-left-sidebar.html">Left Sidebar</a>
-                                        </li>
-                                        <li><a class="dropdown-item" href="blog-right-sidebar.html">Right
-                                                Sidebar</a></li>
-                                        <li><a class="dropdown-item" href="blog-full-width.html">Full Width</a></li>
-                                        <li><a class="dropdown-item" href="blog-detail-left-sidebar.html">Detail
-                                                Left Sidebar</a></li>
-                                        <li><a class="dropdown-item" href="blog-detail-right-sidebar.html">Detail
-                                                Right Sidebar</a></li>
-                                        <li><a class="dropdown-item" href="blog-detail-full-width.html">Detail Full
-                                                Width</a></li>
-                                    </ul>
-                                </li>
+                              
                                 <li class="nav-item">
                                     <a   class="nav-link d-flex align-items-center gap-2"
                                     routerLinkActive="active"
@@ -424,27 +317,7 @@
                            
                         </ul>
                     </li>
-                    <li>
-                        <a href="javascript:void(0)">Products</a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a href="javascript:void(0)">Product page</a>
-                                <ul class="sub-menu">
-                                    <li><a href="product-left-sidebar.html">Product left sidebar</a></li>
-                                    <li><a href="product-right-sidebar.html">Product right sidebar</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">Product Accordion</a>
-                                <ul class="sub-menu">
-                                    <li><a href="product-accordion-left-sidebar.html">left sidebar</a></li>
-                                    <li><a href="product-accordion-right-sidebar.html">right sidebar</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="product-full-width.html">Product full width</a></li>
-                            <li><a href="product-accordion-full-width.html">accordion full width</a></li>
-                        </ul>
-                    </li>
+                   
                     <li>
                         <a href="javascript:void(0)">Pages</a>
                         <ul class="sub-menu">

@@ -14,28 +14,29 @@ export class OrderService {
  
   isLogin: boolean = false;
   constructor(private http: HttpClient,private _cookie:CookieService,private _auth: AuthService) {
-    // this.loadUserData();
     this._auth.userData.subscribe({
-      next: (data) => {
-        if (data) {
-          this.token = data.token;
-        }
-      }
-    });
-  }
-  public getAuthHeaders(): HttpHeaders {
-    const storedData = this._cookie.get('userData');
-    if (!storedData) {
-      return new HttpHeaders();
-    }
-    const parsedData = JSON.parse(storedData);
-    if (parsedData && parsedData.token) {
-      return new HttpHeaders({
-        Authorization: `Bearer ${parsedData.token}`,
-      });
-    }
-    return new HttpHeaders();
-  }
+         next: (data) => {
+           if (data) {
+             this.token = data.token;
+           }
+         }
+       });
+     }
+   
+     private getAuthHeaders(): HttpHeaders {
+       const storedData = this._cookie.get('userData');
+   
+       if (!storedData) {
+         return new HttpHeaders();
+       }
+       const parsedData = JSON.parse(storedData);
+       if (parsedData && parsedData.token) {
+         return new HttpHeaders({
+           Authorization: `Bearer ${parsedData.token}`,
+         });
+       }
+       return new HttpHeaders();
+     }
    getUserOrders(): Observable<any>{
     
       return this.http.get(`${environment.baseURL}Order/UserOrders`, { headers:this.getAuthHeaders()});
@@ -47,10 +48,15 @@ export class OrderService {
     }
     cancelOrder(orderid:number): Observable<any>{
     
-      return this.http.get(`${environment.baseURL}Order/CancelOrder?orderId=${orderid}`, { headers:this.getAuthHeaders()});
+      return this.http.post(`${environment.baseURL}Order/CancelOrder?orderId=${orderid}`, { headers:this.getAuthHeaders()});
+    
     }
     cancelOrderItem(itemid:number): Observable<any>{
+      const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization': `Bearer ${this.token}` });
+      console.log("token",this.token);
+
+      return this.http.post(`${environment.baseURL}Order/CancelItem?orderItemId=${itemid}`, { headers });
     
-      return this.http.get(`${environment.baseURL}Order/CancelItem?orderItemId=${itemid}`, { headers:this.getAuthHeaders()});
+      
     }
 }

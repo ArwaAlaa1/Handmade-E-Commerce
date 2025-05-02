@@ -41,7 +41,7 @@ export const routes: Routes = [
 
   {path:'register', component:RegisterComponent, title:'Register Page'},
   {path:'orders', component:OrderComponent, title:'Orders Page'},
-  {path:'orderdetails', component:OrderDetailsComponent, title:'OrdrrsDetails Page'},
+  {path:'orderdetails/:id', component:OrderDetailsComponent, title:'OrdrrsDetails Page'},
 
   {path:'login', component:LoginComponent, title:'Login Page'},
 

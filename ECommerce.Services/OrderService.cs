@@ -76,10 +76,11 @@ namespace ECommerce.Services
                 {
                     throw new InvalidOperationException($"Product with ID {item.ProductId} not found.");
                 }
-
+                var extraCost = item.ExtraCost ?? 0;
+                var totalItemPrice = (finalPrice + extraCost) * item.Quantity;
                 var orderItem = new OrderItem(item.ProductId, item.CustomizeInfo, item.Color, item.Size, product.SellerId, item.Quantity)
                 {
-                    TotalPrice = finalPrice * item.Quantity 
+                    TotalPrice = totalItemPrice
                 };
 
                 OrderItems.Add(orderItem);

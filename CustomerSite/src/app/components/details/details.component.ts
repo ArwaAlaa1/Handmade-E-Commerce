@@ -262,7 +262,7 @@ export class DetailsComponent implements OnInit {
         sellerId: this.product.seller.id,
         photoUrl: this.product.photos[0].url,
         category: this.product.category.name,
-        customizeInfo: this.product.additionalDetails,
+        customizeInfo: this.additionalDetails,
         price: this.product.sellingPrice,
         color: this.selectedColor,
         sellingPrice: this.product.sellingPrice,

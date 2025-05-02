@@ -1,0 +1,14 @@
+.text-primary-custom {
+    color: #6c7fd8;
+  }
+  
+  .card {
+    border-radius: 10px;
+  }
+  .container{
+    width: 70%;
+    margin: 0 auto;
+  }
+  .widthright{
+    width: 15%;
+  }

@@ -35,8 +35,21 @@ export class OrderService {
     }
     return new HttpHeaders();
   }
-   getUserOrders(guestid?:string): Observable<any>{
+   getUserOrders(): Observable<any>{
     
-      return this.http.get(`${this.baseUrl}?cartId=${guestid}`, { headers:this.getAuthHeaders()});
+      return this.http.get(`${this.baseUrl}/UserOrders`, { headers:this.getAuthHeaders()});
+    }
+
+    getOrder(orderid:number): Observable<any>{
+    
+      return this.http.get(`${this.baseUrl}/${orderid}`, { headers:this.getAuthHeaders()});
+    }
+    cancelOrder(orderid:number): Observable<any>{
+    
+      return this.http.get(`${this.baseUrl}/CancelOrder?orderId=${orderid}`, { headers:this.getAuthHeaders()});
+    }
+    cancelOrderItem(itemid:number): Observable<any>{
+    
+      return this.http.get(`${this.baseUrl}/CancelItem?orderItemId=${itemid}`, { headers:this.getAuthHeaders()});
     }
 }

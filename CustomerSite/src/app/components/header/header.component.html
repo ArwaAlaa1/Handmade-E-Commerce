@@ -112,7 +112,7 @@
                                             </svg>
                                         </div>
                                         <div class="bb-btn-desc">
-                                            <span class="bb-btn-title"><b class="bb-wishlist-count">3</b>
+                                            <span class="bb-btn-title"><b class="bb-wishlist-count">{{ commonService.FavCount }}</b>
                                                 items</span>
                                             <span class="bb-btn-stitle">Wishlist</span>
                                         </div>
@@ -129,7 +129,7 @@
                                             <span class="main-label-note-new"></span>
                                         </div>
                                         <div class="bb-btn-desc">
-                                            <span class="bb-btn-title"><b class="bb-cart-count">4</b> items</span>
+                                            <span class="bb-btn-title"><b class="bb-cart-count">{{ commonService.CartCount }}</b> items</span>
                                             <span class="bb-btn-stitle">Cart</span>
                                         </div>
                                     </a>
@@ -148,7 +148,7 @@
    
     </div>
     <div class="bb-btn-desc">
-        <span class="bb-btn-title"><b class="bb-cart-count">3</b> orders</span>
+        <span class="bb-btn-title"><b class="bb-cart-count">{{ commonService.OrderCount }}</b> orders</span>
         <span class="bb-btn-stitle">Orders</span>
     </div>
 </a>

@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { v4 as uuidv4 } from 'uuid';
 import { Router, RouterLink } from '@angular/router';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +43,7 @@ categoryPhoto:string="/Images/Categories/";
     minPrice: null
   };
 
-  constructor(public _productService: ProductService, private _authService: AuthService
+  constructor(private commonService:CommonService,public _productService: ProductService, private _authService: AuthService
     ,private _cartService:CartService,private route:Router) {}
 
   ngOnInit(): void {
@@ -137,9 +138,11 @@ categoryPhoto:string="/Images/Categories/";
     this._productService.addToFav(productId).subscribe({
     next:(response) =>
     {
+      this.commonService.triggerRefresh();
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
       product.isFavorite = true;
+     
       }
     },
       error: (error) => {
@@ -151,9 +154,11 @@ categoryPhoto:string="/Images/Categories/";
   deleteFromFavorite(productId : number) {
     this._productService.deleteFromFav(productId).subscribe((response) =>
     {
+      this.commonService.triggerRefresh();
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
         product.isFavorite = false;
+       
       }
     });
   }
@@ -226,7 +231,7 @@ categoryPhoto:string="/Images/Categories/";
 
         this.showValidation = false;
         this.selectedProduct = null;
-
+        this.commonService.triggerRefresh();
       });
   }
 

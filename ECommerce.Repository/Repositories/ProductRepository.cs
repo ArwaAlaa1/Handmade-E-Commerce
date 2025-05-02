@@ -19,9 +19,9 @@ namespace ECommerce.Repository.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Product>> GetProductsWithCategoryAsync()
+        public async Task<IEnumerable<Product>> GetProductsWithCategoryAsync(int id)
         {
-            return await _context.Products.Include(p => p.Category).Include(p=>p.ProductPhotos).ToListAsync();
+            return await _context.Products.Where(p=>p.CategoryId==id).Include(p => p.Category).Include(p=>p.ProductPhotos).ToListAsync();
         }
 
         public async Task<IEnumerable<Product>> GetProductsWithFilters(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)

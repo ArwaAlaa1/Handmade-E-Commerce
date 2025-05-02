@@ -98,8 +98,9 @@
 }
 .category-card {
   width: 40%;
+  
   min-width: 180px;
-  padding: 15px;
+  padding: 15px 30px;
   background-color: #f8f9fa;
   border-radius: 12px;
   text-align: center;

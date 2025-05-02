@@ -9,6 +9,7 @@ import { CartItem } from '../interfaces/cart';
 import { v4 as uuidv4 } from 'uuid';
 import { FormsModule, NgModel } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonService } from '../services/common.service';
 @Component({
   selector: 'app-products-with-category',
   imports: [CommonModule, RouterModule,FormsModule],
@@ -34,7 +35,8 @@ export class ProductsWithCategoryComponent {
 
  
   categoryId: number = 0;
-  constructor(public _productService: ProductService, private _authService: AuthService
+
+  constructor(private commonService:CommonService,public _productService: ProductService, private _authService: AuthService
       ,private _cartService:CartService, private activatedRoute: ActivatedRoute, private route: Router) {}
   
   ngOnInit(): void {
@@ -68,7 +70,7 @@ export class ProductsWithCategoryComponent {
     return a?.name === b?.name && a?.extraCost === b?.extraCost;
   }
 
-  openModal(product: any) {
+ openModal(product: any) {
     if (!product.stock || product.stock <= 0) {
       alert("This product is out of stock.");
       return;
@@ -83,6 +85,7 @@ export class ProductsWithCategoryComponent {
     this.selectedQuantity = 1;
     this.showValidation = false;
   }
+
 
  
   
@@ -128,6 +131,7 @@ export class ProductsWithCategoryComponent {
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
       product.isFavorite = true;
+      this.commonService.triggerRefresh();
       }
     },
       error: (error) => {
@@ -142,6 +146,7 @@ export class ProductsWithCategoryComponent {
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
         product.isFavorite = false;
+        this.commonService.triggerRefresh();
       }
     });
   }
@@ -214,7 +219,7 @@ export class ProductsWithCategoryComponent {
 
         this.showValidation = false;
         this.selectedProduct = null;
-
+        this.commonService.triggerRefresh();
       });
   }
 

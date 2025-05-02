@@ -1,3 +1,4 @@
+import { CommonService } from './../../services/common.service';
 import { CartItem } from './../../interfaces/cart';
 import { CartService } from './../../services/cart.service';
 import { environment } from './../../../environments/environment.development';
@@ -57,9 +58,12 @@ declare var bootstrap: any;
    constructor(private _userService:UserService,private _shipCost:ShippingService,
     private cdr: ChangeDetectorRef,private _cookie:CookieService,
     private cartService:CartService,private _auth: AuthService
-  ,private PaymentService :PaymentService,private router: Router) {
+  ,private PaymentService :PaymentService,private router: Router
+, private commonService:CommonService) {
+    
+  }
 
-}
+
 async ngOnInit(): Promise<void> {
   this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
 
@@ -334,6 +338,7 @@ private loadCartDetails(): void {
       // if (!this.cartData.cartItems?.length || !this.addressSelected?.city) {
       //   this.getDeliveryCost(this.addressSelected?.city); 
       // }
+     this.commonService.triggerRefresh();
 
       if (!this.cartData.cartItems?.length || !this.addressSelected?.city) {
         this.deliveryCost = 0;
@@ -364,6 +369,7 @@ private loadCartDetails(): void {
           };
         }
         this.calculateTotal(this.cartData);
+        this.commonService.triggerRefresh();
       },
       error: (err) => console.error('Error updating cart:', err)
     });
@@ -714,6 +720,7 @@ proceedToCheckout(): void {
   const paymentTab = document.getElementById('payment-tab');
   if (paymentTab) {
     paymentTab.click(); 
+    this.commonService.triggerRefresh();
   }
 }
   clearAllCart(): void {

@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { environment } from '../../../environments/environment.development';
 import { CookieService } from 'ngx-cookie-service';
+import { CommonService } from '../../services/common.service';
 
 @Component({
   selector: 'app-header',
@@ -18,14 +19,22 @@ export class HeaderComponent implements OnInit {
   userName: string = '';
   photo: string | null = null;
   baseImageUrl : string = environment.baseImageURLAPI;
-  constructor(private _AuthService : AuthService, private _CookieService: CookieService) {
+  constructor(private _AuthService : AuthService, private _CookieService: CookieService
+  ,public commonService: CommonService) {
     const theme = this._CookieService.get('theme');
     this.isDarkMode = theme === 'dark';
   }
 
   ngOnInit(): void {
+    
     this.updateBodyClass();
-
+    this.commonService.getCartCount();
+    this.commonService.getOrderCount();
+  
+    this.commonService.refreshNotifier$.subscribe(() => {
+      this.commonService.getCartCount();
+      this.commonService.getOrderCount();
+    });
     this._AuthService.userData.subscribe({
       next: (data) => {
         if (data) {

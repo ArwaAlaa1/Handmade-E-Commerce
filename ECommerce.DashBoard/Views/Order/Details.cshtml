@@ -5,15 +5,31 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center px-3 pt-3">
         <h5 class="card-header mb-0">Order Details - @Model.OrderId</h5>
+        <div class="text-end my-3">
+            @Html.ActionLink(
+                     "Invoice",
+                     "InvoiceDetails",
+                     new { id = Model.OrderId },
+                     new
+                     {
+                         @target = "_blank",
+                         @class = "btn btn-outline-primary px-4 py-2 fw-bold shadow-sm rounded-pill"
+                     }
+                     )
+        </div>
     </div>
+  
 
     <!-- Order Details -->
-    <div class="card-body">
+    <div class="card-body" >
         <div class="mb-3">
             <strong>Customer Email:</strong> @Model.CustomerEmail
         </div>
         <div class="mb-3">
             <strong>Order Date:</strong> @Model.OrderDate.ToString("yyyy-MM-dd")
+        </div>
+        <div class="mb-3">
+            <strong>Order Address:</strong> @Model.Address
         </div>
         <div class="mb-3">
             <strong>Status:</strong>
@@ -37,7 +53,8 @@
         <div class="mb-3">
             <strong>Total Amount:</strong> @Model.TotalAmount.ToString("C")
         </div>
-
+        
+       
         <!-- Order Items -->
         <h6 class="mt-4">Order Items:</h6>
         <table class="table table-hover align-middle">
@@ -85,8 +102,10 @@
                         <td>@item.Color</td>
                         <td>@item.Size</td>
                     </tr>
+                    
                 }
             </tbody>
         </table>
     </div>
 </div>
+

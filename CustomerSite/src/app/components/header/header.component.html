@@ -201,44 +201,17 @@
                                 </a>
                                 </li>
                                 <li class="nav-item bb-main-dropdown">
-                                    <a class="nav-link bb-dropdown-item"  class="nav-link align-items-center gap-2"
+                                    <a routerLinkActive="active"
+                                    [routerLinkActiveOptions]="{ exact: true }"
+                                    routerLink="Aboutus" class="dropdown-item" href="about-us.html">About Us</a>
+                                </li>
+                                <li class="nav-item bb-main-dropdown">
+                                    <a
                                     routerLinkActive="active"
                                     [routerLinkActiveOptions]="{ exact: true }"
-                                    routerLink="category" >Categories</a>
-                                    <ul class="mega-menu">
-                                        <li>
-                                            <ul class="mega-block">
-                                                <li class="menu_title"><a href="javascript:void(0)">Classic</a></li>
-                                                <li><a href="shop-left-sidebar-col-3.html">Left sidebar 3 column</a>
-                                                </li>
-                                                <li><a href="shop-left-sidebar-col-4.html">Left sidebar 4 column</a>
-                                                </li>
-                                                <li><a href="shop-right-sidebar-col-3.html">Right sidebar 3
-                                                        column</a></li>
-                                                <li><a href="shop-right-sidebar-col-4.html">Right sidebar 4
-                                                        column</a></li>
-                                                <li><a href="shop-full-width.html">Full width 4 column</a></li>
-                                            </ul>
-                                            
-                                           
-                                           
-                                        </li>
-                                    </ul>
+                                    routerLink="Contactus" class="dropdown-item" href="about-us.html">Contact Us</a>
                                 </li>
-                               
-                                <li class="nav-item bb-dropdown">
-                                    <a class="nav-link bb-dropdown-item" href="javascript:void(0)">Pages</a>
-                                    <ul class="bb-dropdown-menu">
-                                        <li><a class="dropdown-item" href="about-us.html">About Us</a></li>
-                                        <li><a class="dropdown-item" href="contact-us.html">Contact Us</a></li>
-                                        <li><a class="dropdown-item" href="cart.html">Cart</a></li>
-                                        <li><a class="dropdown-item" href="checkout.html">Checkout</a></li>
-                                        <li><a class="dropdown-item" href="compare.html">Compare</a></li>
-                                        <li><a class="dropdown-item" href="faq.html">Faq</a></li>
-                                        <li><a class="dropdown-item" href="login.html">Login</a></li>
-                                        <li><a class="dropdown-item" href="register.html">Register</a></li>
-                                    </ul>
-                                </li>
+                            
                               
                                 <li class="nav-item">
                                     <a   class="nav-link d-flex align-items-center gap-2"
@@ -261,28 +234,33 @@
                                         Offers
                                     </a>
                                 </li>
+
+                                <li class="nav-item bb-main-dropdown">
+                                    <a    routerLinkActive="active"
+                                    [routerLinkActiveOptions]="{ exact: true }"
+                                    routerLink="FAQ" class="dropdown-item" href="faq.html">Faq</a>
+                                </li>
+                               
+                            
+                               
                             </ul>
                         </div>
-                        <!-- <div class="bb-dropdown-menu">
-                            <div class="inner-select">
-                                <svg class="svg-icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M511.614214 958.708971c-21.76163 0-41.744753-9.781784-54.865586-26.862811L222.50156 626.526383c-3.540639-4.044106-5.872754-7.978718-7.349385-10.461259-41.72838-58.515718-63.959707-127.685078-63.959707-199.699228 0.87288-193.650465 162.903184-351.075891 361.209691-351.075891 198.726064 0 360.40435 157.49194 360.40435 351.075891-0.839111 72.190159-23.070438 140.856052-64.345494 199.053522-1.962701 3.288906-4.312212 7.189749-7.735171 11.098779L566.479799 931.847184c-13.120832 17.080004-33.103956 26.861788-54.865585 26.861787zM273.525654 580.51956a33.707706 33.707706 0 0 1 2.63399 3.037173L511.278569 890.00931 747.068783 583.556733c0.435928-0.569982 0.889253-1.124614 1.358951-1.669013l2.51631-4.102434c0.285502-0.453325 0.587378-0.89744 0.889253-1.325182 33.507138-46.921659 51.577702-102.416578 52.248991-160.487158 0-155.294902-130.839931-281.95565-291.679105-281.95565-160.571069 0-291.780413 126.72931-292.484448 282.501073 0 57.450457 17.802458 112.811322 51.460022 159.933549l2.90312 4.580318c0.418532 0.73678-0.186242 0.032746-0.756223-0.512676z m476.059439 0.100284v0z m0.066515-0.058329c-0.016373 0.016373-0.033769 0.025583-0.033769 0.041956 0.001023-0.016373 0.017396-0.025583 0.033769-0.041956z m0.051166-0.041955a0.227174 0.227174 0 0 0-0.050142 0.041955c0.016373-0.016373 0.032746-0.033769 0.050142-0.041955z"
-                                        fill="#444444" />
-                                    <path
-                                        d="M512 577.206094c-90.000803 0-163.222455-73.221652-163.222455-163.222455s73.221652-163.222455 163.222455-163.222455S675.222455 323.982836 675.222455 413.983639s-73.222675 163.222455-163.222455 163.222455z m0-240.538355c-42.634006 0-77.3159 34.68087-77.3159 77.3159s34.68087 77.3159 77.3159 77.3159 77.3159-34.681894 77.3159-77.3159-34.681894-77.3159-77.3159-77.3159z"
-                                        fill="#00D8A0" />
-                                </svg>
-                                <div class="custom-select">
-                                    <select>
-                                        <option value="option1">Surat</option>
-                                        <option value="option2">Delhi</option>
-                                        <option value="option3">Rajkot</option>
-                                        <option value="option4">Udaipur</option>
-                                    </select>
-                                </div>
+                        <!-- <div class="bb-dropdown-menu"> -->
+                            <div class="bb-main-menu" id="navbarSupportedContent">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item bb-main-dropdown text-end" *ngIf="!isLogin">
+                                        <a routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{ exact: true }"
+                                        routerLink="login" class="dropdown-item" >Login</a>
+                                    </li>
+                                    <li class="nav-item bb-main-dropdown text-end " *ngIf="!isLogin">
+                                        <a routerLinkActive="active"
+                                        [routerLinkActiveOptions]="{ exact: true }"
+                                        routerLink="register" class="dropdown-item" >Register</a>
+                                    </li>
+                                </ul>
                             </div>
-                        </div> -->
+                        <!-- </div> -->
                     </div>
                 </div>
             </div>

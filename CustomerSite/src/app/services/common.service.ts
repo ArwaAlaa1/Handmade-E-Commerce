@@ -53,7 +53,7 @@ export class CommonService {
   triggerRefresh() {
     this.getCartCount();
     this.getOrderCount();
-    this.refreshNotifier.next(); // notifies subscribers
+    this.refreshNotifier.next(); 
   }
 }
     

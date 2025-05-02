@@ -21,6 +21,9 @@ import { OrderConfirmationComponent } from './components/order-confirmation/orde
 import { OrderComponent } from './components/order/order.component';
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
 import { ProductsWithCategoryComponent } from './products-with-category/products-with-category.component';
+import { AboutusComponent } from './components/aboutus/aboutus.component';
+import { ContactusComponent } from './components/contactus/contactus.component';
+import { FaqComponent } from './components/faq/faq.component';
 
 
 export const routes: Routes = [
@@ -45,6 +48,9 @@ export const routes: Routes = [
   {path:'orderdetails/:id', component:OrderDetailsComponent, title:'OrdrrsDetails Page'},
 
   {path:'login', component:LoginComponent, title:'Login Page'},
+  {path:'Aboutus', component:AboutusComponent, title:'AboutUs Page'},
+  {path:'Contactus', component:ContactusComponent, title:'ContactUs Page'},
+  {path:'FAQ', component:FaqComponent, title:'FAQ Page'},
   {path:'ProductsWithCategory/:id', component:ProductsWithCategoryComponent, title:'Product Category Page'},
 
   {path:'sendpin', component:SendPinComponent, title:'Send Pin Page'},

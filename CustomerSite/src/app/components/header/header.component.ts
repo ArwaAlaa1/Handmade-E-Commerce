@@ -30,10 +30,12 @@ export class HeaderComponent implements OnInit {
     this.updateBodyClass();
     this.commonService.getCartCount();
     this.commonService.getOrderCount();
+    this.commonService.getFavCount();
   
     this.commonService.refreshNotifier$.subscribe(() => {
       this.commonService.getCartCount();
       this.commonService.getOrderCount();
+      this.commonService.getFavCount();
     });
     this._AuthService.userData.subscribe({
       next: (data) => {

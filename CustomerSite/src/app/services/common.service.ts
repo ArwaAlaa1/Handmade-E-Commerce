@@ -41,18 +41,19 @@ export class CommonService {
       }
     });
   }
-// getFavCount() {
-//       this.productService.GetFavList().subscribe({
-//         next: (data) => {
-//           this.FavCount = data.count;
-//         }, error: (err) => {
-//           console.log(err);
-//         }
-//       });
-//     }
+getFavCount() {
+      this.productService.GetFavList(1,1).subscribe({
+        next: (data) => {
+          this.FavCount = data.totalCount;
+        }, error: (err) => {
+          console.log(err);
+        }
+      });
+    }
   triggerRefresh() {
     this.getCartCount();
     this.getOrderCount();
+    this.getFavCount();
     this.refreshNotifier.next(); 
   }
 }

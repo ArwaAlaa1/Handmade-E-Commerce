@@ -14,8 +14,8 @@ namespace ECommerce.Helper
         {
             CreateMap<Order, OrderReturnDto>()
            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-           .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.ToString("yyyy-MM-dd HH:mm"))) // تنسيق التاريخ
-           .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.SubTotal))
+           .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate.ToString("yyyy-MM-dd HH:mm"))) 
+           .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()))
            .ForMember(dest => dest.ItemsCount, opt => opt.MapFrom(src => src.OrderItems.Count)).ReverseMap();
 
             CreateMap<Order, OneOrderReturnDto>()
@@ -27,6 +27,7 @@ namespace ECommerce.Helper
                       src.Status.GetType().GetMember(src.Status.ToString())
                           .FirstOrDefault()
                           .GetCustomAttribute<EnumMemberAttribute>().Value))
+                  .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()))
                   .ForMember(dest => dest.ItemsCount, opt => opt.MapFrom(src => src.OrderItems.Count()))
                  .ForPath(dest => dest.ShippingAddress.FullName, opt => opt.MapFrom(src => src.ShippingAddress.FullName))
                          .ForPath(dest => dest.ShippingAddress.PhoneNumber, opt => opt.MapFrom(src => src.ShippingAddress.PhoneNumber))

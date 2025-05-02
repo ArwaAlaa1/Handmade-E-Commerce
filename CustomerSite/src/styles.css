@@ -33,7 +33,7 @@ nav div li a,
 #page {
   background-color: var(--background-colorPage);
   color: var(--text-color);
-  min-height: 30vh;
+  /* min-height: 30vh; */
 }
 
 footer {

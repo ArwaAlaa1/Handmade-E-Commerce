@@ -2,7 +2,9 @@
 using ECommerce.Core;
 using ECommerce.Core.Models;
 using ECommerce.Core.Models.Order;
+using ECommerce.Core.Repository.Contract;
 using ECommerce.DashBoard.ViewModels;
+using ECommerce.Repository.Repositories;
 using ECommerce.Services.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -99,15 +101,18 @@ namespace ECommerce.DashBoard.Controllers
             {
                 _logger.LogWarning($"Null product found in OrderId: {id}");
             }
-
+            var orderaddress= await _unitOfWork.Repository<Address>()
+                .GetFirstOrDefaultAsync(o => o.Id == order.ShippingAddressId);
             var traderIds = order.OrderItems.Select(oi => oi.TraderId).Distinct().ToList();
             var traders = await userManager.Users
                 .Where(u => traderIds.Contains(u.Id))
                 .ToDictionaryAsync(u => u.Id, u => u.UserName);
+
             var orderVM = new OrderDetailsVM
             {
                 OrderId = order.Id,
                 CustomerEmail = order.CustomerEmail,
+                Address =  orderaddress.City+ " - "+orderaddress.Region + " - " + orderaddress.AddressDetails,
                 TotalAmount = order.OrderItems
             .Where(oi => oi.Product != null)
             .Sum(oi => oi.Product.SellingPrice * oi.Quantity) + (order.shippingCost?.Cost ?? 0),
@@ -119,7 +124,7 @@ namespace ECommerce.DashBoard.Controllers
                     ProductName = oi.Product?.Name,
                     Quantity = oi.Quantity,
                     ProductCost = oi.Product?.SellingPrice ?? 0,
-                    TotalCost =(oi.Product?.SellingPrice ?? 0) * oi.Quantity ,
+                    TotalCost = (oi.Product?.SellingPrice ?? 0) * oi.Quantity,
                     TraderName = traders.GetValueOrDefault(oi.TraderId, "Unknown Trader"),
                     OrderItemStatus = oi.OrderItemStatus,
                     CustomizeInfo = oi.CustomizeInfo,
@@ -131,6 +136,56 @@ namespace ECommerce.DashBoard.Controllers
             return View(orderVM);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> InvoiceDetails(int id)
+        {
+            // Fetch request from database
+            var order = await _unitOfWork.Repository<Order>()
+                .GetFirstOrDefaultAsync(o => o.Id == id, includeProperties: "OrderItems,OrderItems.Product,shippingCost");
+
+            if (order == null)
+            {
+                _logger.LogWarning($"Order not found for OrderId: {id}");
+                return NotFound();
+            }
+            if (order.OrderItems.Any(oi => oi.Product == null))
+            {
+                _logger.LogWarning($"Null product found in OrderId: {id}");
+            }
+            var orderaddress = await _unitOfWork.Repository<Address>()
+                .GetFirstOrDefaultAsync(o => o.Id == order.ShippingAddressId);
+            var traderIds = order.OrderItems.Select(oi => oi.TraderId).Distinct().ToList();
+            var traders = await userManager.Users
+                .Where(u => traderIds.Contains(u.Id))
+                .ToDictionaryAsync(u => u.Id, u => u.UserName);
+
+            var orderVM = new OrderDetailsVM
+            {
+                OrderId = order.Id,
+                CustomerEmail = order.CustomerEmail,
+                Address = orderaddress.City + " - " + orderaddress.Region + " - " + orderaddress.AddressDetails,
+                TotalAmount = order.OrderItems
+            .Where(oi => oi.Product != null)
+            .Sum(oi => oi.Product.SellingPrice * oi.Quantity) + (order.shippingCost?.Cost ?? 0),
+                OrderDate = order.OrderDate,
+                Status = order.Status,
+                ShippingCost = order.shippingCost?.Cost ?? 0,
+                OrderItems = order.OrderItems.Select(oi => new OrderItemVM
+                {
+                    ProductName = oi.Product?.Name,
+                    Quantity = oi.Quantity,
+                    ProductCost = oi.Product?.SellingPrice ?? 0,
+                    TotalCost = (oi.Product?.SellingPrice ?? 0) * oi.Quantity,
+                    TraderName = traders.GetValueOrDefault(oi.TraderId, "Unknown Trader"),
+                    OrderItemStatus = oi.OrderItemStatus,
+                    CustomizeInfo = oi.CustomizeInfo,
+                    Color = oi.Color,
+                    Size = oi.Size
+                }).ToList()
+            };
+
+            return View(orderVM);
+        }
 
         [Authorize(Roles = SD.AdminRole)]
         public async Task<IActionResult> Edit(int id)

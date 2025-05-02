@@ -49,7 +49,7 @@ export class OrderService {
     cancelOrder(orderid:number): Observable<any>{
     
       return this.http.post(`${environment.baseURL}Order/CancelOrder?orderId=${orderid}`, { headers:this.getAuthHeaders()});
-      return this.http.get(`${environment.baseURL}Order/CancelOrder?orderId=${orderid}`, { headers:this.getAuthHeaders()});
+    
     }
     cancelOrderItem(itemid:number): Observable<any>{
       const headers = new HttpHeaders({ 'Content-Type': 'application/json','Authorization': `Bearer ${this.token}` });
@@ -57,6 +57,6 @@ export class OrderService {
 
       return this.http.post(`${environment.baseURL}Order/CancelItem?orderItemId=${itemid}`, { headers });
     
-      return this.http.get(`${environment.baseURL}Order/CancelItem?orderItemId=${itemid}`, { headers:this.getAuthHeaders()});
+      
     }
 }

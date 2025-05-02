@@ -3,15 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators  } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators  } from '@angular/forms';
 import { response } from 'express';
-import { CartItem } from '../../interfaces/cart';
 import { CartService } from '../../services/cart.service';
+import { CartItem } from '../../interfaces/cart';
 import { v4 as uuidv4 } from 'uuid';
-
 @Component({
   selector: 'app-details',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
@@ -25,6 +24,13 @@ export class DetailsComponent implements OnInit {
   isLoading = true;
   selectedPhotoUrl: string = '';
   reviews: any[] = []
+
+  selectedColor: string = '';
+  selectedSizeObject: { name: string; extraCost: number } | null = null;
+  additionalDetails: string = '';
+  selectedQuantity: number = 0;
+  showValidation = false;
+  isModalOpen: boolean = false;
 
   // selectedImageIndex: number = 0;
   // sizes: string = ''; // To hold the formatted sizes
@@ -41,7 +47,7 @@ export class DetailsComponent implements OnInit {
     },
   );
 
-  constructor(private _route: ActivatedRoute, private _service: ProductService,private _cartService:CartService ) {
+  constructor(private _route: ActivatedRoute, private _service: ProductService, private _cartService:CartService) {
     this.ProductId=this._route.snapshot.params['ProductId'];
   }
 
@@ -53,13 +59,35 @@ export class DetailsComponent implements OnInit {
   ngOnInit(): void {
     this.filterProducts();
     this.getreviews(this.ProductId);
-    
+
   }
+
+  compareSizes(a: any, b: any): boolean {
+    return a?.name === b?.name && a?.extraCost === b?.extraCost;
+  }
+
+  openModal(product: any) {
+    if (!product.stock || product.stock <= 0) {
+      alert("This product is out of stock.");
+      return;
+    }
+
+    this.product = product;
+
+    this.selectedColor = product.colors?.length === 1 ? product.colors[0] : '';
+    this.selectedSizeObject = product.sizes?.length === 1 ? product.sizes[0] : null;
+
+    this.additionalDetails = '';
+    this.selectedQuantity = 1;
+    this.showValidation = false;
+    this.isModalOpen = true;
+  }
+
   startCountdown() {
     this.timer = setInterval(() => {
       const now = new Date();
       const endDate = new Date(this.product.offer.endDate);
-      
+
       if (now > endDate) {
         this.countdown = 'انتهى العرض';
         this.isOfferExpired = true;
@@ -87,7 +115,7 @@ export class DetailsComponent implements OnInit {
       .subscribe({
         next: (response) => {
           this.product = response;
-          console.log(response);
+          console.log('pro' , response);
           if (this.product.offer) {
             this.startCountdown();
           }
@@ -199,32 +227,57 @@ export class DetailsComponent implements OnInit {
   }
 
 
+    addToCart() {
 
-  addToCart() {
+      this.showValidation = true;
+      const needsSize = this.product.sizes?.length > 1;
+      const needsAdditional = !!this.product.additionalDetails;
+      const quantityInvalid =
+      !this.selectedQuantity ||
+      this.selectedQuantity <= 0 ||
+      this.selectedQuantity > this.product.stock;
 
-    const cartItem: CartItem = {
-      itemId: uuidv4().toString(),
-      productId: this.product.id,
-      productName: this.product.name,
-      sellerName: this.product.seller.name,
-      sellerId: this.product.seller.id,
-      photoUrl: this.product.photos[0].url,
-      category: this.product.category.name,
-      customizeInfo: this.product.customizeInfo,
-      price: this.product.sellingPrice,
-      color: this.product.color,
-      sellingPrice: this.product.sellingPrice,
-      priceAfterSale: this.product.discountedPrice,
-      unitPrice: this.product.sellingPrice,
-      size: this.product.size,
-      activeSale: this.product.salePercent,
-      quantity: 1
-    };
-    
-     this._cartService.addItemToBasket(cartItem,1);
-      alert("Product added to your Cart")
+      if (
+        (needsSize && !this.selectedSizeObject) ||
+        (needsAdditional && !this.additionalDetails) ||
+        quantityInvalid
+      ) {
+        return;
+      }
 
+      const payload = {
+        productId: this.product.id,
+        color: this.selectedColor,
+        size: this.selectedSizeObject?.name,
+        extraCost: this.selectedSizeObject?.extraCost,
+        additionalDetails: this.additionalDetails,
+        quantity: this.selectedQuantity
+      };
 
+      const cartItem: CartItem = {
+        itemId: uuidv4().toString(),
+        productId: this.product.id,
+        productName: this.product.name,
+        sellerName: this.product.seller.name,
+        sellerId: this.product.seller.id,
+        photoUrl: this.product.photos[0].url,
+        category: this.product.category.name,
+        customizeInfo: this.product.additionalDetails,
+        price: this.product.sellingPrice,
+        color: this.selectedColor,
+        sellingPrice: this.product.sellingPrice,
+        priceAfterSale: this.product.discountedPrice,
+        unitPrice: this.product.sellingPrice,
+        size: this.selectedSizeObject?.name,
+        extraCost: this.selectedSizeObject?.extraCost,
+        activeSale: this.product.salePercent,
+        quantity: this.selectedQuantity
+      };
+      this._cartService.addItemToBasket(cartItem, this.selectedQuantity);
 
-  }
+      this.product.stock = this.product.stock - this.selectedQuantity;
+
+      this.showValidation = false;
+    }
+
 }

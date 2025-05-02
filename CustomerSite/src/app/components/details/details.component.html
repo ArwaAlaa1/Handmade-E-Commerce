@@ -44,7 +44,14 @@
           <i class="bi bi-tag-fill text-primary me-1"></i>
           <strong>Category:</strong> {{ product.category?.name }}
         </p>
-
+        <div>
+          <span *ngIf="product.stock > 0" class="text-success">
+            <strong>Stock:</strong> {{ product.stock }}
+          </span>
+          <span *ngIf="product.stock === 0" class="text-danger fw-bold">
+            Out of Stock
+          </span>
+        </div>
         <div class="mb-4">
           <span
             class="fs-3 fw-bold text-danger"
@@ -65,14 +72,11 @@
             {{ product.sellingPrice | currency }}
           </span>
           <div *ngIf="product.offer" class="mt-2">
-           
             <span class="badge bg-success">
               {{ product.offer.discount }}% Off
             </span>
-            <br>
-            <small class="badge bg-danger" >
-               Time Left: {{countdown}}
-            </small>
+            <br />
+            <small class="badge bg-danger"> Time Left: {{ countdown }} </small>
           </div>
         </div>
 
@@ -144,12 +148,13 @@
 
         <div>
           <button
-          class="btn btn-success   action-btn"
-          title="Add to Cart"
-          (click)="addToCart()"
-        >
-          add To Card
-        </button>
+            class="w-25 btn btn-light btn-sm action-btn btn-outline-primary"
+            title="Add to Cart"
+            (click)="openModal(product)"
+          >
+            add To Card
+            <i class="bi bi-cart-plus"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -242,21 +247,21 @@
       <div class="card-body p-4">
         <div class="d-flex align-items-center mb-3">
           <img
-          *ngIf="review.user.photo"
+            *ngIf="review.user.photo"
             [src]="imageBaseUrlAPI + '/images/' + review.user.photo"
             alt="User"
             class="rounded-circle me-3 border"
             style="width: 50px; height: 50px; object-fit: cover"
           />
-          
-        <img
-          *ngIf="!review.user.photo"
-          src="../../../../assets/img/ava.jpeg"
-          alt="User Photo"
-          alt="User"
-          class="rounded-circle me-3 border"
-          style="width: 50px; height: 50px; object-fit: cover"
-        />
+
+          <img
+            *ngIf="!review.user.photo"
+            src="../../../../assets/img/ava.jpeg"
+            alt="User Photo"
+            alt="User"
+            class="rounded-circle me-3 border"
+            style="width: 50px; height: 50px; object-fit: cover"
+          />
           <div>
             <ng-container>
               <div>
@@ -287,10 +292,129 @@
           </div>
         </div>
 
-      
-
         <p class="mb-0 text-muted">{{ review.reviewContent }}</p>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Modal Overlay -->
+<div *ngIf="isModalOpen" class="modal-backdrop">
+  <div class="modal-box p-4 bg-white rounded shadow">
+    <h5 class="mb-3">Add "{{ product.name }}" to Cart</h5>
+
+    <!-- Color -->
+    <div *ngIf="product.colors?.length > 0" class="mb-3">
+      <label for="colorSelect">Color:</label>
+      <ng-container *ngIf="product.colors.length === 1">
+        <input
+          type="text"
+          class="form-control"
+          [value]="selectedColor"
+          disabled
+        />
+      </ng-container>
+      <div *ngIf="product.colors.length > 1">
+        <select
+          id="colorSelect"
+          [(ngModel)]="selectedColor"
+          class="form-select"
+        >
+          <option value="">-- Select Color --</option>
+          <option *ngFor="let color of product.colors" [value]="color">
+            {{ color }}
+          </option>
+        </select>
+        <div class="text-danger mt-1" *ngIf="showValidation && !selectedColor">
+          Please select a color
+        </div>
+      </div>
+    </div>
+
+    <!-- Size -->
+    <div *ngIf="product.sizes?.length > 0" class="mb-3">
+      <label for="sizeSelect">Size:</label>
+
+      <ng-container *ngIf="product.sizes.length === 1">
+        <input
+          type="text"
+          class="form-control"
+          [value]="
+            product.sizes[0].name + ' (+$' + product.sizes[0].extraCost + ')'
+          "
+          disabled
+        />
+      </ng-container>
+
+      <div *ngIf="product.sizes.length > 1">
+        <select
+          id="sizeSelect"
+          [(ngModel)]="selectedSizeObject"
+          class="form-select"
+          [compareWith]="compareSizes"
+        >
+          <option [ngValue]="null">-- Select Size --</option>
+          <option *ngFor="let size of product.sizes" [ngValue]="size">
+            {{ size.name }} (+${{ size.extraCost }})
+          </option>
+        </select>
+
+        <div
+          class="text-danger mt-1"
+          *ngIf="showValidation && !selectedSizeObject"
+        >
+          Please select a size
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional Details -->
+    <div *ngIf="product.additionalDetails" class="mb-3">
+      <label>Additional Info:</label>
+      <input
+        type="text"
+        class="form-control"
+        value=""
+        [(ngModel)]="product"
+        [placeholder]="product.additionalDetails"
+      />
+      <div
+        class="text-danger mt-1"
+        *ngIf="showValidation && !additionalDetails"
+      >
+        Please provide additional details
+      </div>
+    </div>
+
+    <!-- Quantity -->
+    <div class="mb-3">
+      <label for="quantitySelect">Quantity:</label>
+      <input
+        type="number"
+        id="quantitySelect"
+        class="form-control"
+        [(ngModel)]="selectedQuantity"
+        [max]="product.stock"
+        [min]="1"
+      />
+      <div
+        class="text-danger mt-1"
+        *ngIf="
+          showValidation &&
+          (!selectedQuantity ||
+            selectedQuantity <= 0 ||
+            selectedQuantity > product.stock)
+        "
+      >
+        Please select a valid quantity (max: {{ product.stock }})
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-secondary" (click)="isModalOpen = false">
+        Cancel
+      </button>
+      <button class="btn btn-primary" (click)="addToCart()">Confirm</button>
+    </div>
+  </div>
+</div>

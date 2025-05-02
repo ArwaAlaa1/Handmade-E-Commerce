@@ -1,38 +1,50 @@
 import { Component } from '@angular/core';
-import { SharedIdService } from '../../services/shared-id.service';
+
 import { OrderService } from '../../services/order.service';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-order-details',
-  imports: [CommonModule],
+  imports: [CommonModule,RouterLink],
   templateUrl: './order-details.component.html',
   styleUrl: './order-details.component.css'
 })
 export class OrderDetailsComponent {
 
-  constructor(private sharedIdService:SharedIdService,private orderService:OrderService) { }
+  constructor(private orderService: OrderService, private route: ActivatedRoute) { }
+   imageBaseUrl: string = environment.baseImageURL;
   orderDetails:any = {};
   itemId:number = 0;
-  ngOnInit() {
-    this.sharedIdService.orderId$.subscribe(id => {
-      if (id !== null) {
-       
-        console.log("Received ID:", id);
-        this.orderService.getOrder(id).subscribe({
-          next: (data) => {
-            console.log("order details",data);
-            this.itemId=id;
-            this.orderDetails = data;
-           
-          },
-          error: (err) => {
-            console.log(err);
-          }
-        });
-
-
-      }
-    });
- }
+  orderId:number = 0;
+    ngOnInit(): void {
+      this.route.paramMap.subscribe(params => {
+        const idParam = params.get('id');
+        if (idParam) {
+          this.orderId = +idParam; // convert to number
+          console.log('Received Order ID:', this.orderId);
+          this.orderService.getOrder(this.orderId).subscribe({
+            next: (data) => {
+              console.log("order",data);
+              this.orderDetails = data;
+            }, error: (err) => {
+              console.log(err);
+            }
+          });
+          // You can now call your API here
+        }
+      });
+ 
+}
+CancelItem(itemId:number){
+  this.orderService.cancelOrderItem(itemId).subscribe({
+    next: (data) => {
+      console.log("cancel item",data);
+      this.orderDetails = data;
+    }, error: (err) => {
+      console.log(err);
+    }
+  });
+}
 }

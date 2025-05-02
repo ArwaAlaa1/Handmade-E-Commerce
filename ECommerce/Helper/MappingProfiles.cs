@@ -28,6 +28,8 @@ namespace ECommerce.Helper
                           .FirstOrDefault()
                           .GetCustomAttribute<EnumMemberAttribute>().Value))
                   .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()))
+                  .ForMember(dest => dest.SubTotal, opt => opt.MapFrom(src => src.SubTotal))
+                  .ForMember(dest => dest.ShippingCost, opt => opt.MapFrom(src => src.shippingCost.Cost))
                   .ForMember(dest => dest.ItemsCount, opt => opt.MapFrom(src => src.OrderItems.Count()))
                  .ForPath(dest => dest.ShippingAddress.FullName, opt => opt.MapFrom(src => src.ShippingAddress.FullName))
                          .ForPath(dest => dest.ShippingAddress.PhoneNumber, opt => opt.MapFrom(src => src.ShippingAddress.PhoneNumber))
@@ -41,13 +43,13 @@ namespace ECommerce.Helper
             CreateMap<OrderItem, OneItemInOrderReturnDto>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Product.Name))
-                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Product.Cost))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice))
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                 .ForMember(dest=>dest.ItemStatus,opt=>opt.MapFrom(src => src.OrderItemStatus.GetType().GetMember(src.OrderItemStatus.ToString())
                           .FirstOrDefault()
                           .GetCustomAttribute<EnumMemberAttribute>().Value))
                 .ForMember(dest => dest.SellerName, opt => opt.MapFrom(src => src.Product.Seller.DisplayName))
-                .ForMember(dest => dest.PriceAfterSale, opt => opt.MapFrom(src => src.Product.DiscountedPrice))
+                
                 .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.Product.ProductPhotos.FirstOrDefault().PhotoLink)).ReverseMap();
 
         

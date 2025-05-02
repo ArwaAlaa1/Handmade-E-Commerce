@@ -4,10 +4,7 @@
       <h5 class="mb-0 ">
         <i class="fa-solid fa-box-open me-2 text-primary-custom"></i> Order Number : #{{ this.orderDetails.orderId+1000}}
       </h5>
-      <div class="input-group w-25">
-        <input type="text" class="form-control" placeholder="Search orders..." />
-        <button class="btn btn-primary-custom" type="button">Search</button>
-      </div>
+     
     </div>
 
   
@@ -16,23 +13,28 @@
       <!-- Left Side (Main Info) -->
       <div class="col-lg-8">
         <!-- Order Summary -->
-        <div class="card shadow-sm border-0 mb-3">
+        <div class="card shadow-sm border-0 mb-4">
           <div class="card-body">
-            <h6 class="fw-bold mb-3">Order Summary</h6>
-            <div class="d-flex justify-content-between">
-              <div>
-                <p class="mb-1">Items Number:</p>
-                <p class="mb-1">Total Amount:</p>
+            <h6 class="fw-bold mb-4 text-primary-custom">Order Summary</h6>
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-2">Items Number:</p>
+                <p class="mb-2">Sub Total:</p>
+                <p class="mb-2">Shipping Cost:</p>
+                <p class="mb-2">Total Amount:</p>
                 <p class="mb-0">Placement Date:</p>
               </div>
-              <div class="text-end">
-                <p class="mb-1 fw-semibold">{{this.orderDetails.itemsCount}}</p>
-                <p class="mb-1 fw-semibold">{{this.orderDetails.total}} EGP</p>
-                <p class="mb-0 text-muted">{{this.orderDetails.orderDate}} </p>
+              <div class="col-6 text-end">
+                <p class="mb-2 fw-semibold">{{ orderDetails.itemsCount }}</p>
+                <p class="mb-2 fw-semibold">{{ orderDetails.subTotal | currency:'EGP' }}</p>
+                <p class="mb-2 fw-semibold">{{ orderDetails.shippingCost | currency:'EGP' }}</p>
+                <p class="mb-2 fw-semibold text-primary-custom">{{ orderDetails.total | currency:'EGP' }}</p>
+                <p class="mb-0 text-muted">{{ orderDetails.orderDate | date:'mediumDate' }}</p>
               </div>
             </div>
           </div>
         </div>
+        
   
         <!-- Order Items -->
         <div class="card shadow-sm border-0 mb-3">
@@ -41,8 +43,10 @@
          
            <div *ngFor="let item of this.orderDetails.orderItems" class="d-flex align-items-center border-bottom pb-3 mb-3">
             <!-- Product Image -->
-            <img [src]="item.photo" alt="Product Image" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
-      
+           <a             
+           [routerLink]="['/ProductDetails', item.ProductId]" >
+            <img [src]="imageBaseUrl+item.photo" alt="Product Image" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
+      </a>
             <!-- Product Details -->
             <div class="flex-grow-1">
               <h6 class="mb-1 fw-semibold">{{ item.name }}</h6>
@@ -52,39 +56,21 @@
       
             <!-- Price and Status -->
             <div class="text-end">
+              <button *ngIf="item.item.itemStatus =='pending'" class="btn btn-outline-danger btn-sm mb-2" (click)="CancelItem(item.ProductId)">Cancel</button>
               <p class="mb-1">
                 <span class="fw-semibold">Status:</span>
                 <span class="badge bg-warning text-dark">{{ item.itemStatus }}</span>
               </p>
               <p class="mb-0">
-                <span *ngIf="item.priceAfterSale && item.priceAfterSale !== item.price" class="text-decoration-line-through text-muted me-1">
-                  {{ item.price }} EGP
-                </span>
-                <span class="fw-bold text-primary-custom">{{ item.priceAfterSale || item.price }} EGP</span>
+             
+                <span class="fw-bold text-primary-custom">{{ item.totalPrice }} EGP</span>
               </p>
             </div>
           </div>
           </div>
         </div>
   
-        <!-- Status Updates -->
-        <div class="card shadow-sm border-0">
-          <div class="card-body">
-            <h6 class="fw-bold mb-3">Status Updates</h6>
-            <div class="d-flex justify-content-between">
-              <p class="mb-1">Order Placed</p>
-              <p class="mb-1 text-muted">Oct 15, 2023</p>
-            </div>
-            <div class="d-flex justify-content-between">
-              <p class="mb-1">Processing</p>
-              <p class="mb-1 text-muted">Oct 16, 2023</p>
-            </div>
-            <div class="d-flex justify-content-between">
-              <p class="mb-0">Shipped</p>
-              <p class="mb-0 text-muted">Oct 17, 2023</p>
-            </div>
-          </div>
-        </div>
+    
       </div>
   
       <!-- Right Side (Customer Info & Actions) -->
@@ -121,14 +107,7 @@
           </div>
         </div>
   
-        <!-- Actions -->
-        <div class="card shadow-sm border-0">
-          <div class="card-body">
-            <h6 class="fw-bold mb-3">Actions</h6>
-            <button class="btn btn-primary-custom w-100 mb-2">Update Status</button>
-            <button class="btn btn-outline-primary-custom w-100">Contact Customer</button>
-          </div>
-        </div>
+       
       </div>
     </div>
   </div>

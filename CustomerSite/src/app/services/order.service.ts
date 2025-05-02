@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ import { Observable } from 'rxjs';
 export class OrderService {
 
   token: string = '';
-  private baseUrl = 'https://localhost:7223/api/Order';
+ 
   isLogin: boolean = false;
   constructor(private http: HttpClient,private _cookie:CookieService,private _auth: AuthService) {
     // this.loadUserData();
@@ -37,19 +38,19 @@ export class OrderService {
   }
    getUserOrders(): Observable<any>{
     
-      return this.http.get(`${this.baseUrl}/UserOrders`, { headers:this.getAuthHeaders()});
+      return this.http.get(`${environment.baseURL}Order/UserOrders`, { headers:this.getAuthHeaders()});
     }
 
     getOrder(orderid:number): Observable<any>{
     
-      return this.http.get(`${this.baseUrl}/${orderid}`, { headers:this.getAuthHeaders()});
+      return this.http.get(`${environment.baseURL}Order/${orderid}`, { headers:this.getAuthHeaders()});
     }
     cancelOrder(orderid:number): Observable<any>{
     
-      return this.http.get(`${this.baseUrl}/CancelOrder?orderId=${orderid}`, { headers:this.getAuthHeaders()});
+      return this.http.get(`${environment.baseURL}Order/CancelOrder?orderId=${orderid}`, { headers:this.getAuthHeaders()});
     }
     cancelOrderItem(itemid:number): Observable<any>{
     
-      return this.http.get(`${this.baseUrl}/CancelItem?orderItemId=${itemid}`, { headers:this.getAuthHeaders()});
+      return this.http.get(`${environment.baseURL}Order/CancelItem?orderItemId=${itemid}`, { headers:this.getAuthHeaders()});
     }
 }

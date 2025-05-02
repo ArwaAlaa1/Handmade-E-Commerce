@@ -257,6 +257,7 @@
     <script>
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("https://localhost:7223/notificationHub?traderId=@ViewBag.userId")
+            // .withUrl("https://localhost:7223/notificationHub?traderId=3c8e0bd4-ab0e-49b3-b487-b19b5c11c1e2")
             .build();
 
         connection.on("ReceiveOrderNotification", (data) => {

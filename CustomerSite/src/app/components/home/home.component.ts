@@ -132,8 +132,24 @@ categoryPhoto:string="/Images/Categories/";
   toggleFavorite(product: any) {
     product.isFavorite = !product.isFavorite;
   }
-
+  isLogin : boolean = false;
   addToFavorite(productId: number) {
+
+    this._authService.userData.subscribe({
+      next: (data) => {
+        if (data) {
+          this.isLogin = true;
+        }
+        else {
+          this.isLogin = false;
+        }
+      }
+    });
+
+    if(this.isLogin == false){
+      this.route.navigate(['/login']);
+    }
+
     this._productService.addToFav(productId).subscribe({
     next:(response) =>
     {

@@ -42,9 +42,13 @@ namespace ECommerce.Helper
 
             CreateMap<OrderItem, OneItemInOrderReturnDto>()
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+                 .ForMember(dest => dest.OrderItemId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Product.Name))
                 .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.TotalPrice))
                 .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
+                .ForMember(dest => dest.Size, opt => opt.MapFrom(src => src.Size))
+                .ForMember(dest => dest.CustomizeInfo, opt => opt.MapFrom(src => src.CustomizeInfo))
                 .ForMember(dest=>dest.ItemStatus,opt=>opt.MapFrom(src => src.OrderItemStatus.GetType().GetMember(src.OrderItemStatus.ToString())
                           .FirstOrDefault()
                           .GetCustomAttribute<EnumMemberAttribute>().Value))

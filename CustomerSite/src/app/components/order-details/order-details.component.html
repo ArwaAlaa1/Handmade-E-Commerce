@@ -4,9 +4,13 @@
       <h5 class="mb-0 ">
         <i class="fa-solid fa-box-open me-2 text-primary-custom"></i> Order Number : #{{ this.orderDetails.orderId+1000}}
       </h5>
+      @if(this.orderDetails.status === 'Cancelled') {
+        <button  class="btn btn-danger w-25 mb-3">Cancelled Order</button>
+     
+      }
      
     </div>
-
+   
   
     <!-- Main Content -->
     <div class="row g-4">
@@ -56,7 +60,7 @@
       
             <!-- Price and Status -->
             <div class="text-end">
-              <button *ngIf="item.itemStatus ==='Pending'" class="btn btn-outline-danger btn-sm mb-2" (click)="CancelItem(item.productId)">Cancel</button>
+              <button *ngIf="item.itemStatus ==='Pending'" class="btn btn-outline-danger btn-sm mb-2" (click)="CancelItem(item.orderItemId)">Cancel</button>
               <p class="mb-1">
                 <span class="fw-semibold">Status:</span>
                 <span class="badge bg-warning text-dark">{{ item.itemStatus }}</span>
@@ -108,8 +112,7 @@
         </div>
   
         @if(allItemsPending) {
-          <button (click)="CancelOrder(this.orderDetails.orderId)" class="btn btn-primary w-100 mb-3">Cancel Orders</button>
-       
+          <button (click)="CancelOrder(this.orderDetails.orderId)" class="btn btn-primary w-100 mb-3">Cancel Order</button>
         }
        
       </div>

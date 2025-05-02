@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,8 @@ namespace ECommerce.Core.Models
 
         // Relationship to trader
         public string AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
+        [ValidateNever]
+        public AppUser? AppUser { get; set; }
     }
 
 }

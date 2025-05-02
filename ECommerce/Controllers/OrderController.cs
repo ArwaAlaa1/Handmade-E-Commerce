@@ -40,7 +40,13 @@ namespace ECommerce.Controllers
             ILogger<OrderController> logger,
                         IConfiguration configuration,
                         IUnitOfWork unitOfWork,
-                        IHubContext<NotificationHub> hubContext)
+<<<<<<< HEAD
+                        IHubContext<NotificationHub> hubContext, INotificationRepository notificationRepository)
+=======
+                        IHubContext<NotificationHub> hubContext,
+                        INotificationRepository notificationRepository
+                        )
+>>>>>>> d639b9baef7c4d730f13f7fe8a396e3708db58cb
         {
             _orderService = orderService;
             _cartRepository = cartRepository;
@@ -48,7 +54,11 @@ namespace ECommerce.Controllers
             _mapper = mapper;
             _userManager = userManager;
             _hubContext = hubContext;
+            _notificationRepository = notificationRepository;
+<<<<<<< HEAD
 
+=======
+>>>>>>> d639b9baef7c4d730f13f7fe8a396e3708db58cb
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
@@ -264,5 +274,8 @@ namespace ECommerce.Controllers
                 return BadRequest(new { Message = "Try Another Time !" });
             }
         }
+
     }
+
+
 }

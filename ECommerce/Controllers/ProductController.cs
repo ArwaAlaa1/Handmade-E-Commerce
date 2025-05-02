@@ -79,12 +79,13 @@ namespace ECommerce.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    //AdditionalDetails = p.AdditionalDetails,
+                    AdditionalDetails = p.AdditionalDetails,
                     //BasePrice = basePrice,
                     SellingPrice = sellingPrice,
                     DiscountedPrice = discountedPrice,
                     IsOnSale = currentSale != null,
                     SalePercent = currentSale?.Percent,
+                    Stock = p.Stock,
                     //IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
                     IsFavorite = favoriteProductIds.Contains(p.Id),
                     Rating = reviewsCounts.ContainsKey(p.Id) ? reviewsCounts[p.Id] : 0,
@@ -108,13 +109,13 @@ namespace ECommerce.Controllers
                             Url = photo.PhotoLink
                         }).ToList(),
 
-                    //Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
+                    Colors = p.ProductColors?.Select(c => c.Color).ToList() ?? new List<string>(),
 
-                    //Sizes = p.ProductSizes?.Select(s => new SizeDTO
-                    //{
-                    //    Name = s.Size,
-                    //    ExtraCost = s.ExtraCost
-                    //}).ToList() ?? new List<SizeDTO>()
+                    Sizes = p.ProductSizes?.Select(s => new SizeDTO
+                    {
+                        Name = s.Size,
+                        ExtraCost = s.ExtraCost
+                    }).ToList() ?? new List<SizeDTO>()
                 };
             });
 
@@ -215,12 +216,13 @@ namespace ECommerce.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    //AdditionalDetails = p.AdditionalDetails,
+                    AdditionalDetails = p.AdditionalDetails,
                     //BasePrice = basePrice,
                     SellingPrice = sellingPrice,
                     DiscountedPrice = discountedPrice,
                     IsOnSale = currentSale != null,
                     SalePercent = currentSale?.Percent,
+                    Stock = p.Stock,
                     //IsFavorite = userId != null && favoriteProductIds.Contains(p.Id),
                     //IsFavorite = favoriteProductIds.Contains(p.Id),
                     IsFavorite = true,
@@ -438,7 +440,7 @@ namespace ECommerce.Controllers
         public async Task<IActionResult> GetProductsWithActiveOffers(int pageSize, int pageIndex)
         {
 
-            var products = await productRepository.GetProductsWithFilters(pageSize, pageIndex, null, null, null);
+            var products = await productRepository.GetProductsInActiveSale(pageSize, pageIndex, null, null, null);
             var activeOfferQuery = products
                 .Where(p => p.Sales.Any(s => s.StartDate.Date <= DateTime.Today && s.EndDate.Date >= DateTime.Today));
 
@@ -463,8 +465,11 @@ namespace ECommerce.Controllers
                 .Take(pageSize)
                 .Select(p =>
                 {
-                    var currentSale = p.Sales
-                        .FirstOrDefault(s => s.StartDate.Date <= DateTime.Today && s.EndDate.Date >= DateTime.Today);
+                    //var currentSale = p.Sales
+                    //    .FirstOrDefault(s => s.StartDate.Date <= DateTime.Today && s.EndDate.DateTime.now >= DateTime.Today);
+
+                    var currentSale = p.Sales?
+                        .FirstOrDefault(s => s.StartDate <= DateTime.Now && s.EndDate >= DateTime.Now);
 
                     decimal basePrice = p.Cost;
                     decimal sellingPrice = basePrice + (basePrice * p.AdminProfitPercentage / 100);
@@ -476,6 +481,7 @@ namespace ECommerce.Controllers
                         Id = p.Id,
                         Name = p.Name,
                         Description = p.Description,
+                        Stock = p.Stock,
                         AdditionalDetails = p.AdditionalDetails,
                         SellingPrice = sellingPrice,
                         DiscountedPrice = currentSale != null ? finalPrice : (decimal?)null,

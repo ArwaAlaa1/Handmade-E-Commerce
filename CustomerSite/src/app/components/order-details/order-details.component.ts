@@ -40,11 +40,26 @@ export class OrderDetailsComponent {
 CancelItem(itemId:number){
   this.orderService.cancelOrderItem(itemId).subscribe({
     next: (data) => {
+      console.log("cancel item",itemId);
       console.log("cancel item",data);
       this.orderDetails = data;
     }, error: (err) => {
       console.log(err);
     }
   });
+}
+get allItemsPending(): boolean {
+  return this.orderDetails.orderItems.every((item: { itemStatus: string; }) => item.itemStatus === "Pending");
+}
+CancelOrder(id:number){
+  this.orderService.cancelOrder(id).subscribe({
+    next: (data) => {
+      console.log("cancel order",this.orderDetails.id);
+      console.log("cancel order",data);
+      this.orderDetails = data;
+    }, error: (err) => {
+      console.log(err);
+    }
+  }); 
 }
 }

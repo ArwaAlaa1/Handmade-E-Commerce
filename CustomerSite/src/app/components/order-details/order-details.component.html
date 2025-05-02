@@ -56,7 +56,7 @@
       
             <!-- Price and Status -->
             <div class="text-end">
-              <button *ngIf="item.item.itemStatus =='pending'" class="btn btn-outline-danger btn-sm mb-2" (click)="CancelItem(item.ProductId)">Cancel</button>
+              <button *ngIf="item.itemStatus ==='Pending'" class="btn btn-outline-danger btn-sm mb-2" (click)="CancelItem(item.productId)">Cancel</button>
               <p class="mb-1">
                 <span class="fw-semibold">Status:</span>
                 <span class="badge bg-warning text-dark">{{ item.itemStatus }}</span>
@@ -107,6 +107,10 @@
           </div>
         </div>
   
+        @if(allItemsPending) {
+          <button (click)="CancelOrder(this.orderDetails.orderId)" class="btn btn-primary w-100 mb-3">Cancel Orders</button>
+       
+        }
        
       </div>
     </div>

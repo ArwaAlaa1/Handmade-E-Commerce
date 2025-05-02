@@ -46,12 +46,18 @@
                   <div *ngIf="cartData.cartItems && cartData.cartItems.length > 0">
                     <div *ngFor="let item of cartData.cartItems; trackBy: trackByItemId" class="row mb-4 d-flex justify-content-between align-items-center animate__animated animate__fadeInUp" style="background-color: #fafafa; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);">
                       <div class="col-md-2 col-lg-2 col-xl-2">
-                        <img [src]="imageBaseUrl + item.photoUrl" [alt]="item.productName" class="img-fluid" style="border-radius: 8px;">
+                        <img [src]="imageBaseUrl + item.photoUrl" [alt]="item.productName" class="img-fluid" style="border-radius: 8px; width: 80px; height: 80px; object-fit: cover;">
                       </div>
                       <div class="col-md-3 col-lg-3 col-xl-3">
                         <h6 class="mb-0" style="font-size: 1.1rem; color: #2c3e50;">{{ item.productName }}</h6>
-                        <span *ngIf="item.color" class="badge bg-secondary me-1" style="background-color: #95a5a6; margin-top: 5px;">Color: {{ item.color }}</span>
-                        <span *ngIf="item.size" class="badge bg-secondary me-1" style="background-color: #95a5a6; margin-top: 5px;">Size: {{ item.size }}</span>
+                        <div class="d-flex flex-wrap gap-2 my-1">
+                          @if (item.color != null && item.color.trim() !== '') {
+                            <span class="badge bg-secondary">Color: {{ item.color }}</span>
+                          }
+                          @if (item.size != null && item.size.trim() !== '') {
+                            <span class="badge bg-secondary">Size: {{ item.size }}</span>
+                          }
+                        </div>
                       </div>
                       <div class="col-md-3 col-lg-3 col-xl-2 d-flex align-items-center">
                         <button class="btn btn-outline-primary btn-sm px-2" (click)="Decrease(item.itemId)" [disabled]="item.quantity <= 1" style="border-radius: 50%; width: 35px; height: 35px; transition: all 0.3s ease;">-</button>
@@ -64,6 +70,11 @@
                           <small class="text-muted text-decoration-line-through" style="font-size: 0.9rem;">{{ item.price | currency:'EGP' }}</small>
                         } @else {
                           <h6 class="mb-0" style="font-size: 1.1rem; color: #2c3e50;">{{ item.price | currency:'EGP' }}</h6>
+                        }
+                        @if (item.extraCost && item.extraCost > 0) {
+                          <small style="font-size: 0.8rem; color: #6c757d;">
+                            +{{ (item.extraCost * item.quantity) | currency:'EGP' }}
+                          </small>
                         }
                       </div>
                       <div class="col-md-1 col-lg-1 col-xl-1 text-end">
@@ -115,28 +126,31 @@
                     </style>
                   </div>
 
-                  <!-- Items and Subtotal -->
-                  <div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn">
-                    <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-shopping-cart me-2" style="color: #3498db;"></i>Items {{ cartData.cartItems?.length || 0 }}</h5>
-                    <h5 style="color: #27ae60;">{{ subTotal | currency:'EGP' }}</h5>
-                  </div>
+                 <!-- Items and Subtotal -->
+<div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn">
+  <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-shopping-cart me-2" style="color: #3498db;"></i>Items {{ cartData.cartItems?.length || 0 }}</h5>
+  <h5 style="color: #27ae60;">{{ subTotal | currency:'EGP' }}</h5>
+</div>
 
-                  <hr class="my-4" style="border: none; border-top: 1px solid #e0e0e0;">
+<!-- Extra Cost -->
+<div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn" *ngIf="extraCostTotal > 0">
+  <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-tags me-2" style="color: #f39c12;"></i>Extra Cost (Size)</h5>
+  <h5 style="color: #f39c12;">{{ extraCostTotal | currency:'EGP' }}</h5>
+</div>
 
-                  <!-- Delivery Cost -->
-                  <div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn">
-                    <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-truck me-2" style="color: #3498db;"></i>Delivery Cost</h5>
-                    <h5 style="color: #34495e;">{{ deliveryCost | currency:'EGP' }}</h5>
-                  </div>
+<!-- Delivery Cost -->
+<div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn">
+  <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-truck me-2" style="color: #3498db;"></i>Delivery Cost</h5>
+  <h5 style="color: #34495e;">{{ deliveryCost | currency:'EGP' }}</h5>
+</div>
 
-                  <hr class="my-4" style="border: none; border-top: 1px solid #e0e0e0;">
+<hr class="my-4" style="border: none; border-top: 1px solid #e0e0e0;">
 
-                  <!-- Total Price -->
-                  <div class="d-flex justify-content-between mb-5 animate__animated animate__fadeIn">
-                    <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-wallet me-2" style="color: #3498db;"></i>Total Price</h5>
-                    <h5 style="color: #e74c3c; font-weight: bold;">{{ total | currency:'EGP' }}</h5>
-                  </div>
-
+<!-- Total Price -->
+<div class="d-flex justify-content-between mb-5 animate__animated animate__fadeIn">
+  <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-wallet me-2" style="color: #3498db;"></i>Total Price</h5>
+  <h5 style="color: #e74c3c; font-weight: bold;">{{ total | currency:'EGP' }}</h5>
+</div>
                   <!-- Checkout Button -->
                   <button type="button" class="btn btn-dark btn-block btn-lg animate__animated animate__pulse" (click)="onCheckout()" [disabled]="isLoading" style="background: linear-gradient(90deg, #2c3e50, #34495e); border: none; border-radius: 25px; padding: 12px; transition: all 0.3s ease;">
                     <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

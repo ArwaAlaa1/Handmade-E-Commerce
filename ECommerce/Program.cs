@@ -60,6 +60,8 @@ namespace ECommerce
             builder.Services.AddScoped<IShippingCostRepository, ShippingCostRepository>();
             //builder.Services.AddScoped<ICustomerBasketRepository, CustomerBasketRepository>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
 
             //register payment service
             builder.Services.AddScoped<IPaymentService, PaymentService>();

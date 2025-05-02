@@ -140,6 +140,7 @@ namespace ECommerce.Services
             order.Status = OrderStatus.Cancelled;
             foreach (var item in order.OrderItems)
             {
+                item.Product.Seller = null;
                 item.OrderItemStatus = ItemStatus.Cancelled;
             }
             _unitOfWork.Repository<Order>().Update(order);

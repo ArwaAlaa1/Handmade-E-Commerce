@@ -3,24 +3,25 @@ import { CartService } from './../../services/cart.service';
 import { environment } from './../../../environments/environment.development';
 import { ShippingService } from './../../services/shipping.service';
 import { ChangeDetectorRef, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 import { CookieService } from 'ngx-cookie-service';
 import { CommonModule } from '@angular/common';
 import { Cart } from '../../interfaces/cart';
 import { UserService } from '../../services/user.service';
-import { AddressPopUpComponent } from "../../address-pop-up/address-pop-up.component";
 import { PaymentService } from '../../services/payment.service';
-import { Subscription } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
 import { OrderResponse } from '../../interfaces/order-response';
 import { HttpErrorResponse } from '@angular/common/http';
+
  
 declare var bootstrap: any;
+// declare var toastr: any;
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, AddressPopUpComponent],
+  imports: [CommonModule ,RouterLink],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
@@ -35,11 +36,14 @@ declare var bootstrap: any;
  addressSelected: any = null;
  selectedAddressIndex :number = 0;
  deliveryCost: number = 0;
+ extraCostTotal: number = 0;
  subTotal : number = 0;
   total: number = 0;
   subscriptions: Subscription[] = [];
+  imageBaseUrl:string = environment.baseImageURL;
+  // imageBaseUrl: string = `${environment.baseImageURL}images/`;
 
-  imageBaseUrl: string = `${environment.baseImageURL}images/`;
+
   isLogin: boolean = false;
   isLoading: boolean = false;
 
@@ -48,6 +52,7 @@ declare var bootstrap: any;
   elements: StripeElements | null = null;
   paymentElement: StripePaymentElement | null = null;
   @ViewChild('paymentElement') paymentElementRef!: ElementRef;
+  // @ViewChild('paymentElementRef', { static: false }) paymentElementRef!: ElementRef;
   clientSecret: string | null = null;
    constructor(private _userService:UserService,private _shipCost:ShippingService,
     private cdr: ChangeDetectorRef,private _cookie:CookieService,
@@ -55,187 +60,391 @@ declare var bootstrap: any;
   ,private PaymentService :PaymentService,private router: Router) {
 
 }
+
+// async ngOnInit(): Promise<void> {
+//   this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
+//   // toastr.options = {
+//   //   "closeButton": false,
+//   //   "debug": false,
+//   //   "newestOnTop": false,
+//   //   "progressBar": true,
+//   //   "positionClass": "toast-top-left",
+//   //   "preventDuplicates": true,
+//   //   "onclick": null,
+//   //   "showDuration": "300",
+//   //   "hideDuration": "1000",
+//   //   "timeOut": "12000",
+//   //   "extendedTimeOut": "1000",
+//   //   "showEasing": "swing",
+//   //   "hideEasing": "linear",
+//   //   "showMethod": "fadeIn",
+//   //   "hideMethod": "fadeOut",
+//   // };
+  
+//   const shippingSub = this._shipCost.getShippingCosts().subscribe({
+//     next: (res) => {
+//       this.shippingCosts = res;
+//     },
+//     error: (err) => console.error('Error loading Shipping Costs:', err)
+//   });
+//   this.subscriptions.push(shippingSub);
+//   const userSub = this._auth.userData.subscribe({
+//     next: (response) => {
+//       this.userData = response;
+//       this.token = this.userData?.token;
+//       this.isLogin = true;
+
+//       // Authenticated: get user cart
+      
+//       const existingCartId = this._cookie.get('cartId');
+
+//       if (this.token && existingCartId) {
+//         console.log('Guest cartId found in cookie:', existingCartId);
+      
+//         // Step 1: Get logged-in user's cart
+//         this.cartService.getCartById().subscribe({
+//           next: (userCart) => {
+//             this.cartData = userCart;
+      
+//             // Step 2: Get guest cart by cookie cartId
+//             console.log('Guest cartId found jjjjjin cookie:', existingCartId);
+      
+//             this.cartService.getCarteById(existingCartId).subscribe({
+//               next: (guestCart) => {
+//                 console.log('Guest cart items:', guestCart.cartItems);
+      
+//                 // Step 3: Merge guest cart items into user cart
+//                 if (guestCart.cartItems?.length) {
+//                   this.cartData.cartItems = [...this.cartData.cartItems, ...guestCart.cartItems];
+      
+//                   // Step 4: Update user's cart with merged items
+//                   this.cartService.updateCart(this.cartData).subscribe({
+//                     next: () => {
+//                       console.log('Merged guest cart items into user cart.');
+      
+//                       // Step 5: Clear guest cart and delete cookie
+//                       this.cartService.clearCart(existingCartId).subscribe({
+//                         next: () => {
+//                           this._cookie.delete('cartId');
+//                           console.log('Guest cart cleared and cookie removed.');
+//                         },
+//                         error: (err) => console.error('Error clearing guest cart:', err)
+//                       });
+//                     },
+//                     error: (err) => console.error('Error updating user cart:', err)
+//                   });
+//                 } else {
+//                   console.log('Guest cart is empty. Skipping merge.');
+//                   this._cookie.delete('cartId');
+//                 }
+      
+//                 // Step 6: Load other user cart details
+//                 if (this.cartData.addressId != null) {
+//                   this.updateAddress(this.cartData.addressId);
+//                 }
+//                 this.calculateTotal(this.cartData);
+//               },
+//               error: (err) => console.error('Error fetching guest cart:', err)
+//             });
+//           },
+//           error: (err) => console.error('Error fetching user cart:', err)
+//         });
+            
+//     //   const existingCartId = this._cookie.get('cartId');
+//     //   if(existingCartId){
+//     //      // If cartId exists, fetch the cart and add the item to it
+//     //      console.log('Existing cartId:', existingCartId);
+//     // this.cartService.getCartById(existingCartId).subscribe({
+//     //   next: (responseCart) => {
+//     //     const cart = responseCart;
+      
+//     //         this.cartService.getCartById(existingCartId).subscribe({
+//     //           next: (res) => {
+//     //             this.cartData = res;
+//     //             this._cookie.delete('cartId');
+//     //             console.log('Cart updated successfully:', res);
+//     //             this.cartService.clearCart(existingCartId).subscribe({
+//     //               next: () => {
+//     //                 console.log('Cart cleared successfully:', existingCartId);
+                  
+//     //               },
+//     //               error: (err) => console.error('Error clearing cart:', err)
+//     //             });
+//     //             if (this.cartData.addressId != null) {
+//     //               this.updateAddress(this.cartData.addressId);
+//     //             }
+//     //             this.calculateTotal(this.cartData);
+
+//     //           },
+//     //           error: (err) => console.error('Failed to get cart:', err)
+//     //         });
+//     //       } ,
+//     //       error: (err) => console.error('Error updating cart:', err)
+//     //     });
+//     //   }else{
+//     //     this.cartService.getCartById().subscribe({
+//     //       next: (res) => {
+//     //         this.cartData = res;
+//     //         if (this.cartData.addressId != null) {
+//     //           this.updateAddress(this.cartData.addressId);
+//     //         }
+//     //         this.calculateTotal(this.cartData);
+//     //       },
+//     //       error: (err) => console.error('Failed to get cart:', err)
+//     //     });
+//     //   }
+    
+     
+//      }
+     
+//     if (this.token) {
+//       this.cartService.getCartById().subscribe({
+//         next: (res) => {
+//           this.cartData = res;
+//         console.log('User cart data:', this.cartData);
+//           if (this.cartData.addressId != null) {
+//             this.updateAddress(this.cartData.addressId);
+//           }
+//           this.calculateTotal(this.cartData);
+    
+//         },
+//         error: (err) => console.error('Failed to get cart:', err)
+//       });
+//     }
+//     },
+//     error: (err) => {
+//       console.error('Failed to get user data:', err);
+//     }
+//   });
+
+//   this.subscriptions.push(userSub);
+
+//   // Shipping cost
+//   // const shippingSub = this._shipCost.getShippingCosts().subscribe({
+//   //   next: (res) => {
+//   //     this.shippingCosts = res;
+//   //   },
+//   //   error: (err) => console.error('Error loading Shipping Costs:', err)
+//   // });
+
+//   // this.subscriptions.push(shippingSub);
+
+//   // Guest: if no token, use cartId from cookie or create new one
+//   if (!this.token) {
+//     let cartId = this._cookie.get('cartId');
+
+//     if (cartId) {
+//       this.cartService.getCartById(cartId).subscribe({
+//         next: (res) => {
+//           this.cartData = res;
+//           console.log('Guest cart data:', this.cartData);
+//           this.calculateTotal(this.cartData);
+//         },
+//         error: (err) => {
+//           console.error('Failed to load guest cart:', err);
+//         }
+//       });
+//     }  
+//   }
+// }
+
 async ngOnInit(): Promise<void> {
   this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
 
-  const userSub = this._auth.userData.subscribe({
-    next: (response) => {
-      this.userData = response;
-      this.token = this.userData?.token;
-      this.isLogin = true;
-
-      // Authenticated: get user cart
-      
-      const existingCartId = this._cookie.get('cartId');
-
-      if (this.token && existingCartId) {
-        console.log('Guest cartId found in cookie:', existingCartId);
-      
-        // Step 1: Get logged-in user's cart
-        this.cartService.getCartById().subscribe({
-          next: (userCart) => {
-            this.cartData = userCart;
-      
-            // Step 2: Get guest cart by cookie cartId
-            console.log('Guest cartId found jjjjjin cookie:', existingCartId);
-      
-            this.cartService.getCarteById(existingCartId).subscribe({
-              next: (guestCart) => {
-                console.log('Guest cart items:', guestCart.cartItems);
-      
-                // Step 3: Merge guest cart items into user cart
-                if (guestCart.cartItems?.length) {
-                  this.cartData.cartItems = [...this.cartData.cartItems, ...guestCart.cartItems];
-      
-                  // Step 4: Update user's cart with merged items
-                  this.cartService.updateCart(this.cartData).subscribe({
-                    next: () => {
-                      console.log('Merged guest cart items into user cart.');
-      
-                      // Step 5: Clear guest cart and delete cookie
-                      this.cartService.clearCart(existingCartId).subscribe({
-                        next: () => {
-                          this._cookie.delete('cartId');
-                          console.log('Guest cart cleared and cookie removed.');
-                        },
-                        error: (err) => console.error('Error clearing guest cart:', err)
-                      });
-                    },
-                    error: (err) => console.error('Error updating user cart:', err)
-                  });
-                } else {
-                  console.log('Guest cart is empty. Skipping merge.');
-                  this._cookie.delete('cartId');
-                }
-      
-                // Step 6: Load other user cart details
-                if (this.cartData.addressId != null) {
-                  this.updateAddress(this.cartData.addressId);
-                }
-                this.calculateTotal(this.cartData);
-              },
-              error: (err) => console.error('Error fetching guest cart:', err)
-            });
-          },
-          error: (err) => console.error('Error fetching user cart:', err)
-        });
-            
-    //   const existingCartId = this._cookie.get('cartId');
-    //   if(existingCartId){
-    //      // If cartId exists, fetch the cart and add the item to it
-    //      console.log('Existing cartId:', existingCartId);
-    // this.cartService.getCartById(existingCartId).subscribe({
-    //   next: (responseCart) => {
-    //     const cart = responseCart;
-      
-    //         this.cartService.getCartById(existingCartId).subscribe({
-    //           next: (res) => {
-    //             this.cartData = res;
-    //             this._cookie.delete('cartId');
-    //             console.log('Cart updated successfully:', res);
-    //             this.cartService.clearCart(existingCartId).subscribe({
-    //               next: () => {
-    //                 console.log('Cart cleared successfully:', existingCartId);
-                  
-    //               },
-    //               error: (err) => console.error('Error clearing cart:', err)
-    //             });
-    //             if (this.cartData.addressId != null) {
-    //               this.updateAddress(this.cartData.addressId);
-    //             }
-    //             this.calculateTotal(this.cartData);
-
-    //           },
-    //           error: (err) => console.error('Failed to get cart:', err)
-    //         });
-    //       } ,
-    //       error: (err) => console.error('Error updating cart:', err)
-    //     });
-    //   }else{
-    //     this.cartService.getCartById().subscribe({
-    //       next: (res) => {
-    //         this.cartData = res;
-    //         if (this.cartData.addressId != null) {
-    //           this.updateAddress(this.cartData.addressId);
-    //         }
-    //         this.calculateTotal(this.cartData);
-    //       },
-    //       error: (err) => console.error('Failed to get cart:', err)
-    //     });
-    //   }
-    
-     
-     }
-     
-    if (this.token) {
-      this.cartService.getCartById().subscribe({
-        next: (res) => {
-          this.cartData = res;
-        console.log('User cart data:', this.cartData);
-          if (this.cartData.addressId != null) {
-            this.updateAddress(this.cartData.addressId);
-          }
-          this.calculateTotal(this.cartData);
-    
-        },
-        error: (err) => console.error('Failed to get cart:', err)
-      });
-    }
-    },
-    error: (err) => {
-      console.error('Failed to get user data:', err);
-    }
-  });
-
-  this.subscriptions.push(userSub);
-
-  // Shipping cost
+  this.extraCostTotal = 0;
   const shippingSub = this._shipCost.getShippingCosts().subscribe({
     next: (res) => {
       this.shippingCosts = res;
     },
     error: (err) => console.error('Error loading Shipping Costs:', err)
   });
-
   this.subscriptions.push(shippingSub);
+  const userSub = this._auth.userData.subscribe({
+    next: (response) => {
+      this.userData = response;
+      this.token = this.userData?.token;
+      this.isLogin = true;
 
-  // Guest: if no token, use cartId from cookie or create new one
-  if (!this.token) {
-    let cartId = this._cookie.get('cartId');
+      if (!this.token) {
+        console.warn('User not logged in, skipping cart operations');
+        return;
+      }
 
-    if (cartId) {
-      this.cartService.getCartById(cartId).subscribe({
-        next: (res) => {
-          this.cartData = res;
-          console.log('Guest cart data:', this.cartData);
-          this.calculateTotal(this.cartData);
-        },
-        error: (err) => {
-          console.error('Failed to load guest cart:', err);
-        }
-      });
-    }  
-  }
+     
+      const existingCartId = this._cookie.get('cartId');
+
+      if (existingCartId) {
+        console.log('Guest cartId found in cookie:', existingCartId);
+
+        
+        const userCartSub = this.cartService.getCartById().subscribe({
+          next: (userCart) => {
+            this.cartData = userCart;
+
+           
+            const guestCartSub = this.cartService.getCarteById(existingCartId).subscribe({
+              next: (guestCart) => {
+                console.log('Guest cart items:', guestCart.cartItems);
+
+               
+                if (guestCart.cartItems?.length) {
+                  this.cartData.cartItems = [...this.cartData.cartItems, ...guestCart.cartItems];
+
+                
+                  const updateSub = this.cartService.updateCart(this.cartData).subscribe({
+                    next: () => {
+                      console.log('Merged guest cart items into user cart.');
+
+                     
+                      const clearSub = this.cartService.clearCart(existingCartId).subscribe({
+                        next: () => {
+                          this._cookie.delete('cartId');
+                          console.log('Guest cart cleared and cookie removed.');
+                        },
+                        error: (err) => console.error('Error clearing guest cart:', err)
+                      });
+                      this.subscriptions.push(clearSub);
+                    },
+                    error: (err) => console.error('Error updating user cart:', err)
+                  });
+                  this.subscriptions.push(updateSub);
+                } else {
+                  console.log('Guest cart is empty. Skipping merge.');
+                  this._cookie.delete('cartId');
+                }
+
+               
+                this.loadCartDetails();
+              },
+              error: (err) => console.error('Error fetching guest cart:', err)
+            });
+            this.subscriptions.push(guestCartSub);
+          },
+          error: (err) => console.error('Error fetching user cart:', err)
+        });
+        this.subscriptions.push(userCartSub);
+      } else {
+        
+        const cartSub = this.cartService.getCartById().subscribe({
+          next: (res) => {
+            this.cartData = res;
+            console.log('User cart data:', this.cartData);
+            this.loadCartDetails();
+          },
+          error: (err) => console.error('Failed to get cart:', err)
+        });
+        this.subscriptions.push(cartSub);
+      }
+    },
+    error: (err) => {
+      console.error('Failed to get user data:', err);
+    }
+  });
+  this.subscriptions.push(userSub);
 }
 
 
+private loadCartDetails(): void {
+ 
+  if (this.cartData.addressId != null) {
+    this.updateAddress(this.cartData.addressId);
+  } 
+  else 
+  {
+    
+    const defaultAddressSub = this._userService.getAllAddress().subscribe({
+      next: (addresses) => {
+        if (addresses && addresses.length > 0) {
+          this.addressSelected = addresses[0]; 
+          this.cartData.addressId = this.addressSelected.id;
+          this.getDeliveryCost(this.addressSelected.city);
+          this.calculateTotal(this.cartData);
 
+        
+          const updateSub = this.cartService.updateCart(this.cartData).subscribe({
+            next: (res) => {
+              this.cartData = res;
+              console.log('Cart updated with default address:', res);
+              if (this.cartData.addressId != null && this.cartData.addressId !== 0) {
+                this.updateAddress(this.cartData.addressId);
+              } else {
+               
+                this.addressSelected = null;
+                this.cartData.addressId = undefined;
+                console.warn('Failed to save address in Redis, resetting address selection.');
+              }
+            },
+            error: (err) => {
+              console.error('Error updating cart with default address:', err);
+              this.addressSelected = null;
+              this.cartData.addressId = undefined;
+            }
+          });
+          this.subscriptions.push(updateSub);
+        }
+        else {
+          console.warn('No addresses found for user, address selection required.');
+          this.addressSelected = null;
+          this.cartData.addressId = undefined ;
+        }
+      },
+      error: (err) => {
+        console.error('Error loading default address:', err);
+        this.addressSelected = null;
+        this.cartData.addressId = undefined;
+      }
+    });
+    this.subscriptions.push(defaultAddressSub);
+  }
+}
+// private loadCartDetails00(): void {
+//   if (this.cartData.addressId != null) {
+//     this.updateAddress(this.cartData.addressId);
+//   } else {
+//     const defaultAddressSub = this._userService.getAllAddress().pipe(
+//       first() // أخذ العنصر الأول
+//     ).subscribe({
+//       next: (addresses) => {
+//         if (addresses && addresses.length > 0) {
+//           this.addressSelected = addresses[0];
+//           this.cartData.addressId = this.addressSelected.id;
+//           this.getDeliveryCost(this.addressSelected.city);
+//           this.calculateTotal(this.cartData);
+
+//           const updateSub = this.cartService.updateCart(this.cartData).subscribe({
+//             next: (res) => {
+//               this.cartData = res;
+//               console.log('Cart updated with default address:', res);
+//             },
+//             error: (err) => console.error('Error updating cart with default address:', err)
+//           });
+//           this.subscriptions.push(updateSub);
+//         }
+//       },
+//       error: (err) => console.error('Error loading default address:', err)
+//     });
+//     defaultAddressSub.add(() => this.subscriptions.push(defaultAddressSub));
+//   }
+// }
     ngOnDestroy(): void {
       this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
     calculateTotal(cartData: Cart): void {
       this.subTotal = 0;
+      this.extraCostTotal = 0;
 
-      if(cartData==null)
-    {
-      this.subTotal = 0;
-      this.total = this.subTotal + this.deliveryCost;
-    }else{
+      if (cartData == null || !cartData.cartItems || cartData.cartItems.length === 0) {
+        this.subTotal = 0;
+        this.extraCostTotal = 0; 
+        this.total = this.deliveryCost;
+      }else{
       for (const item of cartData.cartItems) {
       
         item.price = item.quantity * item.unitPrice;
-
+        const itemExtraCostTotal = (item.extraCost || 0) * item.quantity;
+        this.extraCostTotal += itemExtraCostTotal;
+        console.log(`Item: ${item.productName}, Size: ${item.size}, ExtraCost: ${item.extraCost}, ItemExtraCostTotal: ${itemExtraCostTotal}`);
         if (item.activeSale && item.priceAfterSale > 0) {
           item.priceAfterSale = item.price - (item.price * item.activeSale/ 100);
           this.subTotal += item.priceAfterSale;
@@ -245,33 +454,59 @@ async ngOnInit(): Promise<void> {
         }
       }
 
-      this.total = this.subTotal + this.deliveryCost;
+      this.total = this.subTotal + this.deliveryCost + this.extraCostTotal;
+      console.log(`SubTotal: ${this.subTotal}, ExtraCostTotal: ${this.extraCostTotal}, DeliveryCost: ${this.deliveryCost}, Total: ${this.total}`);
     }
     }
 
+
+    // updateAddress(addressId: number): void {
+    //   if (addressId == 0 && this.token != null) {
+    //     const sub = this._userService.getAllAddress().subscribe({
+    //       next: (res) => {
+    //         this.addressSelected = res[0];
+    //         this.getDeliveryCost(this.addressSelected.city);
+    //       },
+    //       error: (err) => console.error('Error loading addresses:', err)
+    //     });
+    //     this.subscriptions.push(sub);
+    //   } else {
+    //     if(this.token !=null){
+    //       const sub = this._userService.getAddress(addressId).subscribe({
+    //         next: (res) => {
+    //           this.addressSelected = res;
+    //           this.getDeliveryCost(this.addressSelected.city);
+    //         },
+    //         error: (err) => console.error('Error loading address:', err)
+    //       });
+    //       this.subscriptions.push(sub);
+    //     }
+    //   }
+    // }
 
     updateAddress(addressId: number): void {
-      if (addressId == 0 && this.token != null) {
-        const sub = this._userService.getAllAddress().subscribe({
-          next: (res) => {
-            this.addressSelected = res[0];
-            this.getDeliveryCost(this.addressSelected.city);
-          },
-          error: (err) => console.error('Error loading addresses:', err)
-        });
-        this.subscriptions.push(sub);
-      } else {
-        if(this.token !=null){
-          const sub = this._userService.getAddress(addressId).subscribe({
-            next: (res) => {
-              this.addressSelected = res;
-              this.getDeliveryCost(this.addressSelected.city);
-            },
-            error: (err) => console.error('Error loading address:', err)
-          });
-          this.subscriptions.push(sub);
-        }
+      if (!this.token || addressId === 0 || addressId == null) {
+        this.addressSelected = null;
+        this.getDeliveryCost(this.addressSelected?.city); 
+        this.calculateTotal(this.cartData);
+        return;
       }
+    
+      const subscription = this._userService.getAddress(addressId).subscribe({
+        next: (res) => {
+          this.addressSelected = res;
+          this.getDeliveryCost(this.addressSelected.city);
+          this.calculateTotal(this.cartData);
+        },
+        error: (err) => {
+          console.error('Error loading address:', err);
+          this.addressSelected = null;
+          this.getDeliveryCost(this.addressSelected?.city);
+          this.calculateTotal(this.cartData);
+        }
+      });
+    
+      subscription.add(() => this.subscriptions.push(subscription));
     }
 
     getDeliveryCost(city: string): void {
@@ -284,90 +519,172 @@ async ngOnInit(): Promise<void> {
       this.deliveryCost = selectedItem.cost;
     }
 
+    // Increase(itemId: string): void {
+    //   const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
+    //   if (!item) return;
+
+    //   item.quantity += 1;
+
+    //   this.calculateTotal(this.cartData);
+
+    //   this.cartService.updateCart(this.cartData).subscribe({
+    //     next: (res) => {
+    //       this.cartData = res;
+    //       if (this.cartData.addressId != null) {
+    //         this.updateAddress(this.cartData.addressId);
+    //       }
+    //       this.calculateTotal(this.cartData);
+    //     },
+    //     error: (err) => console.error('Error increasing item quantity:', err)
+    //   });
+    // }
+
     Increase(itemId: string): void {
       const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
       if (!item) return;
-
+    
       item.quantity += 1;
-
       this.calculateTotal(this.cartData);
-
+    
       this.cartService.updateCart(this.cartData).subscribe({
         next: (res) => {
           this.cartData = res;
           if (this.cartData.addressId != null) {
             this.updateAddress(this.cartData.addressId);
           }
-          this.calculateTotal(this.cartData);
         },
-        error: (err) => console.error('Error increasing item quantity:', err)
+        error: (err) => {
+          console.error('Error increasing item quantity:', err);
+          item.quantity -= 1;
+          this.calculateTotal(this.cartData);
+        }
       });
     }
+
+    // Decrease(itemId: string): void {
+    //   const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
+    //   if (!item) return;
+
+    //   if (item.quantity > 1) {
+    //     item.quantity -= 1;
+
+    //     this.calculateTotal(this.cartData);
+
+    //     this.cartService.updateCart(this.cartData).subscribe({
+    //       next: (res) => {
+    //         this.cartData = res;
+    //         if (this.cartData.addressId != null) {
+    //           this.updateAddress(this.cartData.addressId);
+    //         }
+    //         this.calculateTotal(this.cartData);
+    //       },
+    //       error: (err) => console.error('Error decreasing item quantity:', err)
+    //     });
+    //   } else {
+    //     console.warn('Minimum quantity is 1');
+    //   }
+    // }
 
     Decrease(itemId: string): void {
       const item = this.cartData.cartItems?.find(i => i.itemId === itemId);
-      if (!item) return;
-
-      if (item.quantity > 1) {
-        item.quantity -= 1;
-
-        this.calculateTotal(this.cartData);
-
-        this.cartService.updateCart(this.cartData).subscribe({
-          next: (res) => {
-            this.cartData = res;
-            if (this.cartData.addressId != null) {
-              this.updateAddress(this.cartData.addressId);
-            }
-            this.calculateTotal(this.cartData);
-          },
-          error: (err) => console.error('Error decreasing item quantity:', err)
-        });
-      } else {
-        console.warn('Minimum quantity is 1');
-      }
+      if (!item || item.quantity <= 1) return;
+    
+      const previousQuantity = item.quantity;
+      item.quantity -= 1;
+      this.calculateTotal(this.cartData);
+    
+      this.cartService.updateCart(this.cartData).subscribe({
+        next: (res) => {
+          this.cartData = res;
+          if (this.cartData.addressId != null) {
+            this.updateAddress(this.cartData.addressId);
+          }
+        },
+        error: (err) => {
+          console.error('Error decreasing item quantity:', err);
+          item.quantity = previousQuantity; 
+          this.calculateTotal(this.cartData);
+        }
+      });
     }
 
 
 
+
+    // RemoveItem(itemId: string): void {
+    //   const index = this.cartData.cartItems?.findIndex(item => item.itemId === itemId);
+    //   if (index !== undefined && index !== -1) {
+    //     this.cartData.cartItems.splice(index, 1);
+    //     console.log('Item removed:', itemId);
+    //     this.updateCartAndTotals();
+    //   }
+    // }
 
     RemoveItem(itemId: string): void {
       const index = this.cartData.cartItems?.findIndex(item => item.itemId === itemId);
-      if (index !== undefined && index !== -1) {
-        this.cartData.cartItems.splice(index, 1);
-        console.log('Item removed:', itemId);
-        this.updateCartAndTotals();
-      }
+      if (index === undefined || index === -1) return;
+    
+      this.cartData.cartItems.splice(index, 1);
+      console.log('Item removed:', itemId);
+      this.updateCartAndTotals();
     }
 
-    updateCartAndTotals(): void {
+  //   updateCartAndTotals(): void {
 
-      console.log('Updating cart from null:', this.cartData);
-      this.cartService.updateCart(this.cartData).subscribe({
-        next: (res) => {
-          if (res != null) {
-            this.cartData = res;
-            console.log('Updating cart from null:', this.cartData);
+  //     console.log('Updating cart from null:', this.cartData);
+  //     this.cartService.updateCart(this.cartData).subscribe({
+  //       next: (res) => {
+  //         if (res != null) {
+  //           this.cartData = res;
+  //           console.log('Updating cart from null:', this.cartData);
 
-            if (!this.cartData.cartItems) {
-              this.cartData.cartItems = [];
-            }
+  //           if (!this.cartData.cartItems) {
+  //             this.cartData.cartItems = [];
+  //           }
 
-            if (this.cartData.addressId && this.cartData.addressId !== 0) {
-              this.updateAddress(this.cartData.addressId);
-            }
+  //           if (this.cartData.addressId && this.cartData.addressId !== 0) {
+  //             this.updateAddress(this.cartData.addressId);
+  //           }
 
-            this.calculateTotal(this.cartData);
-          } else {
+  //           this.calculateTotal(this.cartData);
+  //         } else {
            
-            this.subTotal = 0;
-            this.total = this.deliveryCost; // only delivery if any
+  //           this.subTotal = 0;
+  //           this.total = this.deliveryCost; // only delivery if any
+  //         }
+
+  //       },
+  //       error: (err) => console.error('Error updating cart:', err)
+  //     });
+
+  // }
+
+  updateCartAndTotals(): void {
+    console.log('Updating cart from null:', this.cartData);
+    this.cartService.updateCart(this.cartData).subscribe({
+      next: (res) => {
+        if (res) {
+          this.cartData = res;
+          if (!this.cartData.cartItems) {
+            this.cartData.cartItems = [];
           }
-
-        },
-        error: (err) => console.error('Error updating cart:', err)
-      });
-
+          if (this.cartData.addressId && this.cartData.addressId !== 0) {
+            this.updateAddress(this.cartData.addressId);
+          }
+        } else {
+        
+          this.cartData = {
+            id: "0",
+            cartItems: [],
+            addressId: undefined, 
+            paymentId: undefined, 
+            clientSecret: undefined 
+          };
+        }
+        this.calculateTotal(this.cartData);
+      },
+      error: (err) => console.error('Error updating cart:', err)
+    });
   }
 
   redirectToLogin(): void {
@@ -375,20 +692,41 @@ async ngOnInit(): Promise<void> {
   }
   
 
-  openModal() {
+  // openModal() {
 
-      this._userService.getAllAddress().subscribe({
-            next: (res) => {
-              console.log('Address data:', res);
-              this.addresses = res;
-            },
-            error: (err) => console.error('Error loading Address:', err)
-          });
+  //     this._userService.getAllAddress().subscribe({
+  //           next: (res) => {
+  //             console.log('Address data:', res);
+  //             this.addresses = res;
+  //           },
+  //           error: (err) => console.error('Error loading Address:', err)
+  //         });
 
 
+  //   const modalElement = document.getElementById('myModal');
+  //   this.modal = new bootstrap.Modal(modalElement);
+  //   this.modal.show();
+  // }
+
+  openModal(): void {
+   
+    const sub = this._userService.getAllAddress().subscribe({
+      next: (res) => {
+        console.log('Address data:', res);
+        this.addresses = res;
+      },
+      error: (err) => console.error('Error loading Address:', err)
+    });
+    this.subscriptions.push(sub); 
+  
+    
     const modalElement = document.getElementById('myModal');
-    this.modal = new bootstrap.Modal(modalElement);
-    this.modal.show();
+    if (modalElement) {
+      this.modal = new bootstrap.Modal(modalElement);
+      this.modal.show();
+    } else {
+      console.error('Modal element not found');
+    }
   }
 
   closeModal() {
@@ -397,35 +735,78 @@ async ngOnInit(): Promise<void> {
     }
   }
 
-  onSelectedAddress(index: number) {
+  // onSelectedAddress(index: number) {
+  //   this.selectedAddressIndex = index;
+  //   this.addressSelected= this.addresses[index];
+
+  // this.cartData.addressId= this.addresses[index].id;
+  // this.cartService.updateCart(this.cartData).subscribe({
+  //   next: (res) => {
+  //     console.log('Update Delivry Address:', res);
+  //     this.cartData = res;
+  //     if(this.cartData.addressId != null) {
+  //       this.updateAddress(this.cartData.addressId);
+  //     }
+  //    this.calculateTotal(this.cartData);
+
+  //   },
+  //   error: (err) => console.error('Error in Update Delivry Address:', err)
+  // });
+
+  // }
+  onSelectedAddress(index: number): void {
+    if (!this.addresses || index < 0 || index >= this.addresses.length) {
+      console.error('Invalid address index:', index);
+      return;
+    }
+  
     this.selectedAddressIndex = index;
-    this.addressSelected= this.addresses[index];
-
-  this.cartData.addressId= this.addresses[index].id;
-  this.cartService.updateCart(this.cartData).subscribe({
-    next: (res) => {
-      console.log('Update Delivry Address:', res);
-      this.cartData = res;
-      if(this.cartData.addressId != null) {
-        this.updateAddress(this.cartData.addressId);
+    this.addressSelected = this.addresses[index];
+    this.cartData.addressId = this.addresses[index].id;
+  
+    const sub = this.cartService.updateCart(this.cartData).subscribe({
+      next: (res) => {
+        this.cartData = res;
+        console.log('Update Delivery Address:', res);
+        if (this.cartData.addressId != null && this.cartData.addressId !== 0) {
+          this.updateAddress(this.cartData.addressId);
+        } else {
+          this.addressSelected = null;
+          this.cartData.addressId = undefined;
+          console.warn('Failed to save address in Redis, resetting address selection.');
+          alert('Failed to save the selected address. Please try again.');
+        }
+        this.calculateTotal(this.cartData);
+      },
+      error: (err) => {
+        console.error('Error in Update Delivery Address:', err);
+        this.addressSelected = null;
+        this.cartData.addressId = undefined;
+        this.calculateTotal(this.cartData);
       }
-     this.calculateTotal(this.cartData);
-
-    },
-    error: (err) => console.error('Error in Update Delivry Address:', err)
-  });
-
+    });
+    this.subscriptions.push(sub); 
   }
 
-  Confirm():void{
+  // Confirm():void{
+  //   console.log('Selected Address Index from confirm:', this.selectedAddressIndex);
+  //   this.closeModal();
+  // }
+
+  Confirm(): void {
     console.log('Selected Address Index from confirm:', this.selectedAddressIndex);
+    if (this.selectedAddressIndex >= 0 && this.addressSelected) {
+      console.log('Confirmed address:', this.addressSelected);
+    }
     this.closeModal();
   }
 
   async onCheckout(): Promise<void> {
     if (!this.cartData.addressId) {
       this.errorMessage = 'Please select a delivery address before proceeding to checkout.';
-      return;
+      alert('Please select a valid delivery address before proceeding to checkout.');
+    return;
+   
     }
 
     if (!this.cartData.cartItems || this.cartData.cartItems.length === 0) {
@@ -516,6 +897,70 @@ async ngOnInit(): Promise<void> {
     });
   }
 
+  // async onCheckout(): Promise<void> {
+  //   if (!this.cartData.addressId) {
+  //     this.errorMessage = 'Please select a delivery address before proceeding to checkout.';
+  //     return;
+  //   }
+  
+  //   if (!this.cartData.cartItems || this.cartData.cartItems.length === 0) {
+  //     this.errorMessage = 'Your cart is empty. Add items to proceed to checkout.';
+  //     return;
+  //   }
+  
+  //   this.isLoading = true;
+  //   this.errorMessage = null;
+  
+  //   const shippingCostId = this.shippingCosts.find(item => item.name === this.addressSelected?.city)?.id;
+  //   const cartId = this.cartData.id;
+  //   console.log('shippingCostId:', shippingCostId, 'cartId:', cartId);
+  
+  //   const sub = this.PaymentService.createOrUpdatePayment(cartId, shippingCostId).subscribe({
+  //     next: (response: Cart) => {
+  //       this.isLoading = false;
+  //       this.cartData = response;
+  //       this.clientSecret = response.clientSecret ?? null;
+  
+  //       // إعادة تفعيل التحقق من المجموع إذا كنت تريد
+  //       const backendTotal = response.cartItems.reduce((sum, item) => {
+  //         return sum + ((item.priceAfterSale ?? item.price ?? 0) * item.quantity);
+  //       }, 0) + this.deliveryCost;
+  
+  //       if (Math.abs(this.total - backendTotal) > 0.01) {
+  //         this.errorMessage = 'Total mismatch detected. Please refresh the cart and try again.';
+  //         return;
+  //       }
+  
+  //       if (!this.clientSecret || !this.stripe) {
+  //         this.errorMessage = 'Failed to initialize payment. Please try again.';
+  //         return;
+  //       }
+  
+  //       this.elements = this.stripe.elements({ clientSecret: this.clientSecret });
+  //       this.paymentElement = this.elements.create('payment');
+  
+  //       // استدعاء mount باستخدام ViewChild
+  //       if (this.paymentElementRef && this.paymentElementRef.nativeElement) {
+  //         this.paymentElement.mount(this.paymentElementRef.nativeElement);
+  //         this.paymentElement.on('ready', () => {
+  //           console.log('Payment Element is ready');
+  //           console.log('Payment Element:', this.paymentElement);
+  //           console.log(response.paymentId);
+  //           console.log(this.clientSecret);
+  //         });
+  //       } else {
+  //         console.error('Payment element reference not found in the DOM');
+  //         this.errorMessage = 'Payment setup failed. Please try again.';
+  //       }
+  //     },
+  //     error: (err) => {
+  //       this.isLoading = false;
+  //       this.errorMessage = err.error?.message || 'Failed to initialize payment. Please try again.';
+  //       console.error('Payment initialization error:', err);
+  //     }
+  //   });
+  //   this.subscriptions.push(sub); // إضافة الاشتراك
+  // }
 
   async confirmPayment(): Promise<void> {
     if (!this.stripe || !this.elements || !this.clientSecret) {
@@ -554,7 +999,7 @@ async ngOnInit(): Promise<void> {
 
       next: (response:OrderResponse) => {
         console.log('Order created in database:', response);
-
+     
         // Clear the cart in the frontend
         this.cartData = {} as Cart;
         this.cartData.cartItems = [];
@@ -562,38 +1007,147 @@ async ngOnInit(): Promise<void> {
         this.total = 0;
         this.deliveryCost = 0;
 
-        this.router.navigate(['/order-confirmation'], {
-          queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
      
-        });
+          this.router.navigate(['/order-confirmation'], {
+          queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
+          });
+      
+      
       },
       error: (err : HttpErrorResponse) => {
         console.error('Error creating order in the backend:', err);
         this.errorMessage = 'Payment succeeded, but failed to create order. Please contact support.';
-      }
+       
+        }
     });
   }
 }
-    
+
+async confirmPayment00(): Promise<void> {
+  if (!this.stripe || !this.elements || !this.clientSecret) {
+    this.errorMessage = 'Payment setup is incomplete. Please try again.';
+    return;
+  }
+
+  this.isLoading = true;
+  this.errorMessage = null;
+
+  const { error, paymentIntent } = await this.stripe.confirmPayment({
+    elements: this.elements,
+    confirmParams: {
+      return_url: `${window.location.origin}/order-confirmation`
+    },
+    redirect: 'if_required'
+  });
+
+  this.isLoading = false;
+
+  if (error) {
+    this.errorMessage = error.message || 'Payment failed. Please try again.';
+    console.error('Payment error:', error);
+    return;
+  }
+
+  if (paymentIntent && paymentIntent.status === 'succeeded') {
+    console.log('Payment succeeded:', paymentIntent);
+
+    const shippingCostId = this.shippingCosts.find(item => item.name === this.addressSelected?.city)?.id;
+    const cartId = this.cartData.id;
+    console.log('shippingCostId:', shippingCostId, 'cartId:', cartId);
+    const addressIdToUse = this.cartData.addressId ?? this.addressSelected?.id;
+
+    if (!addressIdToUse) {
+      this.errorMessage = 'No valid delivery address selected.';
+      return;
+    }
+
+    const sub = this.PaymentService.createOrder(cartId, shippingCostId, addressIdToUse, paymentIntent.id).subscribe({
+      next: (response: OrderResponse) => {
+        console.log('Order created in database:', response);
+
+        // Clear the cart in the frontend
+        this.cartData = {} as Cart;
+        this.subTotal = 0;
+        this.total = this.deliveryCost;
+        this.deliveryCost = 0;
+
+        this.router.navigate(['/order-confirmation'], {
+          queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
+        });
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error creating order in the backend:', err);
+        this.errorMessage = 'Payment succeeded, but failed to create order. Please contact support.';
+      }
+    });
+    this.subscriptions.push(sub);
+  }
+}
+
+trackByItemId(index: number, item: CartItem): string {
+  return item.itemId; 
+}
+showPaymentTab: boolean = false;
+proceedToCheckout(): void {
+  const paymentTab = document.getElementById('payment-tab');
+  if (paymentTab) {
+    paymentTab.click(); 
+  }
+}
+// proceedToCheckout(): void {
+//   this.showPaymentTab = true;
+// }
+
+  // clearAllCart(): void {
+  //   if (!this.cartData || !this.cartData.id) {
+  //     console.warn('No cart data to clear');
+  //     return;
+  //   }
+  //     // Clear the cart in the backend
+
+  //   this.cartService.clearCart(this.cartData.id).subscribe({
+  //     next: () => {
+  //       console.log('Cart cleared in the backend');
   
+  //       // Clear the cart in the frontend
+  //       this.cartData = {} as Cart;
+  //       this.cartData.cartItems = [];
+  //       this.subTotal = 0;
+  //       this.total = 0;
+  //       this.deliveryCost = 0;
+  
+  //       // Update the UI
+  //       this.cdr.detectChanges();
+  //     },
+  //     error: (err) => {
+  //       console.error('Error clearing cart in the backend:', err);
+  //       this.errorMessage = 'Failed to clear cart. Please try again.';
+  //     }
+  //   });
+  // }
 
   clearAllCart(): void {
     if (!this.cartData || !this.cartData.id) {
       console.warn('No cart data to clear');
       return;
     }
-      // Clear the cart in the backend
-
-    this.cartService.clearCart(this.cartData.id).subscribe({
+  
+    const sub = this.cartService.clearCart(this.cartData.id).subscribe({
       next: () => {
         console.log('Cart cleared in the backend');
   
-        // Clear the cart in the frontend
-        this.cartData = {} as Cart;
-        this.cartData.cartItems = [];
+        // Clear the cart in the frontend with a properly initialized Cart object
+        this.cartData = {
+          id: this.cartData.id, 
+          cartItems: [],
+          addressId: undefined,
+          paymentId: undefined,
+          clientSecret: undefined
+        };
         this.subTotal = 0;
         this.total = 0;
         this.deliveryCost = 0;
+        this.extraCostTotal = 0; // Reset extra cost total as well
   
         // Update the UI
         this.cdr.detectChanges();
@@ -603,5 +1157,6 @@ async ngOnInit(): Promise<void> {
         this.errorMessage = 'Failed to clear cart. Please try again.';
       }
     });
+    this.subscriptions.push(sub); 
   }
 }

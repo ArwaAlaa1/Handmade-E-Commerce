@@ -1,0 +1,21 @@
+<div *ngFor="let address of addresses; let i = index" 
+     (click)="selectAddress(i)"
+     class="p-3 mb-3 rounded-3 address-item"
+     [class.active-address]="selectedAddressIndex === i">
+
+  <div class="d-flex justify-content-between align-items-start mb-2">
+    <strong>{{ address.country }} - {{ address.city }}</strong>
+    <button class="btn btn-link p-0" (click)="editAddress(i); $event.stopPropagation()">
+      <i class="bi bi-pencil-square"></i>
+    </button>
+  </div>
+
+  <hr>
+
+  <div>
+    Full Name: {{ address.fullName }}<br>
+    Region: {{ address.region }}<br>
+    Phone Number: {{ address.phoneNumber }}<br>
+  </div>
+
+</div>

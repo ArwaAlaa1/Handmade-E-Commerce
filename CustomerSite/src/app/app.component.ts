@@ -5,6 +5,7 @@ import { FooterComponent } from "./components/footer/footer.component";
 import { ReactiveFormsModule   } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 
+
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, ReactiveFormsModule, HeaderComponent, FooterComponent],
@@ -17,5 +18,5 @@ export class AppComponent {
     this._AuthService.loadUserData();
   }
   
-  title = 'Handmade E-Commerce';
+  title = 'HandOra';
 }

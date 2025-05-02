@@ -1,6 +1,6 @@
 export interface Cart {
     id: string;
-    paymentId?: string; 
+    paymentId?: string;
     clientSecret?: string;
     cartItems: CartItem[];
     addressId?: number;
@@ -14,17 +14,18 @@ export interface Cart {
     sellerId: string;
     photoUrl: string;
     category: string;
-    customizeInfo?: string; 
-    color?: string; 
-    size?: string; 
-    price: number; 
-    unitPrice: number; 
-    sellingPrice: number; 
-    priceAfterSale: number; 
-    activeSale: number; 
+    customizeInfo?: string;
+    color?: string;
+    size?: string;
+    extraCost?: number;
+    price: number;
+    unitPrice: number;
+    sellingPrice: number;
+    priceAfterSale: number;
+    activeSale: number;
     quantity: number;
   }
-  
+
   // export interface CartItem {
   //   itemId: string;
   //   productId: number;
@@ -43,4 +44,3 @@ export interface Cart {
   //   activeSale: number;
   //   quantity: number;
   // }
-  

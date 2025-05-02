@@ -1,0 +1,35 @@
+<div class="container py-4 custom-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="mb-0">
+        <i class="fa-solid fa-box-open me-2 text-primary-custom"></i> Your Orders
+      </h5>
+      <input
+      type="text"
+      class="form-control w-25"
+      placeholder="Search by status or order code..."
+      [(ngModel)]="searchItem"
+      onkeyup="filterOrders()"
+    />
+    </div>
+  
+    <div *ngFor="let order of filteredOrders" (click)="viewOrderDetails(order.id)"
+    style="cursor: pointer;"  class="card shadow-lg mb-3 border-0">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="mb-1 fw-bold">Order #{{ order.id + 1000 }}</h6>
+            <p class="mb-1 text-muted">Order Date : {{ order.orderDate }}</p>
+            <p class="mb-0">
+              Status:
+              <span class="fw-semibold text-primary-custom">{{ order.status }}</span>
+            </p>
+          </div>
+          <div class="widthright">
+            <div class="fw-semibold">Total: <span>{{ order.total }} EGP</span></div>
+            <div class="fw-semibold">Items: <span>{{ order.itemsCount }}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

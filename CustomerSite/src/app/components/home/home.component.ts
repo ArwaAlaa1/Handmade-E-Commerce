@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { v4 as uuidv4 } from 'uuid';
 import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -28,6 +29,13 @@ export class HomeComponent implements OnInit {
   allProducts: any[] = [];
   categories : any[] = [];
 
+  selectedProduct: any = null;
+  selectedColor: string = '';
+  selectedSizeObject: { name: string; extraCost: number } | null = null;
+  additionalDetails: string = '';
+  selectedQuantity: number = 0;
+  showValidation = false;
+
   filters = {
     categoryId: null,
     maxPrice: null,
@@ -41,6 +49,26 @@ export class HomeComponent implements OnInit {
     this.filterProducts();
     this.getCategories();
     this._authService.checktheme();
+  }
+
+  compareSizes(a: any, b: any): boolean {
+    return a?.name === b?.name && a?.extraCost === b?.extraCost;
+  }
+
+  openModal(product: any) {
+    if (!product.stock || product.stock <= 0) {
+      alert("This product is out of stock.");
+      return;
+    }
+
+    this.selectedProduct = product;
+
+    this.selectedColor = product.colors?.length === 1 ? product.colors[0] : '';
+    this.selectedSizeObject = product.sizes?.length === 1 ? product.sizes[0] : null;
+
+    this.additionalDetails = '';
+    this.selectedQuantity = 1;
+    this.showValidation = false;
   }
 
   applyFilters() {
@@ -129,10 +157,34 @@ export class HomeComponent implements OnInit {
 
   product :any = {};
 
-  addToCart(id:number, quantity:number) {
+  addToCart() {
 
+    this.showValidation = true;
+    const needsSize = this.selectedProduct.sizes?.length > 1;
+    const needsAdditional = !!this.selectedProduct.additionalDetails;
+    const quantityInvalid =
+    !this.selectedQuantity ||
+    this.selectedQuantity <= 0 ||
+    this.selectedQuantity > this.selectedProduct.stock;
 
-    this.product= this._productService.getProductById(id)
+    if (
+      (needsSize && !this.selectedSizeObject) ||
+      (needsAdditional && !this.additionalDetails) ||
+      quantityInvalid
+    ) {
+      return;
+    }
+
+    const payload = {
+      productId: this.selectedProduct.id,
+      color: this.selectedColor,
+      size: this.selectedSizeObject?.name,
+      extraCost: this.selectedSizeObject?.extraCost,
+      additionalDetails: this.additionalDetails,
+      quantity: this.selectedQuantity
+    };
+
+    this.product= this._productService.getProductById(this.selectedProduct.id)
     .subscribe((response) =>
       {
         // console.log(response);
@@ -146,23 +198,28 @@ export class HomeComponent implements OnInit {
           sellerId: this.product.seller.id,
           photoUrl: this.product.photos[0].url,
           category: this.product.category.name,
-          customizeInfo: this.product.customizeInfo,
+          customizeInfo: this.additionalDetails,
           price: this.product.sellingPrice,
-          color: this.product.color,
+          color: this.selectedColor,
           sellingPrice: this.product.sellingPrice,
           priceAfterSale: this.product.discountedPrice,
           unitPrice: this.product.sellingPrice,
-          size: this.product.size,
+          size: this.selectedSizeObject?.name,
+          extraCost: this.selectedSizeObject?.extraCost,
           activeSale: this.product.salePercent,
-          quantity: quantity
+          quantity: this.selectedQuantity
         };
-        this._cartService.addItemToBasket(cartItem,quantity);
-       
+        this._cartService.addItemToBasket(cartItem, this.selectedQuantity);
+
+        const product = this.allProducts.find(c => c.id === this.selectedProduct.id);
+        if (product) {
+        product.stock = product.stock - this.selectedQuantity;
+        }
+
+        this.showValidation = false;
+        this.selectedProduct = null;
 
       });
-
-      
-
   }
 
 }

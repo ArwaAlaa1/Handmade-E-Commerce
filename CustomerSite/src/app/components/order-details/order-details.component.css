@@ -1,0 +1,30 @@
+
+.text-primary-custom {
+  color: #fff;
+ 
+  border-color: #6c7fd8;
+}
+
+.btn-primary-custom {
+  color: #fff;
+  background-color: #6c7fd8;
+  border-color: #6c7fd8;
+}
+
+.btn-outline-primary-custom {
+  color: #6c7fd8;
+  border-color: #6c7fd8;
+}
+
+.btn-outline-primary-custom:hover {
+  background-color: #6c7fd8;
+  color: #fff;
+}
+
+.text-primary-custom {
+  color: #6c7fd8 !important;
+}
+.text-primary-custom {
+    color: #6c7fd8 !important;
+  }
+  

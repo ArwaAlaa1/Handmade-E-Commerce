@@ -1,0 +1,121 @@
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="mb-0 ">
+        <i class="fa-solid fa-box-open me-2 text-primary-custom"></i> Order Number : #{{ this.orderDetails.orderId+1000}}
+      </h5>
+      @if(this.orderDetails.status === 'Cancelled') {
+        <button  class="btn btn-danger w-25 mb-3">Cancelled Order</button>
+     
+      }
+     
+    </div>
+   
+  
+    <!-- Main Content -->
+    <div class="row g-4">
+      <!-- Left Side (Main Info) -->
+      <div class="col-lg-8">
+        <!-- Order Summary -->
+        <div class="card shadow-sm border-0 mb-4">
+          <div class="card-body">
+            <h6 class="fw-bold mb-4 text-primary-custom">Order Summary</h6>
+            <div class="row">
+              <div class="col-6">
+                <p class="mb-2">Items Number:</p>
+                <p class="mb-2">Sub Total:</p>
+                <p class="mb-2">Shipping Cost:</p>
+                <p class="mb-2">Total Amount:</p>
+                <p class="mb-0">Placement Date:</p>
+              </div>
+              <div class="col-6 text-end">
+                <p class="mb-2 fw-semibold">{{ orderDetails.itemsCount }}</p>
+                <p class="mb-2 fw-semibold">{{ orderDetails.subTotal | currency:'EGP' }}</p>
+                <p class="mb-2 fw-semibold">{{ orderDetails.shippingCost | currency:'EGP' }}</p>
+                <p class="mb-2 fw-semibold text-primary-custom">{{ orderDetails.total | currency:'EGP' }}</p>
+                <p class="mb-0 text-muted">{{ orderDetails.orderDate | date:'mediumDate' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+  
+        <!-- Order Items -->
+        <div class="card shadow-sm border-0 mb-3">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">Order Items</h6>
+         
+           <div *ngFor="let item of this.orderDetails.orderItems" class="d-flex align-items-center border-bottom pb-3 mb-3">
+            <!-- Product Image -->
+           <a             
+           [routerLink]="['/ProductDetails', item.ProductId]" >
+            <img [src]="imageBaseUrl+item.photo" alt="Product Image" class="img-thumbnail me-3" style="width: 80px; height: 80px; object-fit: cover;">
+      </a>
+            <!-- Product Details -->
+            <div class="flex-grow-1">
+              <h6 class="mb-1 fw-semibold">{{ item.name }}</h6>
+              <p class="mb-1 text-muted">Seller: {{ item.sellerName }}</p>
+              <p class="mb-0 text-muted">Quantity: {{ item.quantity }}</p>
+            </div>
+      
+            <!-- Price and Status -->
+            <div class="text-end">
+              <button *ngIf="item.itemStatus ==='Pending'" class="btn btn-outline-danger btn-sm mb-2" (click)="CancelItem(item.orderItemId)">Cancel</button>
+              <p class="mb-1">
+                <span class="fw-semibold">Status:</span>
+                <span class="badge bg-warning text-dark">{{ item.itemStatus }}</span>
+              </p>
+              <p class="mb-0">
+             
+                <span class="fw-bold text-primary-custom">{{ item.totalPrice }} EGP</span>
+              </p>
+            </div>
+          </div>
+          </div>
+        </div>
+  
+    
+      </div>
+  
+      <!-- Right Side (Customer Info & Actions) -->
+      <div class="col-lg-4">
+        <!-- Customer Info -->
+        <div class="card shadow-sm border-0 mb-3">
+          <div class="card-body">
+            <h6 class="fw-bold mb-3">Customer Info</h6>
+            <p class="mb-1"><strong>Name:</strong> {{this.orderDetails.shippingAddress.fullName}} </p>
+            <!-- <p class="mb-1"><strong>Email:</strong> <a href="mailto:john.doe&#64;example.com">john.doe&#64;example.com</a></p> -->
+            <p class="mb-0"><strong>Phone:</strong> {{this.orderDetails.shippingAddress.phoneNumber}}</p>
+            <p class="mb-1"><strong>Address:</strong>
+            @if (this.orderDetails.shippingAddress.addressDetails != null) {
+                <span>
+                    {{this.orderDetails.shippingAddress.addressDetails}},
+                    {{this.orderDetails.shippingAddress.region}},
+                    {{this.orderDetails.shippingAddress.city}}, 
+                    {{this.orderDetails.shippingAddress.country}}
+                    
+                   
+                    </span>
+                } 
+            @else {
+              <span>  
+              
+              
+                    {{this.orderDetails.shippingAddress.region}},
+                    {{this.orderDetails.shippingAddress.city}}, 
+                    {{this.orderDetails.shippingAddress.country}}
+                    
+                </span>
+            }
+            </p>
+          </div>
+        </div>
+  
+        @if(allItemsPending) {
+          <button (click)="CancelOrder(this.orderDetails.orderId)" class="btn btn-primary w-100 mb-3">Cancel Order</button>
+        }
+       
+      </div>
+    </div>
+  </div>
+  

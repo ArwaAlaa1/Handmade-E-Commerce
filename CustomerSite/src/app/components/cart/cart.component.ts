@@ -3,7 +3,7 @@ import { CartService } from './../../services/cart.service';
 import { environment } from './../../../environments/environment.development';
 import { ShippingService } from './../../services/shipping.service';
 import { ChangeDetectorRef, Component, ElementRef, NgModule, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 import { CookieService } from 'ngx-cookie-service';
@@ -17,11 +17,14 @@ import { Subscription } from 'rxjs';
 import { loadStripe, Stripe, StripeElements, StripePaymentElement } from '@stripe/stripe-js';
 import { OrderResponse } from '../../interfaces/order-response';
 import { HttpErrorResponse } from '@angular/common/http';
+import { log } from 'node:console';
+
  
 declare var bootstrap: any;
+// declare var toastr: any;
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, AddressPopUpComponent],
+  imports: [CommonModule ,RouterLink,RouterLinkActive],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
 })
@@ -39,8 +42,10 @@ declare var bootstrap: any;
  subTotal : number = 0;
   total: number = 0;
   subscriptions: Subscription[] = [];
+  imageBaseUrl:string = environment.baseImageURL;
+  // imageBaseUrl: string = `${environment.baseImageURL}images/`;
 
-  imageBaseUrl: string = `${environment.baseImageURL}images/`;
+
   isLogin: boolean = false;
   isLoading: boolean = false;
 
@@ -58,7 +63,23 @@ declare var bootstrap: any;
 }
 async ngOnInit(): Promise<void> {
   this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
-
+  // toastr.options = {
+  //   "closeButton": false,
+  //   "debug": false,
+  //   "newestOnTop": false,
+  //   "progressBar": true,
+  //   "positionClass": "toast-top-left",
+  //   "preventDuplicates": true,
+  //   "onclick": null,
+  //   "showDuration": "300",
+  //   "hideDuration": "1000",
+  //   "timeOut": "12000",
+  //   "extendedTimeOut": "1000",
+  //   "showEasing": "swing",
+  //   "hideEasing": "linear",
+  //   "showMethod": "fadeIn",
+  //   "hideMethod": "fadeOut",
+  // };
   const userSub = this._auth.userData.subscribe({
     next: (response) => {
       this.userData = response;
@@ -555,7 +576,7 @@ async ngOnInit(): Promise<void> {
 
       next: (response:OrderResponse) => {
         console.log('Order created in database:', response);
-
+     
         // Clear the cart in the frontend
         this.cartData = {} as Cart;
         this.cartData.cartItems = [];
@@ -563,20 +584,34 @@ async ngOnInit(): Promise<void> {
         this.total = 0;
         this.deliveryCost = 0;
 
-        this.router.navigate(['/order-confirmation'], {
-          queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
      
-        });
+          this.router.navigate(['/order-confirmation'], {
+          queryParams: { paymentId: paymentIntent.id, orderId: response.orderId }
+          });
+      
+      
       },
       error: (err : HttpErrorResponse) => {
         console.error('Error creating order in the backend:', err);
         this.errorMessage = 'Payment succeeded, but failed to create order. Please contact support.';
-      }
+        // if (typeof toastr !== 'undefined') {
+        //  toastr.error('Failed to create the order. Please try again.', 'Error');
+        // }
+        // else{
+        //   console.log('toastr is not defined');}
+        }
     });
   }
 }
-    
-  
+trackByItemId(index: number, item: any): string {
+  return item.itemId; 
+}
+proceedToCheckout(): void {
+  const paymentTab = document.getElementById('payment-tab');
+  if (paymentTab) {
+    paymentTab.click(); 
+  }
+}
 
   clearAllCart(): void {
     if (!this.cartData || !this.cartData.id) {

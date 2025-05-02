@@ -28,8 +28,8 @@ namespace ECommerce.Repository.Repositories
         {
             var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category)
                                                                .Include(i => i.ProductPhotos)
-                                                               //.Include(p => p.ProductColors)
-                                                               //.Include(p => p.ProductSizes)
+                                                               .Include(p => p.ProductColors)
+                                                               .Include(p => p.ProductSizes)
                                                                .Include(p => p.Sales)
                                                                .Include(p => p.Seller)
                                                                .AsQueryable();
@@ -50,6 +50,33 @@ namespace ECommerce.Repository.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Product>> GetProductsInActiveSale(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice)
+        {
+            var query = _context.Products.Where(p => p.IsDeleted == false)
+                                         .Include(c => c.Category)
+                                         .Include(i => i.ProductPhotos)
+                                         .Include(p => p.ProductColors)
+                                         .Include(p => p.ProductSizes)
+                                         .Include(p => p.Sales)
+                                         .Include(p => p.Seller)
+                                         .AsQueryable();
+
+            if (categoryId.HasValue)
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Cost >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Cost <= maxPrice.Value);
+
+            return await query
+                .Where(p => p.Category.IsDeleted == false)
+                .OrderBy(p => p.Id)
+                .ToListAsync();
+        }
+
+
         //public override Task<Product?> GetByIdAsync(int id)
         //{
         //    var product = _context.Products.Include(c => c.Category)
@@ -60,14 +87,14 @@ namespace ECommerce.Repository.Repositories
         //                                   .FirstOrDefaultAsync(p => p.Id == id);
         //    return product;
         //}
-       
+
 
         public async Task<IEnumerable<Product>> GetFavProducts(int pageSize, int pageIndex, int? categoryId, int? maxPrice, int? minPrice, string userId)
         {
             var query = _context.Products.Where(p => p.IsDeleted == false).Include(c => c.Category)
                                                                .Include(i => i.ProductPhotos)
-                                                               //.Include(p => p.ProductColors)
-                                                               //.Include(p => p.ProductSizes)
+                                                               .Include(p => p.ProductColors)
+                                                               .Include(p => p.ProductSizes)
                                                                .Include(p => p.Sales)
                                                                .Include(p => p.Seller)
                                                                .Include(p => p.Favorites).Where(p => p.Favorites.Any(f => f.UserId == userId))

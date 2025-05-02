@@ -266,7 +266,7 @@
 
             const list = document.getElementById("notificationList");
             const li = document.createElement("li");
-            li.innerText = `${data.Message} (Order ID: ${data.OrderId})`;
+            li.innerText = `${data.message} (Order ID: ${data.orderId})`;
             list.prepend(li);
         });
 

@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace ECommerce.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class NotificationController : ControllerBase

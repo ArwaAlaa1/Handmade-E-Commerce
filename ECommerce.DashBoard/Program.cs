@@ -57,6 +57,8 @@ namespace ECommerce.DashBoard
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IFavoriteRepository,FavoriteRepository>();
             builder.Services.AddScoped<IProductRepository,ProductRepository>();
+            builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+
 
             ////Redis Connection
             //builder.Services.AddSingleton<IConnectionMultiplexer>((provider) =>

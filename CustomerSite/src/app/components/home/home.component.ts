@@ -50,6 +50,7 @@ categoryPhoto:string="/Images/Categories/";
     this.filterProducts();
     this.getCategories();
     this._authService.checktheme();
+    this.commonService.triggerRefresh();
   }
 
   compareSizes(a: any, b: any): boolean {

@@ -65,6 +65,7 @@ declare var bootstrap: any;
 
 
 async ngOnInit(): Promise<void> {
+  this.commonService.triggerRefresh();
   this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
 
   this.extraCostTotal = 0;

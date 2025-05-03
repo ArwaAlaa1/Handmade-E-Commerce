@@ -20,7 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class FavouriteComponent implements OnInit {
 
   currentPage: number = 1;
-  itemsPerPage: number = 4;
+  itemsPerPage: number = 8;
   totalCount: number = 0;
   totalPages: number = 0;
   isLoading = true;
@@ -228,7 +228,7 @@ export class FavouriteComponent implements OnInit {
           this.selectedProduct = null;
 
         });
-        
+
     }
 
 }

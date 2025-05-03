@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment.development';
@@ -8,7 +8,9 @@ import { response } from 'express';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../interfaces/cart';
 import { v4 as uuidv4 } from 'uuid';
+import { AuthService } from '../../services/auth.service';
 import { CommonService } from '../../services/common.service';
+
 @Component({
   selector: 'app-details',
   imports: [ReactiveFormsModule, CommonModule, FormsModule],
@@ -48,7 +50,7 @@ export class DetailsComponent implements OnInit {
     },
   );
 
-  constructor(private commonService:CommonService,private _route: ActivatedRoute, private _service: ProductService, private _cartService:CartService) {
+  constructor(private _service: ProductService, private _authService:AuthService, private _router:Router, private commonService:CommonService,private _route: ActivatedRoute, private _cartService:CartService) {
     this.ProductId=this._route.snapshot.params['ProductId'];
   }
 
@@ -90,7 +92,7 @@ export class DetailsComponent implements OnInit {
       const endDate = new Date(this.product.offer.endDate);
 
       if (now > endDate) {
-        this.countdown = 'انتهى العرض';
+        this.countdown = 'Time Out';
         this.isOfferExpired = true;
         clearInterval(this.timer);
         return;
@@ -132,7 +134,26 @@ export class DetailsComponent implements OnInit {
     this.selectedPhotoUrl = url;
   }
 
+  isLogin : boolean = false;
+
   addToFavorite(productId: number) {
+
+    this._authService.userData.subscribe({
+      next: (data) => {
+        if (data) {
+          this.isLogin = true;
+        }
+        else {
+          this.isLogin = false;
+        }
+      }
+    });
+
+
+    if(this.isLogin == false){
+      this._router.navigate(['/login']);
+    }
+
     this._service.addToFav(productId).subscribe({
     next:(response) =>
     {
@@ -202,7 +223,22 @@ export class DetailsComponent implements OnInit {
   submitReview() {
   if (this.reviewForm.valid) {
     const reviewData = this.reviewForm.value;
-    console.log('Review Submitted:', reviewData);
+    // console.log('Review Submitted:', reviewData);
+    this._authService.userData.subscribe({
+      next: (data) => {
+        if (data) {
+          this.isLogin = true;
+        }
+        else {
+          this.isLogin = false;
+        }
+      }
+    });
+
+    if(this.isLogin == false){
+      this._router.navigate(['/login']);
+    }
+
     this._service.AddReview(this.product.id,this.reviewForm.controls['reviewContent'].value,this.voteValue*2).subscribe({
       next:(response)=>{
         console.log(response);

@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --background-color: #ffffff;
   --text-color: #212529;
   --primary-color: #0d6efd;
@@ -33,7 +33,7 @@ nav div li a,
 #page {
   background-color: var(--background-colorPage);
   color: var(--text-color);
-  /* min-height: 30vh; */
+  min-height: 30vh;
 }
 
 footer {
@@ -83,4 +83,7 @@ body.dark-mode hr {
 
 body.dark-mode .table {
   color: var(--text-color);
+} */
+header {
+  font-size: 2rem;
 }

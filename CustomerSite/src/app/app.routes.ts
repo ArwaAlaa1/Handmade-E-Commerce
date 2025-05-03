@@ -33,7 +33,7 @@ export const routes: Routes = [
 
   {path:'ProductDetails/:ProductId', component:DetailsComponent, title:'Details Page'},
 
-  {path:'favourite', component:FavouriteComponent, title:'Favourite Page'},
+  {path:'favourite', canActivate:[AuthGuard], component:FavouriteComponent, title:'Favourite Page'},
 
 
 

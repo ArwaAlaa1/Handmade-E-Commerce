@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router'
 import { AuthService } from '../../../services/auth.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-enter-pin',
@@ -23,7 +24,7 @@ export class EnterPinComponent implements OnInit {
   email: string = '';
   expireAt: string = '';
 
-  constructor(private _authService: AuthService,
+  constructor(private _authService: AuthService, private _CookieService : CookieService,
     private _Router : Router, private _route: ActivatedRoute
   ) { }
 
@@ -54,6 +55,20 @@ export class EnterPinComponent implements OnInit {
     this._authService.Verify_Pin( this.email, pinData).subscribe({
       next: (response) => {
         this.isLoading = false;
+        const pass = this._CookieService.get('pass');
+        if(!pass){
+          this._CookieService.set('pass', JSON.stringify(true), {
+            expires: 1,
+            path: '/',
+          });
+        }else{
+          this._CookieService.delete('pass', '/');
+          this._CookieService.set('pass', JSON.stringify(true), {
+            expires: 1,
+            path: '/',
+          });
+        }
+
         this._Router.navigate([`/resetpassword/${this.email}`]);
       },
       error: (error) => {

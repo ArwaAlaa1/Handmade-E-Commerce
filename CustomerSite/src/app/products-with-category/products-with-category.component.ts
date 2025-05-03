@@ -128,10 +128,11 @@ export class ProductsWithCategoryComponent {
     this._productService.addToFav(productId).subscribe({
     next:(response) =>
     {
+      this.commonService.triggerRefresh();
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
       product.isFavorite = true;
-      this.commonService.triggerRefresh();
+      
       }
     },
       error: (error) => {
@@ -143,10 +144,11 @@ export class ProductsWithCategoryComponent {
   deleteFromFavorite(productId : number) {
     this._productService.deleteFromFav(productId).subscribe((response) =>
     {
+      this.commonService.triggerRefresh();
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
         product.isFavorite = false;
-        this.commonService.triggerRefresh();
+       
       }
     });
   }
@@ -188,6 +190,7 @@ export class ProductsWithCategoryComponent {
     this.product= this._productService.getProductById(this.selectedProduct.id)
     .subscribe((response) =>
       {
+        this.commonService.triggerRefresh();
         // console.log(response);
         this.product = response;
         console.log(this.product);
@@ -219,7 +222,7 @@ export class ProductsWithCategoryComponent {
 
         this.showValidation = false;
         this.selectedProduct = null;
-        this.commonService.triggerRefresh();
+        
       });
   }
 

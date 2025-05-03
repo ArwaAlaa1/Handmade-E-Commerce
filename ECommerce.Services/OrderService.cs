@@ -79,6 +79,8 @@ namespace ECommerce.Services
                 var extraCost = item.ExtraCost ?? 0;
                 var totalItemPrice = (finalPrice + extraCost) * item.Quantity;
                 product.Stock -= item.Quantity;
+                _unitOfWork.Repository<Product>().Update(product);
+                //await _unitOfWork.SaveAsync();
                 var orderItem = new OrderItem(item.ProductId, item.CustomizeInfo, item.Color, item.Size, product.SellerId, item.Quantity)
                 {
                     TotalPrice = totalItemPrice
@@ -98,7 +100,7 @@ namespace ECommerce.Services
             }
 
             // 5. Calculate total price
-            var totalPrice = subtotal + shippingCost.Cost;
+            var totalPrice = subtotal ;
 
             // 6. Check for existing order with the same paymentId
             var existingOrder = await _orderRepo.GetOrderByPaymentIdAsync(paymentId);
@@ -142,6 +144,8 @@ namespace ECommerce.Services
             order.Status = OrderStatus.Cancelled;
             foreach (var item in order.OrderItems)
             {
+                var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.ProductId); 
+                product.Stock += item.Quantity;
                 item.Product.Seller = null;
                 item.OrderItemStatus = ItemStatus.Cancelled;
             }
@@ -154,11 +158,15 @@ namespace ECommerce.Services
         public async Task<OrderItem> CancelItemOrder(int orderItemId)
         {
             var orderitem = await _orderRepo.GetItemInOrderAsync(orderItemId);
+            var order = await _unitOfWork.Repository<Order>().GetByIdAsync(orderitem.OrderId);
             var product = await _unitOfWork.Repository<Product>().GetByIdAsync(orderitem.ProductId);
             product.Stock +=orderitem.Quantity;
             orderitem.IsDeleted = true;
             orderitem.OrderItemStatus = ItemStatus.Cancelled;
-          
+            order.SubTotal -= orderitem.TotalPrice;
+            _unitOfWork.Repository<OrderItem>().Update(orderitem);
+            _unitOfWork.Repository<Order>().Update(order);
+            _unitOfWork.Repository<Product>().Update(product);
             await _unitOfWork.SaveAsync();
 
             return orderitem;

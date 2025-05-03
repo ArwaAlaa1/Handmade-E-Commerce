@@ -87,9 +87,10 @@ namespace ECommerce.Repository
 
         public async Task<T?> GetByIdAsync(int id)
         {
-            var result = await _dbSet.FindAsync(id);
+            var result = await _dbSet.AsNoTracking().FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
             return result;
         }
+
 
         public async Task<T?> GetByIdWithIncludeAsync(int id, string includeProperties)
         {

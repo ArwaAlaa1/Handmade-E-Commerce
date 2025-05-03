@@ -1,4 +1,4 @@
-﻿/*html {
+﻿html {
   font-size: 14px;
 }
 
@@ -30,10 +30,10 @@ body {
   text-align: start;
 
   
-}*/
+}
 
 
-html {
+/*html {
     font-size: 14px;
 }
 
@@ -64,7 +64,7 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
-
+*/
 
 /*.layout-menu {
     background-color: #6D28D9 !important; 
@@ -151,7 +151,7 @@ body {
     .layout-menu .app-brand .app-brand-text {
         color: #E5E7EB !important; 
     }*/
-
+/*
 .layout-menu {
     background: linear-gradient(135deg, #1F2937 0%, #2D3748 100%) !important;
     border-right: 1px solid #1F2937;
@@ -197,5 +197,5 @@ body {
         color: #E5E7EB !important;
     }
 
-
+*/
 

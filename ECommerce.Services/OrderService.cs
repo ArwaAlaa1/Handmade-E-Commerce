@@ -100,7 +100,7 @@ namespace ECommerce.Services
             }
 
             // 5. Calculate total price
-            var totalPrice = subtotal + shippingCost.Cost;
+            var totalPrice = subtotal ;
 
             // 6. Check for existing order with the same paymentId
             var existingOrder = await _orderRepo.GetOrderByPaymentIdAsync(paymentId);

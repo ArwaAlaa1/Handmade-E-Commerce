@@ -65,13 +65,24 @@
                             <td>@item.CategoryName</td>
                             <td>@item.Stock</td>
                             <td>
-                                @if (item.SellingPrice > item.Cost)
+                                @if (item.SellingPrice > item.Cost  )
                                 {
+                                    if (item.IsOnSale)
+                                    {
+                                        <span data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
+                                           <del> @item.SellingPrice.ToString("C2")</del> 
+                                        </span>
+                                    }
+                                    else{
+
+                                    
                                     <span class="text-success" data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
-                                        @item.SellingPrice.ToString("C2")
+                                    @item.SellingPrice.ToString("C2")
                                     </span>
+                                    }
+                                    
                                 }
-                                else if (item.SellingPrice < item.Cost)
+                                else if (item.SellingPrice <item.Cost)
                                 {
                                     <span class="text-danger" data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
                                         @item.SellingPrice.ToString("C2")
@@ -79,6 +90,7 @@
                                 }
                                 else
                                 {
+
                                     <span data-bs-toggle="tooltip" title="Original Cost: @item.Cost.ToString("C")">
                                         @item.SellingPrice.ToString("C2")
                                     </span>

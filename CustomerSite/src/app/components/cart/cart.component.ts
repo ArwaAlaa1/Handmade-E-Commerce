@@ -76,81 +76,69 @@ async ngOnInit(): Promise<void> {
     error: (err) => console.error('Error loading Shipping Costs:', err)
   });
   this.subscriptions.push(shippingSub);
+
+
   const userSub = this._auth.userData.subscribe({
     next: (response) => {
       this.userData = response;
       this.token = this.userData?.token;
-      this.isLogin = true;
-
-      if (!this.token) {
-        console.warn('User not logged in, skipping cart operations');
-        return;
-      }
+      this.isLogin = !!this.token;
+      console.log('User data:', this.userData);
+      console.log('Token:', this.token);
 
      
       const existingCartId = this._cookie.get('cartId');
 
-      if (existingCartId) {
-        console.log('Guest cartId found in cookie:', existingCartId);
+      if (existingCartId || this.token) {
+        const cartSub = this.cartService.getCartById(existingCartId).subscribe({
+          next: (cart) => {
+            this.cartData = cart || { id: existingCartId || '', cartItems: [] };
+            console.log('Loaded cart data:', this.cartData);
 
-        
-        const userCartSub = this.cartService.getCartById().subscribe({
-          next: (userCart) => {
-            this.cartData = userCart;
+            if (this.token && existingCartId) {
+             
+              const guestCartSub = this.cartService.getCarteById(existingCartId).subscribe({
+                next: (guestCart) => {
+                  console.log('Guest cart items:', guestCart.cartItems);
 
-           
-            const guestCartSub = this.cartService.getCarteById(existingCartId).subscribe({
-              next: (guestCart) => {
-                console.log('Guest cart items:', guestCart.cartItems);
+                  if (guestCart.cartItems?.length) {
+                    this.cartData.cartItems = [...this.cartData.cartItems, ...guestCart.cartItems];
 
-               
-                if (guestCart.cartItems?.length) {
-                  this.cartData.cartItems = [...this.cartData.cartItems, ...guestCart.cartItems];
+                    const updateSub = this.cartService.updateCart(this.cartData).subscribe({
+                      next: () => {
+                        console.log('Merged guest cart items into user cart.');
 
-                
-                  const updateSub = this.cartService.updateCart(this.cartData).subscribe({
-                    next: () => {
-                      console.log('Merged guest cart items into user cart.');
+                        const clearSub = this.cartService.clearCart(existingCartId).subscribe({
+                          next: () => {
+                            this._cookie.delete('cartId');
+                            console.log('Guest cart cleared and cookie removed.');
+                          },
+                          error: (err) => console.error('Error clearing guest cart:', err)
+                        });
+                        this.subscriptions.push(clearSub);
+                      },
+                      error: (err) => console.error('Error updating user cart:', err)
+                    });
+                    this.subscriptions.push(updateSub);
+                  } else {
+                    console.log('Guest cart is empty. Skipping merge.');
+                    this._cookie.delete('cartId');
+                  }
+                },
+                error: (err) => console.error('Error fetching guest cart:', err)
+              });
+              this.subscriptions.push(guestCartSub);
+            }
 
-                     
-                      const clearSub = this.cartService.clearCart(existingCartId).subscribe({
-                        next: () => {
-                          this._cookie.delete('cartId');
-                          console.log('Guest cart cleared and cookie removed.');
-                        },
-                        error: (err) => console.error('Error clearing guest cart:', err)
-                      });
-                      this.subscriptions.push(clearSub);
-                    },
-                    error: (err) => console.error('Error updating user cart:', err)
-                  });
-                  this.subscriptions.push(updateSub);
-                } else {
-                  console.log('Guest cart is empty. Skipping merge.');
-                  this._cookie.delete('cartId');
-                }
-
-               
-                this.loadCartDetails();
-              },
-              error: (err) => console.error('Error fetching guest cart:', err)
-            });
-            this.subscriptions.push(guestCartSub);
-          },
-          error: (err) => console.error('Error fetching user cart:', err)
-        });
-        this.subscriptions.push(userCartSub);
-      } else {
-        
-        const cartSub = this.cartService.getCartById().subscribe({
-          next: (res) => {
-            this.cartData = res;
-            console.log('User cart data:', this.cartData);
             this.loadCartDetails();
           },
           error: (err) => console.error('Failed to get cart:', err)
         });
         this.subscriptions.push(cartSub);
+      } else if (!this.token && !existingCartId) {
+       
+        this.cartData = { id: '', cartItems: [] };
+        this.loadCartDetails();
       }
     },
     error: (err) => {
@@ -160,9 +148,8 @@ async ngOnInit(): Promise<void> {
   this.subscriptions.push(userSub);
 }
 
-
 private loadCartDetails(): void {
- 
+  console.log('Loading cart details with cartData:', this.cartData);
   if (this.cartData.addressId != null) {
     this.updateAddress(this.cartData.addressId);
   } 

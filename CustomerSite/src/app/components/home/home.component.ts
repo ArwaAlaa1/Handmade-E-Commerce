@@ -11,6 +11,7 @@ import { CartService } from '../../services/cart.service';
 import { v4 as uuidv4 } from 'uuid';
 import { Router, RouterLink } from '@angular/router';
 import { CommonService } from '../../services/common.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-home',
@@ -59,7 +60,16 @@ categoryPhoto:string="/Images/Categories/";
 
   openModal(product: any) {
     if (!product.stock || product.stock <= 0) {
-      alert("This product is out of stock.");
+       Swal.fire({
+        icon: 'warning',
+        title: 'Out of Stock',
+        text: 'This product is out of stock.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+        customClass: {
+          popup: 'animated fadeInDown'
+        }
+      });
       return;
     }
 
@@ -202,6 +212,16 @@ categoryPhoto:string="/Images/Categories/";
       (needsAdditional && !this.additionalDetails) ||
       quantityInvalid
     ) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Invalid Input',
+        text: 'Please fill in all required fields.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#3085d6',
+        customClass: {
+          popup: 'animated fadeInDown'
+        }
+      });
       return;
     }
 
@@ -246,6 +266,55 @@ categoryPhoto:string="/Images/Categories/";
         product.stock = product.stock - this.selectedQuantity;
         }
 
+        const imageUrl = this.imageBaseUrl && this.product?.photos?.[0]?.url
+        ? `${this.imageBaseUrl}${this.product.photos[0].url}`
+        : 'https://via.placeholder.com/100'; 
+        // Swal.fire({
+        //   icon: 'success',
+        //   title: 'Item Added Successfully',
+        //   text: `${this.product.name} has been added to your cart!`,
+        //   confirmButtonText: 'OK',
+        //   confirmButtonColor: '#3085d6',
+        //   customClass: {
+        //     popup: 'animated fadeInDown'
+        //   }
+        // });
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Item Added Successfully! ',
+          html:`
+          <div style="text-align: center;">
+            <img src="${imageUrl}" alt="${this.product.name}" style="width: 100px; height: 100px; border-radius: 10px; margin-bottom: 10px;" />
+            <p><strong>${this.product.name}</strong> has been added to your cart!</p>
+          </div>
+        `,
+          showCancelButton: true,
+          confirmButtonText: 'View Cart',
+          cancelButtonText: 'Continue Shopping',
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#28a745', 
+          customClass: {
+            popup: 'animated bounceIn', 
+            confirmButton: 'swal2-confirm-button', 
+            cancelButton: 'swal2-cancel-button' 
+          },
+          backdrop: 'rgba(0,0,0,0.8)', 
+          timer: 5000, 
+          timerProgressBar: true,
+         
+          willClose: () => {
+            const popup = Swal.getPopup();
+            if (popup) {
+              popup.classList.add('animated', 'bounceOut'); 
+            }
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+           
+            this.route.navigate(['/cart']); 
+          }
+        });
         this.showValidation = false;
         this.selectedProduct = null;
         this.commonService.triggerRefresh();

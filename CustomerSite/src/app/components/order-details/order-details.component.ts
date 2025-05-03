@@ -41,7 +41,12 @@ CancelItem(itemId:number){
   this.orderService.cancelOrderItem(itemId).subscribe({
     next: (data) => {
     //  this.orderDetails
-      // this.orderDetails = data;
+      // this.orderDetails.orderItems = 
+      const matchedItem = this.orderDetails.orderItems.find((item: { orderItemId: number; }) => item.orderItemId === itemId);
+      console.log("matchedItem",matchedItem);
+      matchedItem.itemStatus = "Cancelled";
+      this.orderDetails.total -= matchedItem.totalPrice;
+      this.orderDetails.subTotal -= matchedItem.totalPrice;
       console.log("cancel order item",data);
     }, error: (err) => {
       console.log(err);
@@ -50,6 +55,9 @@ CancelItem(itemId:number){
 }
 get allItemsPending(): boolean {
   return this.orderDetails.orderItems.every((item: { itemStatus: string; }) => item.itemStatus === "Pending");
+}
+get allItemscancelled(): boolean {
+  return this.orderDetails.orderItems.every((item: { itemStatus: string; }) => item.itemStatus === "Cancelled");
 }
 CancelOrder(id:number){
   this.orderService.cancelOrder(id).subscribe({

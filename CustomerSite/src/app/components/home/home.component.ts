@@ -23,7 +23,7 @@ import Swal from 'sweetalert2';
 export class HomeComponent implements OnInit {
 categoryPhoto:string="/Images/Categories/";
   currentPage: number = 1;
-  itemsPerPage: number = 4;
+  itemsPerPage: number = 8;
   totalCount: number = 0;
   totalPages: number = 0;
   isLoading = true;
@@ -51,6 +51,7 @@ categoryPhoto:string="/Images/Categories/";
     this.filterProducts();
     this.getCategories();
     this._authService.checktheme();
+    this.commonService.triggerRefresh();
   }
 
   compareSizes(a: any, b: any): boolean {
@@ -143,8 +144,24 @@ categoryPhoto:string="/Images/Categories/";
   toggleFavorite(product: any) {
     product.isFavorite = !product.isFavorite;
   }
-
+  isLogin : boolean = false;
   addToFavorite(productId: number) {
+
+    this._authService.userData.subscribe({
+      next: (data) => {
+        if (data) {
+          this.isLogin = true;
+        }
+        else {
+          this.isLogin = false;
+        }
+      }
+    });
+
+    if(this.isLogin == false){
+      this.route.navigate(['/login']);
+    }
+
     this._productService.addToFav(productId).subscribe({
     next:(response) =>
     {
@@ -152,7 +169,7 @@ categoryPhoto:string="/Images/Categories/";
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
       product.isFavorite = true;
-     
+
       }
     },
       error: (error) => {
@@ -168,7 +185,7 @@ categoryPhoto:string="/Images/Categories/";
       const product = this.allProducts.find(c => c.id === productId);
       if (product) {
         product.isFavorite = false;
-       
+
       }
     });
   }

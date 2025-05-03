@@ -3,12 +3,13 @@ import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs';
 import { environment } from '../../../environments/environment.development';
-import { RouterLink } from '@angular/router';
+import { Route, Router, RouterLink } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../interfaces/cart';
 import { v4 as uuidv4 } from 'uuid';
 import { FormsModule } from '@angular/forms';
 import { log } from 'console';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-offers',
@@ -20,7 +21,7 @@ export class OffersComponent implements OnInit {
 
 
   currentPage: number = 1;
-  itemsPerPage: number = 4;
+  itemsPerPage: number = 8;
   totalCount: number = 0;
   totalPages: number = 0;
   isLoading = true;
@@ -40,7 +41,7 @@ export class OffersComponent implements OnInit {
     minPrice: null
   };
 
-  constructor(public _productService: ProductService, private _cartService:CartService) {}
+  constructor(public _productService: ProductService, private _cartService:CartService, private _authService: AuthService, private route : Router) {}
 
   ngOnInit(): void {
     this.filterProducts();
@@ -97,7 +98,24 @@ export class OffersComponent implements OnInit {
     product.isFavorite = !product.isFavorite;
   }
 
+  isLogin : boolean = false;
   addToFavorite(productId: number) {
+
+    this._authService.userData.subscribe({
+      next: (data) => {
+        if (data) {
+          this.isLogin = true;
+        }
+        else {
+          this.isLogin = false;
+        }
+      }
+    });
+
+    if(this.isLogin == false){
+      this.route.navigate(['/login']);
+    }
+
     this._productService.addToFav(productId).subscribe({
     next:(response) =>
     {

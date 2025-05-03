@@ -40,8 +40,9 @@ export class OrderDetailsComponent {
 CancelItem(itemId:number){
   this.orderService.cancelOrderItem(itemId).subscribe({
     next: (data) => {
-     
+    //  this.orderDetails
       // this.orderDetails = data;
+      console.log("cancel order item",data);
     }, error: (err) => {
       console.log(err);
     }

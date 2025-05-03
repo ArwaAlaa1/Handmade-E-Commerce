@@ -114,70 +114,103 @@
       </div>
     </div>
   </div>
-
 </div>
 
-
-    <!-- Category -->
-    <section class="section-category padding-tb-50">
-      <div class=" m-auto p-3" style="width: 85%;">
-          <div class="row mb-minus-24">
-              <div class="col-lg-4 col-12 mb-24">
-                  <div class="bb-category-img">
-                      <img src="../../../assets/img/Gifts-pana.png" class="w-100" alt="category">
-                      <div class="bb-offers">
-                          <span>50% Off</span>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-lg-8 col-12 mb-24">
-                  <div class="bb-category-contact">
-                      <div class="category-title" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
-                          <h2 style="color: #5069d8;">Explore Categories</h2>
-                      </div>
-                      <div >
-                      
-                        
-                        <div id="categoryCarousel" class="carousel slide w-100" data-bs-ride="carousel">
-                          <div class="carousel-inner p-4">
-                            <div *ngFor="let group of categorySlides; let i = index" [class]="i === 0 ? 'carousel-item active' : 'carousel-item'">
-                              <div class="d-flex justify-content-center gap-4 py-4">
-                                <div *ngFor="let category of group"  class="text-center bg-light rounded p-3 shadow" style="min-width: 200px;">
-                                  <div (click)="GetProductsWithThisCategory(category.id)"  style="cursor: pointer;">
-                                 <div class="mb-2">
-                                    <img style="width: 30px; height: 35px;" src="{{imageBaseUrl+categoryPhoto}}{{category.photo}}"/>
-                                  </div>
-                                  <h5 class="mb-1">{{ category.name }}</h5>
-                                  <!-- <p class="text-muted">{{ category.count }} items</p> -->
-                                  </div>
-                                
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        
-                          <button class="carousel-control-prev " style="margin-right: 200px;" type="button" data-bs-target="#categoryCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                          </button>
-                          <button class="carousel-control-next ms-5" type="button" data-bs-target="#categoryCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                          </button>
-                        </div>
-                        
-                    </div>
-                
-                  </div>
-              </div>
+<!-- Category -->
+<section class="section-category padding-tb-50">
+  <div class="m-auto p-3" style="width: 85%">
+    <div class="row mb-minus-24">
+      <div class="col-lg-4 col-12 mb-24">
+        <div class="bb-category-img">
+          <img
+            src="../../../assets/img/Gifts-pana.png"
+            class="w-100"
+            alt="category"
+          />
+          <div class="bb-offers">
+            <span>50% Off</span>
           </div>
+        </div>
       </div>
-  </section>
+      <div class="col-lg-8 col-12 mb-24">
+        <div class="bb-category-contact">
+          <div
+            class="category-title"
+            data-aos="fade-up"
+            data-aos-duration="800"
+            data-aos-delay="200"
+          >
+            <h2 style="color: #5069d8">Explore Categories</h2>
+          </div>
+          <div>
+            <div
+              id="categoryCarousel"
+              class="carousel slide w-100"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner p-4">
+                <div
+                  *ngFor="let group of categorySlides; let i = index"
+                  [class]="i === 0 ? 'carousel-item active' : 'carousel-item'"
+                >
+                  <div class="d-flex justify-content-center gap-4 py-4">
+                    <div
+                      *ngFor="let category of group"
+                      class="text-center bg-light rounded p-3 shadow"
+                      style="min-width: 200px"
+                    >
+                      <div
+                        (click)="GetProductsWithThisCategory(category.id)"
+                        style="cursor: pointer"
+                      >
+                        <div class="mb-2">
+                          <img
+                            style="width: 30px; height: 35px"
+                            src="{{ imageBaseUrl + categoryPhoto }}{{
+                              category.photo
+                            }}"
+                          />
+                        </div>
+                        <h5 class="mb-1">{{ category.name }}</h5>
+                        <!-- <p class="text-muted">{{ category.count }} items</p> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-
-  
-    
-  
+              <button
+                class="carousel-control-prev"
+                style="margin-right: 200px"
+                type="button"
+                data-bs-target="#categoryCarousel"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button
+                class="carousel-control-next ms-5"
+                type="button"
+                data-bs-target="#categoryCarousel"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="py-5 bg-white">
   <div class="container">
@@ -315,7 +348,9 @@
                 class="d-flex justify-content-start"
                 style="flex-grow: 1"
               >
-                <span>{{ product.name }}</span>
+                <span
+                  ><strong>{{ product.name }}</strong></span
+                >
               </div>
               <div class="d-flex justify-content-end">
                 <ng-container *ngIf="product.rating">
@@ -550,113 +585,152 @@
   </div>
 </section>
 
-   <!-- Vendors -->
-   <section class="section-vendors padding-t-50 padding-b-100">
-    <div class="container">
-        <div class="row mb-minus-24">
-            <div class="col-12">
-                <div class="section-title bb-center" data-aos="fade-up" data-aos-duration="1000"
-                    data-aos-delay="200">
-                    <div class="section-detail">
-                        <h2 class="bb-title">Top <span>Vendors</span></h2>
-                        <p>Discover Our Trusted Partners: Excllence & Reliability in Every choice</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-5 col-12 mb-24" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                <div class="bb-vendors-img">
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="vendors_tab_one">
-                            <a href="javascript:void(0)" class="bb-vendor-init">
-                                <i class="ri-arrow-right-up-line"></i>
-                            </a>
-                            <img src="../../../assets/img/smiling-young-female-florist-with-flower-paper-bag-desk.jpg"  alt="vendors-img-1">
-                            <div class="vendors-local-shape">
-                                <div class="inner-shape"></div>
-                                <img src="../../../assets/img/ayalogo.jpg" alt="vendor">
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="vendors_tab_two">
-                            <a href="javascript:void(0)" class="bb-vendor-init">
-                                <i class="ri-arrow-right-up-line"></i>
-                            </a>
-                            <img src="assets/img/vendors/img-2.jpg" alt="vendors-img-2">
-                            <div class="vendors-local-shape">
-                                <div class="inner-shape"></div>
-                                <img src="assets/img/vendors/vendor-2.jpg" alt="vendor">
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="vendors_tab_three">
-                            <a href="javascript:void(0)" class="bb-vendor-init">
-                                <i class="ri-arrow-right-up-line"></i>
-                            </a>
-                            <img src="assets/img/vendors/img-3.jpg" alt="vendors-img-3">
-                            <div class="vendors-local-shape">
-                                <div class="inner-shape"></div>
-                                <img src="assets/img/vendors/vendor-3.jpg" alt="vendor">
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="vendors_tab_four">
-                            <a href="javascript:void(0)" class="bb-vendor-init">
-                                <i class="ri-arrow-right-up-line"></i>
-                            </a>
-                            <img src="assets/img/vendors/img-4.jpg" alt="vendors-img-4">
-                            <div class="vendors-local-shape">
-                                <div class="inner-shape"></div>
-                                <img src="assets/img/vendors/vendor-4.jpg" alt="vendor">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-7 col-12 mb-24">
-                <ul class="bb-vendors-tab-nav nav">
-                    <li class="nav-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#vendors_tab_one">
-                            <div class="bb-vendors-box">
-                                <div class="inner-heading">
-                                    <h5>Mira Fashion Pvt. Ltd.</h5>
-                                    <span>Sales - 587</span>
-                                </div>
-                                <p>Fruits (5) | Vegetables (30) | Snacks (09) </p>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="400">
-                        <a class="nav-link" data-bs-toggle="tab" href="#vendors_tab_two">
-                            <div class="bb-vendors-box">
-                                <div class="inner-heading">
-                                    <h5>Eelna Fashion Pvt. Ltd.</h5>
-                                    <span>Sales - 428</span>
-                                </div>
-                                <p>Fruits (8) | Vegetables (15) | Snacks (04) </p>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
-                        <a class="nav-link" data-bs-toggle="tab" href="#vendors_tab_three">
-                            <div class="bb-vendors-box">
-                                <div class="inner-heading">
-                                    <h5>Mario Fashion Pvt. Ltd.</h5>
-                                    <span>Sales - 1024</span>
-                                </div>
-                                <p>Fruits (16) | Vegetables (42) | Snacks (18) </p>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="nav-item" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="800">
-                        <a class="nav-link" data-bs-toggle="tab" href="#vendors_tab_four">
-                            <div class="bb-vendors-box">
-                                <div class="inner-heading">
-                                    <h5>Maria Fashion Pvt. Ltd.</h5>
-                                    <span>Sales - 210</span>
-                                </div>
-                                <p>Fruits (2) | Vegetables (10) | Snacks (03) </p>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+<!-- Vendors -->
+<section class="section-vendors padding-t-50 padding-b-100">
+  <div class="container">
+    <div class="row mb-minus-24">
+      <div class="col-12">
+        <div
+          class="section-title bb-center"
+          data-aos="fade-up"
+          data-aos-duration="1000"
+          data-aos-delay="200"
+        >
+          <div class="section-detail">
+            <h2 class="bb-title">Top <span>Vendors</span></h2>
+            <p>
+              Discover Our Trusted Partners: Excllence & Reliability in Every
+              choice
+            </p>
+          </div>
         </div>
+      </div>
+      <div
+        class="col-lg-5 col-12 mb-24"
+        data-aos="fade-up"
+        data-aos-duration="1000"
+        data-aos-delay="200"
+      >
+        <div class="bb-vendors-img">
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="vendors_tab_one">
+              <a href="javascript:void(0)" class="bb-vendor-init">
+                <i class="ri-arrow-right-up-line"></i>
+              </a>
+              <img
+                src="../../../assets/img/smiling-young-female-florist-with-flower-paper-bag-desk.jpg"
+                alt="vendors-img-1"
+              />
+              <div class="vendors-local-shape">
+                <div class="inner-shape"></div>
+                <img src="../../../assets/img/ayalogo.jpg" alt="vendor" />
+              </div>
+            </div>
+            <div class="tab-pane fade" id="vendors_tab_two">
+              <a href="javascript:void(0)" class="bb-vendor-init">
+                <i class="ri-arrow-right-up-line"></i>
+              </a>
+              <img src="assets/img/vendors/img-2.jpg" alt="vendors-img-2" />
+              <div class="vendors-local-shape">
+                <div class="inner-shape"></div>
+                <img src="assets/img/vendors/vendor-2.jpg" alt="vendor" />
+              </div>
+            </div>
+            <div class="tab-pane fade" id="vendors_tab_three">
+              <a href="javascript:void(0)" class="bb-vendor-init">
+                <i class="ri-arrow-right-up-line"></i>
+              </a>
+              <img src="assets/img/vendors/img-3.jpg" alt="vendors-img-3" />
+              <div class="vendors-local-shape">
+                <div class="inner-shape"></div>
+                <img src="assets/img/vendors/vendor-3.jpg" alt="vendor" />
+              </div>
+            </div>
+            <div class="tab-pane fade" id="vendors_tab_four">
+              <a href="javascript:void(0)" class="bb-vendor-init">
+                <i class="ri-arrow-right-up-line"></i>
+              </a>
+              <img src="assets/img/vendors/img-4.jpg" alt="vendors-img-4" />
+              <div class="vendors-local-shape">
+                <div class="inner-shape"></div>
+                <img src="assets/img/vendors/vendor-4.jpg" alt="vendor" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7 col-12 mb-24">
+        <ul class="bb-vendors-tab-nav nav">
+          <li
+            class="nav-item"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay="200"
+          >
+            <a
+              class="nav-link active"
+              data-bs-toggle="tab"
+              href="#vendors_tab_one"
+            >
+              <div class="bb-vendors-box">
+                <div class="inner-heading">
+                  <h5>Mira Fashion Pvt. Ltd.</h5>
+                  <span>Sales - 587</span>
+                </div>
+                <p>Fruits (5) | Vegetables (30) | Snacks (09)</p>
+              </div>
+            </a>
+          </li>
+          <li
+            class="nav-item"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay="400"
+          >
+            <a class="nav-link" data-bs-toggle="tab" href="#vendors_tab_two">
+              <div class="bb-vendors-box">
+                <div class="inner-heading">
+                  <h5>Eelna Fashion Pvt. Ltd.</h5>
+                  <span>Sales - 428</span>
+                </div>
+                <p>Fruits (8) | Vegetables (15) | Snacks (04)</p>
+              </div>
+            </a>
+          </li>
+          <li
+            class="nav-item"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay="600"
+          >
+            <a class="nav-link" data-bs-toggle="tab" href="#vendors_tab_three">
+              <div class="bb-vendors-box">
+                <div class="inner-heading">
+                  <h5>Mario Fashion Pvt. Ltd.</h5>
+                  <span>Sales - 1024</span>
+                </div>
+                <p>Fruits (16) | Vegetables (42) | Snacks (18)</p>
+              </div>
+            </a>
+          </li>
+          <li
+            class="nav-item"
+            data-aos="fade-up"
+            data-aos-duration="1000"
+            data-aos-delay="800"
+          >
+            <a class="nav-link" data-bs-toggle="tab" href="#vendors_tab_four">
+              <div class="bb-vendors-box">
+                <div class="inner-heading">
+                  <h5>Maria Fashion Pvt. Ltd.</h5>
+                  <span>Sales - 210</span>
+                </div>
+                <p>Fruits (2) | Vegetables (10) | Snacks (03)</p>
+              </div>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </div>
 </section>

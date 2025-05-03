@@ -31,18 +31,19 @@ namespace ECommerce.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly INotificationRepository _notificationRepository;
 
+       
         public OrderController(IOrderService orderService
-            , ICartRepository cartRepository
-            , IAddressRepository addressRepository
-            , IMapper mapper
-            , UserManager<AppUser> userManager
-            , IWebHostEnvironment webHostEnvironment,
-            ILogger<OrderController> logger,
-                        IConfiguration configuration,
-                        IUnitOfWork unitOfWork,
+           , ICartRepository cartRepository
+           , IAddressRepository addressRepository
+           , IMapper mapper
+           , UserManager<AppUser> userManager
+           , IWebHostEnvironment webHostEnvironment,
+           ILogger<OrderController> logger,
+                       IConfiguration configuration,
+                       IUnitOfWork unitOfWork,
 
-                        IHubContext<NotificationHub> hubContext
-            , INotificationRepository notificationRepository)
+                       IHubContext<NotificationHub> hubContext
+           , INotificationRepository notificationRepository)
 
 
         {
@@ -58,7 +59,6 @@ namespace ECommerce.Controllers
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
-
 
         [Authorize]
         [HttpPost]

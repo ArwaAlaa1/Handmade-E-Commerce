@@ -271,7 +271,36 @@ namespace ECommerce.Controllers
             }
         }
 
+
+        [HttpPost("Test")]
+        public async Task<ActionResult> test()
+        {
+            try
+            {
+                //var traderId = "2d688bd2-5b8f-4193-84c4-07541137ec3f";
+                var traderId = "3c8e0bd4-ab0e-49b3-b487-b19b5c11c1e2";
+                    await _notificationRepository.AddNotificationAsync(new Notification
+                    {
+                        AppUserId = traderId,
+                        Message = "You have a new order!",
+                    });
+
+                    await _hubContext.Clients
+                        .Group($"Trader_{traderId}")
+                        .SendAsync("ReceiveOrderNotification", new
+                        {
+                            Message = "🔔 You have a new order!",
+                            OrderId = 10,
+                            TraderId = traderId
+                        });
+                
+
+                return Ok(new { Message = "Order Created Successfully", orderId = 10 });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Failed to create order.", Error = ex.Message });
+            }
+        }
     }
-
-
 }

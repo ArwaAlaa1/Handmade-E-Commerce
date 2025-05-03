@@ -16,18 +16,18 @@ namespace ECommerce.Controllers
             _notificationRepo = notificationRepo;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("GetUnreadNotifications")]
+        public async Task<IActionResult> Get(string userId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var notifications = await _notificationRepo.GetUnreadNotificationsAsync(userId);
             return Ok(notifications);
         }
 
         [HttpPost("mark-all-read")]
-        public async Task<IActionResult> MarkAllAsRead()
+        public async Task<IActionResult> MarkAllAsRead(string userId)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             await _notificationRepo.MarkAllAsReadAsync(userId);
             return Ok();
         }

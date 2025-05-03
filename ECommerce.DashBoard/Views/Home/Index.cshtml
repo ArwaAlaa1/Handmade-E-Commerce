@@ -14,14 +14,14 @@
     </div>
 </div>
  *@
-<li class="nav-item dropdown">
+@* <li class="nav-item dropdown"> *@
 
-    <a class="nav-link" id="notificationDropdown" role="button">
-        🔔 <span id="notificationCount" class="badge bg-danger">0</span>
-    </a>
-    <ul class="dropdown-menu" id="notificationList">
-    </ul>
-</li>
+@*     <a class="nav-link" id="notificationDropdown" role="button"> *@
+@*         🔔 <span id="notificationCount" class="badge bg-danger">0</span> *@
+@*     </a> *@
+@*     <ul class="dropdown-menu" id="notificationList"> *@
+@*     </ul> *@
+@* </li> *@
 
 
 <div class="container-fluid mt-4">
@@ -254,68 +254,6 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-    <script>
-        // const userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
-        const userId = '@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value';
-
-        consol.log(userId);
-        const connection = new signalR.HubConnectionBuilder()
-<<<<<<< HEAD
-            .withUrl("https://localhost:7223/notificationHub?traderId=@ViewBag.userId")
-            // .withUrl("https://localhost:7223/notificationHub?traderId=3c8e0bd4-ab0e-49b3-b487-b19b5c11c1e2")
-=======
-            .withUrl(`https://localhost:7223/notificationHub?traderId=${userId}`)
->>>>>>> d639b9baef7c4d730f13f7fe8a396e3708db58cb
-            .build();
-
-        connection.on("ReceiveOrderNotification", (data) => {
-            const countSpan = document.getElementById("notificationCount");
-            let count = parseInt(countSpan.innerText) || 0;
-            countSpan.innerText = count + 1;
-
-            const list = document.getElementById("notificationList");
-            const li = document.createElement("li");
-            li.innerText = `${data.message} (Order ID: ${data.orderId})`;
-            list.prepend(li);
-        });
-
-        connection.start().then(() => {
-            console.log("Connected to SignalR");
-        }).catch(function (err) {
-            return console.error(err.toString());
-        });
-
-        // Fetch existing notifications
-                fetch("https://localhost:7223/api/notification", {
-            credentials: "include"
-        })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById("notificationCount").innerText = data.length;
-                const list = document.getElementById("notificationList");
-                data.forEach(n => {
-                    const li = document.createElement("li");
-                    li.innerText = n.message;
-                    list.appendChild(li);
-                });
-            });
-                // connection.on("ReceiveOrderNotification", function (data) {
-        //     const notificationBox = document.getElementById("notifications");
-        //     const item = document.createElement("li");
-        //     item.className = "list-group-item";
-        //     item.textContent = data.message + " Order ID: " + data.orderId;
-        //     notificationBox.prepend(item);
-        //     console.log(data);
-        // });
-
-        // connection.start().then(() => {
-        //     console.log("Connected to SignalR");
-        // }).catch(function (err) {
-        //     return console.error(err.toString());
-        // });
-    </script>
 
     <script>
         // Order Status Pie Chart

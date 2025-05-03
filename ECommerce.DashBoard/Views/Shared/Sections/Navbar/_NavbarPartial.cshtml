@@ -31,12 +31,18 @@
   </div>
   <!-- /Search --> *@
 
-  <ul class="navbar-nav flex-row align-items-center ms-auto">
+  <ul class="navbar-nav align-items-center ms-auto">
     <!-- Place this tag where you want the button to render. -->
     <li class="nav-item lh-1 me-4">
       @* <a class="github-button" href="https://github.com/themeselection/sneat-bootstrap-html-aspnet-core-mvc-admin-template-free" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a> *@
-
-
+            <div class="dropdown dropdown-start">
+            <a class="nav-link dropdown-toggle" id="notificationDropdown" data-bs-toggle="dropdown" role="button">
+                🔔 <span id="notificationCount" class="badge bg-danger">0</span>
+            </a>
+            <ul class="dropdown-menu" id="notificationList" aria-labelledby="notificationDropdown">
+                <!-- Notifications will be inserted here -->
+            </ul>
+        </div>
   </li>
 
     <!-- User -->
@@ -100,3 +106,78 @@
 
   </ul>
 </div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    const userId = '@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value';
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl(`https://localhost:7223/notificationHub?traderId=${userId}`)
+        .build();
+
+    connection.on("ReceiveOrderNotification", (data) => {
+        const countSpan = document.getElementById("notificationCount");
+        let count = parseInt(countSpan.innerText) || 0;
+        countSpan.innerText = count + 1;
+
+        const list = document.getElementById("notificationList");
+        const li = document.createElement("li");
+        li.classList.add("dropdown-item");
+        li.innerText = `${data.message} (Order ID: ${data.orderId})`;
+        list.prepend(li);
+    });
+
+    connection.start().then(() => {
+        console.log("Connected to SignalR");
+    }).catch(err => console.error("SignalR error:", err));
+
+    // Fetch unread notifications
+    fetch(`https://localhost:7223/api/notification/GetUnreadNotifications?userId=${userId}`, {
+        credentials: "include"
+    })
+    .then(res => res.json())
+    .then(data => {
+        const count = data.length;
+        console.log('notifi', data);
+        document.getElementById("notificationCount").innerText = count;
+
+        const list = document.getElementById("notificationList");
+        data.forEach(n => {
+            const li = document.createElement("li");
+            li.classList.add("dropdown-item");
+
+            const date = new Date(n.createdAt);
+            const formattedDate = date.toLocaleString();
+
+            li.innerText = `${n.message} (${formattedDate})`;
+            list.appendChild(li);
+        });
+    });
+
+    // OPTIONAL: Mark all as read when dropdown clicked
+    document.getElementById("notificationDropdown").addEventListener("click", () => {
+        fetch(`https://localhost:7223/api/notification/mark-all-read?userId=${userId}`, {
+            method: "POST",
+            credentials: "include"
+        }).then(() => {
+            document.getElementById("notificationCount").innerText = "0";
+        });
+    });
+</script>
+
+
+    @* // connection.on("ReceiveOrderNotification", function (data) { *@
+    @* //     const notificationBox = document.getElementById("notifications"); *@
+    @* //     const item = document.createElement("li"); *@
+    @* //     item.className = "list-group-item"; *@
+    @* //     item.textContent = data.message + " Order ID: " + data.orderId; *@
+    @* //     notificationBox.prepend(item); *@
+    @* //     console.log(data); *@
+    @* // }); *@
+
+    @* // connection.start().then(() => { *@
+    @* //     console.log("Connected to SignalR"); *@
+    @* // }).catch(function (err) { *@
+    @* //     return console.error(err.toString()); *@
+    @* // }); *@

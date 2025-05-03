@@ -109,10 +109,11 @@ namespace ECommerce.Services
                 await CancelOrder(existingOrder.Id);
             }
 
+            
             // 7. Create the order
             var order = new Order(CustomerEmail, shippingCostId, ShippingAddressId, totalPrice, OrderItems, paymentId)
             {
-                shippingCost = shippingCost,
+                //shippingCost = shippingCost,
             };
 
             // 8. Save to database

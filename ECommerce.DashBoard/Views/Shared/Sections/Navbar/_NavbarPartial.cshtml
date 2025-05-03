@@ -1,183 +1,296 @@
 ﻿@* ! Brand demo (display only for navbar-full and hide on below xl) *@
 @if (ViewData["navbarFull"] != null)
 {
-<div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
-  <a asp-controller="Dashboards" asp-action="Index" class="app-brand-link gap-2">
-      <span class="app-brand-logo demo">
-        @await Html.PartialAsync("../_Partials/_Macros")
-      </span>
-      <span class="app-brand-text demo menu-text fw-bold">@TempData.Peek("appName")</span>
-    </a>
-</div>
+    <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
+        <a asp-controller="Dashboards" asp-action="Index" class="app-brand-link gap-2">
+            <span class="app-brand-logo demo">
+                @await Html.PartialAsync("../_Partials/_Macros")
+            </span>
+            <span class="app-brand-text demo menu-text fw-bold">@TempData.Peek("appName")</span>
+        </a>
+    </div>
 }
 
 @* ! Not required for layout-without-menu *@
 @if (ViewData["navbarHideToggle"] == null)
 {
-  <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
-    <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
-      <i class="bx bx-menu bx-md"></i>
-    </a>
-  </div>
+    <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
+            <i class="bx bx-menu bx-md"></i>
+        </a>
+    </div>
 }
 
 <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-@*   <!-- Search -->
-  <div class="navbar-nav align-items-center">
-    <div class="nav-item d-flex align-items-center">
-        <i class="bx bx-search bx-md"></i>
-      <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2" placeholder="Search..." aria-label="Search...">
-    </div>
-  </div>
-  <!-- /Search --> *@
-
-  <ul class="navbar-nav align-items-center ms-auto">
-    <!-- Place this tag where you want the button to render. -->
-    <li class="nav-item lh-1 me-4">
-      @* <a class="github-button" href="https://github.com/themeselection/sneat-bootstrap-html-aspnet-core-mvc-admin-template-free" data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star themeselection/sneat-html-admin-template-free on GitHub">Star</a> *@
-            <div class="dropdown dropdown-start">
-            <a class="nav-link dropdown-toggle" id="notificationDropdown" data-bs-toggle="dropdown" role="button">
-                🔔 <span id="notificationCount" class="badge bg-danger">0</span>
+    <ul class="navbar-nav align-items-center ms-auto">
+        <!-- Notifications -->
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="javascript:void(0);" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bx bx-bell bx-md"></i>
+                <span id="notificationCount" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
             </a>
-            <ul class="dropdown-menu" id="notificationList" aria-labelledby="notificationDropdown">
-                <!-- Notifications will be inserted here -->
+            <ul class="dropdown-menu dropdown-menu-end" id="notificationList" aria-labelledby="notificationDropdown" style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+                <li class="dropdown-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">Notifications</h6>
+                    @* <button class="btn btn-sm btn-danger clear-all-btn" id="clearAllNotifications" style="display: none;">Clear All</button> *@
+                </li>
+                <li id="noNotifications" class="dropdown-item text-center text-muted">No new notifications</li>
             </ul>
-        </div>
-  </li>
+        </li>
 
-    <!-- User -->
-    <li class="nav-item navbar-dropdown dropdown-user dropdown">
-      <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
-        <div class="avatar avatar-online">
-          <img src="~/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
-        </div>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);">
-            <div class="d-flex">
-              <div class="flex-shrink-0 me-3">
+        <!-- User -->
+        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+            <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                 <div class="avatar avatar-online">
                     <img src="~/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
                 </div>
-              </div>
-              <div class="flex-grow-1">
-                <small class="text-muted">Admin</small>
-              </div>
-            </div>
-          </a>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <a class="dropdown-item" href="javascript:void(0);">
+                        <div class="d-flex">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="avatar avatar-online">
+                                    <img src="~/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle">
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <small class="text-muted">Admin</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <div class="dropdown-divider my-1"></div>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="bx bx-user bx-md me-2"></i>
+                        <span>My Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="bx bx-cog bx-md me-2"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="javascript:void(0);">
+                        <span class="d-flex align-items-center align-middle">
+                            <i class="flex-shrink-0 bx bx-credit-card bx-md me-3"></i>
+                            <span class="flex-grow-1 align-middle">Billing Plan</span>
+                            <span class="flex-shrink-0 badge rounded-pill bg-danger">4</span>
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <div class="dropdown-divider my-1"></div>
+                </li>
+                <li>
+                    <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">
+                        <i class="bx bx-power-off bx-md me-2"></i>
+                        <button type="submit" style="border:none; text-decoration:none;">Log Out</button>
+                    </form>
+                </li>
+            </ul>
         </li>
-        <li>
-          <div class="dropdown-divider my-1"></div>
-        </li>
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);">
-            <i class="bx bx-user bx-md me-2"></i>
-            <span>My Profile</span>
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);">
-            <i class="bx bx-cog bx-md me-2"></i>
-            <span>Settings</span>
-          </a>
-        </li>
-        <li>
-          <a class="dropdown-item" href="javascript:void(0);">
-            <span class="d-flex align-items-center align-middle">
-              <i class="flex-shrink-0 bx bx-credit-card bx-md me-3"></i>
-              <span class="flex-grow-1 align-middle">Billing Plan</span>
-              <span class="flex-shrink-0 badge rounded-pill bg-danger">4</span>
-            </span>
-          </a>
-        </li>
-        <li>
-          <div class="dropdown-divider my-1"></div>
-        </li>
-        <li>
-          <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout">
-            <i class="bx bx-power-off bx-md me-2"></i>
-            <button type="submit" style="border:none; text-decoration:none;">Log Out</button>
-          </form>
-        </li>
-      </ul>
-    </li>
-    <!--/ User -->
-
-  </ul>
+        <!--/ User -->
+    </ul>
 </div>
 
+<style>
+  
+    .nav-item.dropdown .nav-link {
+        position: relative;
+        padding: 0.5rem 1rem;
+    }
+
+    .nav-item.dropdown .badge {
+        font-size: 0.65rem;
+        padding: 0.25em 0.5em;
+    }
+
+  
+    .dropdown-menu {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+    }
+
+    .dropdown-header {
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid #eee;
+    }
+
+    .dropdown-item {
+        padding: 0.75rem 1.25rem;
+        transition: background-color 0.2s;
+    }
+
+        .dropdown-item.unread {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f1f3f5;
+        }
+
+        .dropdown-item .mark-read-btn {
+            font-size: 0.85rem;
+            padding: 3px 10px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+    .clear-all-btn {
+        font-size: 0.9rem;
+        padding: 5px 15px;
+    }
+
+    #noNotifications {
+        color: #666;
+        font-style: italic;
+    }
+</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 <script>
     const userId = '@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value';
+    const notificationList = document.getElementById("notificationList");
+    const notificationContent = document.getElementById("notificationContent");
+    const noNotifications = document.getElementById("noNotifications");
+    const notificationCount = document.getElementById("notificationCount");
+    const clearAllButton = document.getElementById("clearAllNotifications");
+
+
+    function addNotification(message, orderId, createdAt) {
+      const li = document.createElement("li");
+      li.classList.add("dropdown-item", "unread");
+      const date = new Date(createdAt || Date.now());
+      const formattedDate = date.toLocaleString();
+
+      li.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+          <span>${message} (Order ID: ${orderId})<br><small class="text-muted">${formattedDate}</small></span>
+          <a href="javascript:void(0);" class="mark-read-btn" data-id="${orderId}"></a>
+        </div>
+      `;
+      notificationList.insertBefore(li, notificationList.children[1]); 
+
+      updateNotificationCount();
+      addMarkAsReadListener(li);
+      showNotificationEffect(li);
+    }
+
+   
+    function updateNotificationCount() {
+      const unreadItems = notificationList.querySelectorAll(".dropdown-item.unread");
+      const unreadCount = unreadItems.length;
+      notificationCount.textContent = unreadCount;
+      noNotifications.style.display = unreadCount > 0 ? "none" : "block";
+      clearAllButton.style.display = unreadCount > 0 ? "block" : "none";
+    }
+
+   
+    function addMarkAsReadListener(item) {
+      item.querySelector(".mark-read-btn").addEventListener("click", () => {
+        const notificationId = item.querySelector(".mark-read-btn").getAttribute("data-id");
+        fetch(`https://localhost:7223/api/notification/mark-read?notificationId=${notificationId}&userId=${userId}`, {
+          method: "POST",
+          credentials: "include"
+        }).then(() => {
+          item.classList.remove("unread");
+          updateNotificationCount();
+        }).catch(err => console.error("Error marking as read:", err));
+      });
+    }
+
+ 
+    function showNotificationEffect(item) {
+      item.classList.add("animate__animated", "animate__bounceIn");
+      setTimeout(() => item.classList.remove("animate__bounceIn"), 1000);
+    }
+
 
     const connection = new signalR.HubConnectionBuilder()
-        .withUrl(`https://localhost:7223/notificationHub?traderId=${userId}`)
-        .build();
+      .withUrl(`https://localhost:7223/notificationHub?traderId=${userId}`)
+      .build();
 
     connection.on("ReceiveOrderNotification", (data) => {
-        const countSpan = document.getElementById("notificationCount");
-        let count = parseInt(countSpan.innerText) || 0;
-        countSpan.innerText = count + 1;
-
-        const list = document.getElementById("notificationList");
-        const li = document.createElement("li");
-        li.classList.add("dropdown-item");
-        li.innerText = `${data.message} (Order ID: ${data.orderId})`;
-        list.prepend(li);
+      addNotification(data.message, data.orderId, data.createdAt);
+      Swal.fire({
+        icon: 'info',
+        title: 'New Notification!',
+        text: `${data.message} (Order ID: ${data.orderId})`,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: { popup: 'animate__animated animate__fadeInDown' }
+      });
     });
 
+    //  SignalR
     connection.start().then(() => {
-        console.log("Connected to SignalR");
+      console.log("Connected to SignalR");
     }).catch(err => console.error("SignalR error:", err));
 
-    // Fetch unread notifications
+
     fetch(`https://localhost:7223/api/notification/GetUnreadNotifications?userId=${userId}`, {
-        credentials: "include"
+      credentials: "include"
     })
     .then(res => res.json())
     .then(data => {
-        const count = data.length;
-        console.log('notifi', data);
-        document.getElementById("notificationCount").innerText = count;
+      data.forEach(n => addNotification(n.message, n.id || n.orderId, n.createdAt));
+    }).catch(err => console.error("Error fetching notifications:", err));
 
-        const list = document.getElementById("notificationList");
-        data.forEach(n => {
-            const li = document.createElement("li");
-            li.classList.add("dropdown-item");
-
-            const date = new Date(n.createdAt);
-            const formattedDate = date.toLocaleString();
-
-            li.innerText = `${n.message} (${formattedDate})`;
-            list.appendChild(li);
-        });
-    });
-
-    // OPTIONAL: Mark all as read when dropdown clicked
-    document.getElementById("notificationDropdown").addEventListener("click", () => {
-        fetch(`https://localhost:7223/api/notification/mark-all-read?userId=${userId}`, {
+    // Clear All Notifications
+    clearAllButton.addEventListener("click", () => {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'This will clear all notifications!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, clear all',
+        cancelButtonText: 'Cancel',
+        customClass: { popup: 'animate__animated animate__shakeX' }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`https://localhost:7223/api/notification/clear-all?userId=${userId}`, {
             method: "POST",
             credentials: "include"
+          }).then(() => {
+            const items = notificationList.querySelectorAll(".dropdown-item");
+            items.forEach(item => {
+              if (!item.classList.contains("dropdown-header")) {
+                item.remove();
+              }
+            });
+            notificationList.appendChild(noNotifications);
+            updateNotificationCount();
+            Swal.fire('Cleared!', 'All notifications have been cleared.', 'success');
+          }).catch(err => console.error("Error clearing notifications:", err));
+        }
+      });
+    });
+
+    // Mark all as read when dropdown is clicked
+    document.getElementById("clearAllNotifications").addEventListener("click", () => {
+      const unreadItems = notificationList.querySelectorAll(".dropdown-item.unread");
+      if (unreadItems.length > 0) {
+        fetch(`https://localhost:7223/api/notification/mark-all-read?userId=${userId}`, {
+          method: "POST",
+          credentials: "include"
         }).then(() => {
-            document.getElementById("notificationCount").innerText = "0";
-        });
+          unreadItems.forEach(item => item.classList.remove("unread"));
+          updateNotificationCount();
+        }).catch(err => console.error("Error marking all as read:", err));
+      }
     });
 </script>
-
-
-    @* // connection.on("ReceiveOrderNotification", function (data) { *@
-    @* //     const notificationBox = document.getElementById("notifications"); *@
-    @* //     const item = document.createElement("li"); *@
-    @* //     item.className = "list-group-item"; *@
-    @* //     item.textContent = data.message + " Order ID: " + data.orderId; *@
-    @* //     notificationBox.prepend(item); *@
-    @* //     console.log(data); *@
-    @* // }); *@
-
-    @* // connection.start().then(() => { *@
-    @* //     console.log("Connected to SignalR"); *@
-    @* // }).catch(function (err) { *@
-    @* //     return console.error(err.toString()); *@
-    @* // }); *@

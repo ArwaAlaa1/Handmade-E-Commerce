@@ -126,7 +126,7 @@ export class ProductService {
   }
 
   deleteFromFav(productId: number): Observable<any> {
-    // const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this._HttpClient.delete(`${environment.baseURL}Favorite/DeleteFavorite/${productId}`,
       { headers : this.getAuthHeaders(), responseType : 'text' });
   }

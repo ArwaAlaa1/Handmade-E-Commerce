@@ -9,6 +9,8 @@ import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../interfaces/cart';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../services/auth.service';
+import { CommonService } from '../../services/common.service';
+
 @Component({
   selector: 'app-details',
   imports: [ReactiveFormsModule, CommonModule, FormsModule],
@@ -48,7 +50,7 @@ export class DetailsComponent implements OnInit {
     },
   );
 
-  constructor(private _route: ActivatedRoute, private _service: ProductService, private _cartService:CartService, private _authService:AuthService, private _router:Router) {
+  constructor(private _service: ProductService, private _authService:AuthService, private _router:Router, private commonService:CommonService,private _route: ActivatedRoute, private _cartService:CartService) {
     this.ProductId=this._route.snapshot.params['ProductId'];
   }
 
@@ -156,6 +158,7 @@ export class DetailsComponent implements OnInit {
     next:(response) =>
     {
       this.product.isFavorite = true;
+      this.commonService.triggerRefresh();
       console.log(response);
     },
       error: (error) => {
@@ -169,6 +172,7 @@ export class DetailsComponent implements OnInit {
     next:(response) =>
     {
       this.product.isFavorite = false;
+      this.commonService.triggerRefresh();
       console.log(response);
     },
     error: (error) => {
@@ -309,7 +313,7 @@ export class DetailsComponent implements OnInit {
         quantity: this.selectedQuantity
       };
       this._cartService.addItemToBasket(cartItem, this.selectedQuantity);
-
+      this.commonService.triggerRefresh();
       this.product.stock = this.product.stock - this.selectedQuantity;
 
       this.isModalOpen = false

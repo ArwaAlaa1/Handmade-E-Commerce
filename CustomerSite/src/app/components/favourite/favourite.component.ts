@@ -1,3 +1,4 @@
+import { CommonService } from './../../services/common.service';
 import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { CommonModule } from '@angular/common';
@@ -19,7 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class FavouriteComponent implements OnInit {
 
   currentPage: number = 1;
-  itemsPerPage: number = 4;
+  itemsPerPage: number = 8;
   totalCount: number = 0;
   totalPages: number = 0;
   isLoading = true;
@@ -40,7 +41,8 @@ export class FavouriteComponent implements OnInit {
     minPrice: null
   };
 
-  constructor(public _productService: ProductService, private _cartService:CartService) {}
+  constructor(public _productService: ProductService, private _cartService:CartService
+  ,private commonService:CommonService) {}
 
   ngOnInit(): void {
     this.filterProducts();
@@ -118,6 +120,7 @@ export class FavouriteComponent implements OnInit {
 
   toggleFavorite(product: any) {
     product.isFavorite = !product.isFavorite;
+    this.commonService.triggerRefresh();
   }
 
   addToFavorite(productId: number) {
@@ -128,6 +131,7 @@ export class FavouriteComponent implements OnInit {
       if (product) {
         product.isFavorite = true;
       }
+      this.commonService.triggerRefresh();
     },
       error: (error) => {
       }
@@ -145,6 +149,7 @@ export class FavouriteComponent implements OnInit {
             if (this.allProducts.length === 0 && this.currentPage > 1) {
               this.changePage(this.currentPage - 1);
             }
+            this.commonService.triggerRefresh();
         }
       },
       error: (error) => {
@@ -213,7 +218,7 @@ export class FavouriteComponent implements OnInit {
             quantity: this.selectedQuantity
           };
           this._cartService.addItemToBasket(cartItem, this.selectedQuantity);
-
+          this.commonService.triggerRefresh();
           const product = this.allProducts.find(c => c.id === this.selectedProduct.id);
           if (product) {
           product.stock = product.stock - this.selectedQuantity;
@@ -223,6 +228,7 @@ export class FavouriteComponent implements OnInit {
           this.selectedProduct = null;
 
         });
+
     }
 
 }

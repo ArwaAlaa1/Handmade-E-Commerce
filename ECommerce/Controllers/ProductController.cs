@@ -303,7 +303,7 @@ namespace ECommerce.Controllers
             //var totalCount = await productRepository.GetFilteredProductsCount(categoryId, null, null);
             //var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-            var products = await productRepository.GetProductsWithCategoryAsync(); 
+            var products = await productRepository.GetProductsWithCategoryAsync(categoryId); 
             //.GetProductsWithFilters(pageSize, pageIndex, categoryId, null, null);
             if (products == null || !products.Any())
                 return NotFound(new { message = $"No products found for category ID {categoryId}." });

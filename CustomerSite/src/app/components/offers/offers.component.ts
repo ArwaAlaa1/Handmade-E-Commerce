@@ -21,7 +21,7 @@ export class OffersComponent implements OnInit {
 
 
   currentPage: number = 1;
-  itemsPerPage: number = 4;
+  itemsPerPage: number = 8;
   totalCount: number = 0;
   totalPages: number = 0;
   isLoading = true;

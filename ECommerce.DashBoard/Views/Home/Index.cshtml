@@ -262,7 +262,12 @@
 
         consol.log(userId);
         const connection = new signalR.HubConnectionBuilder()
+<<<<<<< HEAD
+            .withUrl("https://localhost:7223/notificationHub?traderId=@ViewBag.userId")
+            // .withUrl("https://localhost:7223/notificationHub?traderId=3c8e0bd4-ab0e-49b3-b487-b19b5c11c1e2")
+=======
             .withUrl(`https://localhost:7223/notificationHub?traderId=${userId}`)
+>>>>>>> d639b9baef7c4d730f13f7fe8a396e3708db58cb
             .build();
 
         connection.on("ReceiveOrderNotification", (data) => {

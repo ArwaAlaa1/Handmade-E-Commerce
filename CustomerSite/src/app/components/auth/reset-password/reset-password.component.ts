@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-forget-password',
@@ -35,7 +36,7 @@ export class ResetPasswordComponent implements OnInit {
     this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
-  constructor(private _authService: AuthService,
+  constructor(private _authService: AuthService, private _CookieService : CookieService,
     private _Router : Router, private _route: ActivatedRoute
   ) { }
 
@@ -82,10 +83,30 @@ export class ResetPasswordComponent implements OnInit {
       confirmNewPassword: this.forgetPasswordForm.value.confirmNewPassword,
     };
 
+    const pass = this._CookieService.get('pass');
+    if(!pass || pass == 'false')
+    {
+      this._Router.navigate([`/sendpin`]);
+      window.alert('Send Pin Code, Then CHange your Password');
+      return;
+    }
+
     this._authService.ForgetPassword( this.email, pinData).subscribe({
       next: (response) => {
         this.isLoading = false;
         window.alert('Your Password Changed Successfully, Login Now!');
+        if(!pass){
+          this._CookieService.set('pass', JSON.stringify(false), {
+            expires: 1,
+            path: '/',
+          });
+        }else{
+          this._CookieService.delete('pass', '/');
+          this._CookieService.set('pass', JSON.stringify(false), {
+            expires: 1,
+            path: '/',
+          });
+        }
         this._Router.navigate([`/login`]);
       },
       error: (error) => {

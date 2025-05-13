@@ -51,12 +51,12 @@
         style="min-height: 400px"
       >
         <div class="hero-contact ps-5">
-          <p>Flat 20% Off</p>
-          <h2>
-            Explore <span>Warm</span><br />
-            Fast Food & Snacks
+          <!-- <p>Flat 20% Off</p> -->
+        <h2>
+            Explore <span>Unique  Handmade</span><br />
+            Creations Just for You
           </h2>
-          <a href="shop-left-sidebar-col-3.html" class="bb-btn-1">Shop Now</a>
+          <a class="bb-btn-1 pointer" (click)="scrollToProducts()">Shop Now</a>
         </div>
         <div class="w-50">
           <img
@@ -74,12 +74,12 @@
         style="min-height: 400px"
       >
         <div class="hero-contact">
-          <p>Flat 20% Off</p>
-          <h2>
-            Explore <span>Warm</span><br />
-            Fast Food & Snacks
+          <!-- <p>Flat 20% Off</p> -->
+        <h2>
+            Explore <span>Unique  Handmade</span><br />
+            Creations Just for You
           </h2>
-          <a href="shop-left-sidebar-col-3.html" class="bb-btn-1">Shop Now</a>
+          <a class="bb-btn-1 pointer" (click)="scrollToProducts()">Shop Now</a>
         </div>
         <div class="w-50">
           <img
@@ -97,12 +97,12 @@
         style="min-height: 400px"
       >
         <div class="hero-contact">
-          <p>Flat 20% Off</p>
-          <h2>
-            Explore <span>Warm</span><br />
-            Fast Food & Snacks
+          <!-- <p>Flat 20% Off</p> -->
+         <h2>
+            Explore <span>Unique  Handmade</span><br />
+            Creations Just for You
           </h2>
-          <a href="shop-left-sidebar-col-3.html" class="bb-btn-1">Shop Now</a>
+          <a class="bb-btn-1 pointer" (click)="scrollToProducts()">Shop Now</a>
         </div>
         <div class="w-50">
           <img
@@ -128,7 +128,7 @@
             alt="category"
           />
           <div class="bb-offers">
-            <span>50% Off</span>
+            <!-- <span>50% Off</span> -->
           </div>
         </div>
       </div>
@@ -143,68 +143,65 @@
             <h2 style="color: #5069d8">Explore Categories</h2>
           </div>
           <div>
-            <div
-              id="categoryCarousel"
-              class="carousel slide w-100"
-              data-bs-ride="carousel"
-            >
-              <div class="carousel-inner p-4">
-                <div
-                  *ngFor="let group of categorySlides; let i = index"
-                  [class]="i === 0 ? 'carousel-item active' : 'carousel-item'"
-                >
-                  <div class="d-flex justify-content-center gap-4 py-4">
-                    <div
-                      *ngFor="let category of group"
-                      class="text-center bg-light rounded p-3 shadow"
-                      style="min-width: 200px"
-                    >
-                      <div
-                        (click)="GetProductsWithThisCategory(category.id)"
-                        style="cursor: pointer"
-                      >
-                        <div class="mb-2">
-                          <img
-                            style="width: 30px; height: 35px"
-                            src="{{ imageBaseUrl + categoryPhoto }}{{
-                              category.photo
-                            }}"
-                          />
-                        </div>
-                        <h5 class="mb-1">{{ category.name }}</h5>
-                        <!-- <p class="text-muted">{{ category.count }} items</p> -->
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <button
-                class="carousel-control-prev"
-                style="margin-right: 200px"
-                type="button"
-                data-bs-target="#categoryCarousel"
-                data-bs-slide="prev"
-              >
-                <span
-                  class="carousel-control-prev-icon"
-                  aria-hidden="true"
-                ></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button
-                class="carousel-control-next ms-5"
-                type="button"
-                data-bs-target="#categoryCarousel"
-                data-bs-slide="next"
-              >
-                <span
-                  class="carousel-control-next-icon"
-                  aria-hidden="true"
-                ></span>
-                <span class="visually-hidden">Next</span>
-              </button>
+          <div
+  id="categoryCarousel"
+  class="carousel slide w-100 position-relative"
+  data-bs-ride="carousel"
+>
+  <div class="carousel-inner p-4">
+    <div
+      *ngFor="let group of categorySlides; let i = index"
+      [class]="i === 0 ? 'carousel-item active' : 'carousel-item'"
+    >
+      <div class="d-flex justify-content-center gap-4 py-4">
+        <div
+          *ngFor="let category of group"
+          class="text-center bg-light rounded p-3 shadow"
+          style="min-width: 200px"
+        >
+          <div
+            (click)="GetProductsWithThisCategory(category.id)"
+            style="cursor: pointer"
+          >
+            <div class="mb-2">
+              <img
+                style="width: 50%"
+                src="{{ imageBaseUrl + categoryPhoto }}{{ category.photo }}"
+              />
             </div>
+            <h5 class="mb-1">{{ category.name }}</h5>
+            <!-- <p class="text-muted">{{ category.count }} items</p> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Previous Button -->
+  <button
+    class="carousel-control-prev"
+    type="button"
+    data-bs-target="#categoryCarousel"
+    data-bs-slide="prev"
+    style="left: -60px; position: absolute; top: 50%; transform: translateY(-50%);"
+  >
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+
+  <!-- Next Button -->
+  <button
+    class="carousel-control-next"
+    type="button"
+    data-bs-target="#categoryCarousel"
+    data-bs-slide="next"
+    style="right: -60px; position: absolute; top: 50%; transform: translateY(-50%);"
+  >
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
           </div>
         </div>
       </div>
@@ -212,7 +209,7 @@
   </div>
 </section>
 
-<section class="py-5 bg-white">
+<section id="products-section" class="py-5 bg-white">
   <div class="container">
     <div *ngIf="isLoading" class="text-center">
       <div class="spinner-border text-primary" role="status">
@@ -542,46 +539,46 @@
         </div>
       </div>
     </div>
-
-    <div *ngIf="!isLoading" class="pagination-container mt-3">
-      <nav *ngIf="totalCount != 0" aria-label="Page navigation">
-        <ul class="pagination justify-content-center align-items-center">
-          <!-- Previous Button -->
-          <li class="page-item" [class.disabled]="currentPage === 1">
-            <button
-              class="page-link"
-              (click)="changePage(currentPage - 1)"
-              [disabled]="currentPage === 1"
-            >
-              Previous
-            </button>
-          </li>
-
-          <!-- Page Number -->
-          <li class="page-item disabled">
-            <span class="page-link">
-              Page {{ currentPage }} of {{ totalPages }}
-            </span>
-          </li>
-
-          <!-- Next Button -->
-          <li class="page-item" [class.disabled]="currentPage === totalPages">
-            <button
-              class="page-link"
-              (click)="changePage(currentPage + 1)"
-              [disabled]="currentPage === totalPages"
-            >
-              Next
-            </button>
-          </li>
-
-          <!-- Total Products Badge -->
-          <li class="page-item disabled ms-3">
-            <span class="page-link"> Total: {{ totalCount }} </span>
-          </li>
-        </ul>
-      </nav>
+    <div *ngIf="!isLoading && totalCount > 0" class="d-flex justify-content-center mt-4">
+      <div class="btn-toolbar gap-2 flex-wrap" role="toolbar" aria-label="Pagination Toolbar">
+    
+        <!-- Previous Button -->
+        <div class="btn-group" role="group">
+          <button 
+            class="btn btn-outline-primary"
+            [disabled]="currentPage === 1"
+            (click)="changePage(currentPage - 1)">
+            <i class="fas fa-angle-left"></i> Prev
+          </button>
+        </div>
+    
+        <!-- Page Info -->
+        <div class="btn-group" role="group">
+          <button class="btn btn-primary disabled">
+            Page {{ currentPage }} of {{ totalPages }}
+          </button>
+        </div>
+    
+        <!-- Next Button -->
+        <div class="btn-group" role="group">
+          <button 
+            class="btn btn-outline-primary"
+            [disabled]="currentPage === totalPages"
+            (click)="changePage(currentPage + 1)">
+            Next <i class="fas fa-angle-right"></i>
+          </button>
+        </div>
+    
+        <!-- Total Count Badge -->
+        <div class="btn-group" role="group">
+          <button class="btn btn-light disabled">
+            Total: {{ totalCount }}
+          </button>
+        </div>
+    
+      </div>
     </div>
+    
   </div>
 </section>
 

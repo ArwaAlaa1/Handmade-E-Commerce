@@ -1,3 +1,4 @@
+
 .product-card {
   overflow: hidden;
   position: relative;
@@ -114,3 +115,128 @@
   
 }
 
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+}
+
+/* Modal Box */
+.modal-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  z-index: 1050;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Modal Header */
+.modal-header {
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 1rem;
+}
+
+.modal-header h5 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-header .btn-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Modal Body */
+.modal-body {
+  padding: 1.5rem 0;
+}
+
+.modal-body .form-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.modal-body .form-select,
+.modal-body .form-control {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.modal-body .form-select:focus,
+.modal-body .form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* Quantity Selector */
+.quantity-selector {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  gap: 1rem;
+  font-size: 1.25rem;
+  user-select: none;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.quantity-selector span {
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s ease-in-out;
+}
+
+.quantity-selector span:hover {
+  color: #007bff;
+}
+
+/* Modal Footer */
+.modal-footer {
+  border-top: 1px solid #ddd;
+  padding-top: 1rem;
+}
+
+.modal-footer .btn {
+  border-radius: 20px;
+  padding: 0.5rem 1.5rem;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.modal-footer .btn-outline-secondary {
+  border-color: #6c757d;
+  color: #6c757d;
+}
+
+.modal-footer .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.modal-footer .btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+.pointer {
+  cursor: pointer;
+}

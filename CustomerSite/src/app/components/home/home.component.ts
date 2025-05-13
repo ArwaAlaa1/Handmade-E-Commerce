@@ -53,6 +53,39 @@ categoryPhoto:string="/Images/Categories/";
     this._authService.checktheme();
     this.commonService.triggerRefresh();
   }
+  scrollToElement(elementId: string, duration: number = 1000): void {
+    const element = document.getElementById(elementId);
+    if (!element) {
+      console.warn(`Element with ID ${elementId} not found`);
+      return;
+    }
+
+    const start = window.scrollY;
+    const targetPosition = element.getBoundingClientRect().top + window.scrollY;
+    const distance = targetPosition - start;
+    const startTime = performance.now();
+
+    const scrollStep = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const ease = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      window.scrollTo(0, start + distance * ease);
+
+      if (progress < 1) {
+        requestAnimationFrame(scrollStep);
+      }
+    };
+
+    requestAnimationFrame(scrollStep);
+  }
+
+  scrollToProducts(): void {
+    this.scrollToElement('products-section', 1000);
+  }
 
   compareSizes(a: any, b: any): boolean {
     return a?.name === b?.name && a?.extraCost === b?.extraCost;
@@ -82,6 +115,7 @@ categoryPhoto:string="/Images/Categories/";
     this.selectedQuantity = 1;
     this.showValidation = false;
   }
+  
 
   applyFilters() {
     this.currentPage = 1;

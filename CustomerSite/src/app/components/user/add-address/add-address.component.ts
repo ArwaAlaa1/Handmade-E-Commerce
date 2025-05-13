@@ -5,6 +5,7 @@ import { UserService } from '../../../services/user.service';
 import { Router, RouterLink } from '@angular/router';
 import { ShippingService } from '../../../services/shipping.service';
 import { finalize } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-address',
@@ -66,12 +67,27 @@ export class AddAddressComponent implements OnInit {
     this._userService.AddAddress(formValue).subscribe({
       next: (response) => {
         this.isLoading = false;
-        window.alert('Address added successfully!');
-        this._router.navigate([`/profile`])
+        Swal.fire({
+          title: 'Success!',
+          text: 'Address added successfully!',
+          icon: 'success',
+          confirmButtonColor: '#6c7fd8', 
+          timer: 1500, 
+          showConfirmButton: false
+        }).then(() => {
+          this._router.navigate(['/profile']);
+        });
       },
       error: (error) => {
         this.isLoading = false;
         this.errorMessage = error.error.message;
+        Swal.fire({
+          title: 'Error!',
+          text: this.errorMessage || 'Failed to add address. Please try again.',
+          icon: 'error',
+          confirmButtonColor: '#e63946', 
+          confirmButtonText: 'OK'
+        });
       }
     });
   }

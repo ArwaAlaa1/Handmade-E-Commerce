@@ -36,7 +36,7 @@
                     <i class="bi bi-cart-x" style="font-size: 6rem; color: #bdc3c7; animation: pulse 2s infinite;"></i>
                     <p class="mt-3" style="font-size: 1.2rem; color: #7f8c8d;">Your cart is empty.</p>
                     <a routerLink="/home" class="btn btn-primary"
-                      style="background: linear-gradient(90deg, #3498db, #2980b9); border: none; padding: 10px 30px; border-radius: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                      style="background: linear-gradient(90deg,  #5069d8, #2941aa); border: none; padding: 10px 30px; border-radius: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
                       Continue Shopping
                     </a>
                     <style>
@@ -139,7 +139,7 @@
                   <!-- Deliver To -->
                   <div class="mb-4 animate__animated animate__fadeIn">
                     <h5 class="text-uppercase mb-3" style="color: #34495e;">
-                      <i class="fa-solid fa-location-dot me-2" style="color: #3498db;"></i>Deliver To
+                      <i class="fa-solid fa-location-dot me-2" style="color: #5069d8;"></i>Deliver To
                     </h5>
                     <div *ngIf="addressSelected" class="alert alert-info mt-3"
                       style="border: none; background: linear-gradient(90deg, #e6f7ff, #d0e8ff); border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);">
@@ -155,9 +155,9 @@
                     </button>
                     <style>
                       .btn-outline-primary:hover {
-                        background-color: #3498db;
+                        background-color: #5069d8;
                         color: #fff;
-                        border-color: #3498db;
+                        border-color: #5069d8;
                         box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
                       }
                     </style>
@@ -166,7 +166,7 @@
                   <!-- Items and Subtotal -->
                   <div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn">
                     <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-shopping-cart me-2"
-                        style="color: #3498db;"></i>Items {{ cartData.cartItems?.length || 0 }}</h5>
+                        style="color: #5069d8;"></i>Items {{ cartData.cartItems?.length || 0 }}</h5>
                     <h5 style="color: #27ae60;">{{ subTotal | currency:'EGP' }}</h5>
                   </div>
 
@@ -181,7 +181,7 @@
                   <!-- Delivery Cost -->
                   <div class="d-flex justify-content-between mb-4 animate__animated animate__fadeIn">
                     <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-truck me-2"
-                        style="color: #3498db;"></i>Delivery Cost</h5>
+                        style="color: #5069d8;"></i>Delivery Cost</h5>
                     <h5 style="color: #34495e;">{{ deliveryCost | currency:'EGP' }}</h5>
                   </div>
 
@@ -190,7 +190,7 @@
                   <!-- Total Price -->
                   <div class="d-flex justify-content-between mb-5 animate__animated animate__fadeIn">
                     <h5 class="text-uppercase" style="color: #34495e;"><i class="fa-solid fa-wallet me-2"
-                        style="color: #3498db;"></i>Total Price</h5>
+                        style="color: #5069d8;"></i>Total Price</h5>
                     <h5 style="color: #e74c3c; font-weight: bold;">{{ total | currency:'EGP' }}</h5>
                   </div>
                   <!-- Checkout Button -->

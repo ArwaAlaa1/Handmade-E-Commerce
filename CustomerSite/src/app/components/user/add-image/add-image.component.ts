@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { UserService } from '../../../services/user.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-image',
@@ -81,21 +82,36 @@ export class AddImageComponent implements OnInit {
           user.image = response;
           this._authService.saveUserData(user);
 
-          window.alert('Your Photo added Successfully.');
-          this._Router.navigate(['/profile']);
-      },
-      error: (error) => {
-        if (error.error) {
-          console.log(error);
+          Swal.fire({
+            title: 'Success!',
+            text: 'Your Photo added Successfully.',
+            icon: 'success',
+            confirmButtonColor: '#6c7fd8', // لون الأزرق بتاع التصميم
+            timer: 1500, // الرسالة تختفي بعد 1.5 ثانية
+            showConfirmButton: false // إخفاء الزرار
+          }).then(() => {
+            this._Router.navigate(['/profile']);
+          });
+        },
+        error: (error) => {
           this.isLoading = false;
-          if (typeof error.error === 'string') {
-            this.errorMessage = error.error;
-          } else if (error.error.errors) {
-            this.errorMessage = Object.values(error.error.errors).flat().join(' ');
+          if (error.error) {
+            console.log(error);
+            if (typeof error.error === 'string') {
+              this.errorMessage = error.error;
+            } else if (error.error.errors) {
+              this.errorMessage = Object.values(error.error.errors).flat().join(' ');
+            }
+            Swal.fire({
+              title: 'Error!',
+              text: this.errorMessage || 'Failed to add photo. Please try again.',
+              icon: 'error',
+              confirmButtonColor: '#e63946',
+              confirmButtonText: 'OK'
+            });
           }
         }
-      }
-    });
+      });
   }
 
 }

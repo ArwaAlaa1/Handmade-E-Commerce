@@ -183,7 +183,7 @@
                 </div>
               </div>
 
-              <div class="d-flex mb-5 mt-3">
+              <!-- <div class="d-flex mb-5 mt-3">
                 <button class="w-50 btn btn-primary me-2" type="submit">
                   <span *ngIf="isLoading">
                     <i class="fas fa-spinner fa-spin"></i>
@@ -197,7 +197,26 @@
                 >
                   <span>Back</span>
                 </button>
+              </div> -->
+              
+              
+              <div class="d-flex gap-3 flex-column flex-sm-row mb-5 mt-3">
+                <button class="btn btn-primary flex-fill" type="submit">
+                  <span *ngIf="isLoading">
+                    <i class="fas fa-spinner fa-spin"></i> Updating...
+                  </span>
+                  <span *ngIf="!isLoading">Update Address</span>
+                </button>
+              
+                <button
+                  class="btn btn-outline-secondary flex-fill"
+                  routerLink="/profile"
+                  type="button"
+                >
+                  <span>Back</span>
+                </button>
               </div>
+              
             </form>
           </div>
         </div>

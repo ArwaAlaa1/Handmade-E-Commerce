@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router'
 import { AuthService } from '../../../services/auth.service';
 import { CookieService } from 'ngx-cookie-service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-enter-pin',
@@ -88,17 +89,32 @@ export class EnterPinComponent implements OnInit {
     this._authService.SendPinCode(sendPinData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        window.alert('A code has been sent to you. Check your email now.')
-        // this._Router.navigate([`/enterpin/${response.email}/${response.expireAt}`]);
-        window.location.href = `/enterpin/${response.email}/${response.expireAt}`;
-      },
-      error: (error) => {
-        this.isLoading = false;
-        if (error.status === 404) {
-          this.errorMessage = error.error.errorMessage;
-        }
+      // Replace window.alert with SweetAlert2
+      Swal.fire({
+        icon: 'success',
+        title: 'Code Sent!',
+        text: 'A code has been sent to you. Check your email now.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#28a745'
+      }).then(() => {
+        // Replace window.location.href with Angular Router navigation
+        this._Router.navigate([`/enterpin/${response.email}/${response.expireAt}`]);
+      });
+    },
+    error: (error) => {
+      this.isLoading = false;
+      if (error.status === 404) {
+        this.errorMessage = error.error.errorMessage;
+        // Show error with SweetAlert2
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: this.errorMessage,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#dc3545'
+        });
       }
-    });
+    }
+  });
   }
-
 }

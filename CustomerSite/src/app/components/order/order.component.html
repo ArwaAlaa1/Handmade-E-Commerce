@@ -11,8 +11,7 @@
       onkeyup="filterOrders()"
     />
     </div>
-  
-    <div *ngFor="let order of filteredOrders" (click)="viewOrderDetails(order.id)"
+    <div *ngFor="let order of filteredOrders" (click)="viewOrderDetails(order.id)" 
     style="cursor: pointer;"  class="card shadow-lg mb-3 border-0">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
@@ -30,6 +29,39 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> 
+
+    <div *ngIf="!filteredOrders || filteredOrders.length === 0"
+                    class="text-center py-5 animate__animated animate__bounceIn"
+                    style="background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);">
+                    <i class="bi bi-cart-x" style="font-size: 6rem; color: #bdc3c7; animation: pulse 2s infinite;"></i>
+                    <p class="mt-3" style="font-size: 1.2rem; color: #7f8c8d;"> You have no orders at the moment.</p>
+                     <a routerLink="/home" class="btn btn-primary"
+                      style="background: linear-gradient(90deg,  #5069d8, #2941aa); border: none; padding: 10px 30px; border-radius: 25px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                      Continue Shopping
+                    </a>
+                    <style>
+                      .btn-primary:hover {
+                        transform: translateY(-3px);
+                        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+                      }
+
+                      @keyframes pulse {
+                        0% {
+                          transform: scale(1);
+                        }
+
+                        50% {
+                          transform: scale(1.05);
+                        }
+
+                        100% {
+                          transform: scale(1);
+                        }
+                      }
+                    </style>
+                  </div>
+
+
   </div>
   

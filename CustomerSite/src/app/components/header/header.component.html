@@ -6,16 +6,22 @@
         <div class="col-12">
           <div class="inner-top-header">
             <div class="col-left-bar">
-              <a href="shop-left-sidebar-col-3.html"
-                >Flat 50% Off On Grocery Shop.</a
+              <a routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  routerLink="offer"
+                >See Offers In HandOra.</a
               >
             </div>
             <div class="col-right-bar">
               <div class="cols">
-                <a href="faq.html">Help?</a>
+                <a   routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  routerLink="FAQ">Help?</a>
               </div>
               <div class="cols">
-                <a href="track-order.html">Track Order</a>
+                <a routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  routerLink="orders">Track Order</a>
               </div>
             </div>
           </div>

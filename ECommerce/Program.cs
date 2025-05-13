@@ -91,12 +91,14 @@ namespace ECommerce
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.WithOrigins("https://localhost:7295", "http://localhost:4200")
+                        builder.WithOrigins("https://adminhandora.runasp.net", "https://handora-ten.vercel.app")
                               .AllowAnyMethod()
                               .AllowAnyHeader()
                               .AllowCredentials();
-                    });
+                    }
+                );
             });
+
 
 
             //builder.Services.AddCors(options =>

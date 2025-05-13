@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="text-center mb-4">
-          <h2 class="fw-bold text-primary">Register</h2>
+          <h2 class="fw-bold " style="color: #5069d8;">Register</h2>
           <p id="pargraph" class="text-muted">
             Best place to buy and sell digital products
           </p>
@@ -183,11 +183,11 @@
           </div>
 
           <div class="mt-4">
-            <button class="btn btn-primary w-100" type="submit">
+            <button class="btn w-100" style="background-color: #5069d8;" type="submit">
               <span *ngIf="isLoading">
                 <i class="fas fa-spinner fa-spin"></i>
               </span>
-              <span *ngIf="!isLoading">Register</span>
+              <span *ngIf="!isLoading" style="color: white;" >Register</span>
             </button>
           </div>
         </form>

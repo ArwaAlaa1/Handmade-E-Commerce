@@ -184,15 +184,15 @@
                 </div>
               </div>
 
-              <div class="d-flex mb-5 mt-3">
-                <button class="w-50 btn btn-primary me-2" type="submit">
+              <div class="d-flex gap-3 flex-column flex-sm-row mb-5 mt-3">
+                <button class="btn btn-primary flex-fill" type="submit">
                   <span *ngIf="isLoading">
                     <i class="fas fa-spinner fa-spin"></i>
                   </span>
                   <span *ngIf="!isLoading">Add New Address</span>
                 </button>
                 <button
-                  class="w-50 btn btn-secondary"
+                class="btn btn-outline-secondary flex-fill"
                   routerLink="/profile"
                   type="button"
                 >

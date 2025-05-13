@@ -10,6 +10,7 @@ import { CartItem } from '../../interfaces/cart';
 import { v4 as uuidv4 } from 'uuid';
 import { AuthService } from '../../services/auth.service';
 import { CommonService } from '../../services/common.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-details',
@@ -64,7 +65,27 @@ export class DetailsComponent implements OnInit {
     this.getreviews(this.ProductId);
 
   }
+  smoothScrollToTop(duration: number = 1000): void {
+    const start = window.scrollY;
+    const startTime = performance.now();
 
+    const scrollStep = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1); 
+    
+      const ease = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      window.scrollTo(0, start - (start * ease));
+
+      if (progress < 1) {
+        requestAnimationFrame(scrollStep);
+      }
+    };
+
+    requestAnimationFrame(scrollStep);
+  }
   compareSizes(a: any, b: any): boolean {
     return a?.name === b?.name && a?.extraCost === b?.extraCost;
   }
@@ -123,7 +144,10 @@ export class DetailsComponent implements OnInit {
             this.startCountdown();
           }
           this.isLoading = false;
-      },
+          setTimeout(() => {
+            this.smoothScrollToTop(1000); 
+          }, 0);
+        },
       error: (error) => {
         this.isLoading = false;
       }

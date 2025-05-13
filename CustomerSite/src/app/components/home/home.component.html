@@ -56,7 +56,7 @@
             Explore <span>Unique  Handmade</span><br />
             Creations Just for You
           </h2>
-          <a href="shop-left-sidebar-col-3.html" class="bb-btn-1">Shop Now</a>
+          <a class="bb-btn-1 pointer" (click)="scrollToProducts()">Shop Now</a>
         </div>
         <div class="w-50">
           <img
@@ -79,7 +79,7 @@
             Explore <span>Unique  Handmade</span><br />
             Creations Just for You
           </h2>
-          <a href="shop-left-sidebar-col-3.html" class="bb-btn-1">Shop Now</a>
+          <a class="bb-btn-1 pointer" (click)="scrollToProducts()">Shop Now</a>
         </div>
         <div class="w-50">
           <img
@@ -102,7 +102,7 @@
             Explore <span>Unique  Handmade</span><br />
             Creations Just for You
           </h2>
-          <a href="shop-left-sidebar-col-3.html" class="bb-btn-1">Shop Now</a>
+          <a class="bb-btn-1 pointer" (click)="scrollToProducts()">Shop Now</a>
         </div>
         <div class="w-50">
           <img
@@ -209,7 +209,7 @@
   </div>
 </section>
 
-<section class="py-5 bg-white">
+<section id="products-section" class="py-5 bg-white">
   <div class="container">
     <div *ngIf="isLoading" class="text-center">
       <div class="spinner-border text-primary" role="status">
@@ -539,46 +539,46 @@
         </div>
       </div>
     </div>
-
-    <div *ngIf="!isLoading" class="pagination-container mt-3">
-      <nav *ngIf="totalCount != 0" aria-label="Page navigation">
-        <ul class="pagination justify-content-center align-items-center">
-          <!-- Previous Button -->
-          <li class="page-item" [class.disabled]="currentPage === 1">
-            <button
-              class="page-link"
-              (click)="changePage(currentPage - 1)"
-              [disabled]="currentPage === 1"
-            >
-              Previous
-            </button>
-          </li>
-
-          <!-- Page Number -->
-          <li class="page-item disabled">
-            <span class="page-link">
-              Page {{ currentPage }} of {{ totalPages }}
-            </span>
-          </li>
-
-          <!-- Next Button -->
-          <li class="page-item" [class.disabled]="currentPage === totalPages">
-            <button
-              class="page-link"
-              (click)="changePage(currentPage + 1)"
-              [disabled]="currentPage === totalPages"
-            >
-              Next
-            </button>
-          </li>
-
-          <!-- Total Products Badge -->
-          <li class="page-item disabled ms-3">
-            <span class="page-link"> Total: {{ totalCount }} </span>
-          </li>
-        </ul>
-      </nav>
+    <div *ngIf="!isLoading && totalCount > 0" class="d-flex justify-content-center mt-4">
+      <div class="btn-toolbar gap-2 flex-wrap" role="toolbar" aria-label="Pagination Toolbar">
+    
+        <!-- Previous Button -->
+        <div class="btn-group" role="group">
+          <button 
+            class="btn btn-outline-primary"
+            [disabled]="currentPage === 1"
+            (click)="changePage(currentPage - 1)">
+            <i class="fas fa-angle-left"></i> Prev
+          </button>
+        </div>
+    
+        <!-- Page Info -->
+        <div class="btn-group" role="group">
+          <button class="btn btn-primary disabled">
+            Page {{ currentPage }} of {{ totalPages }}
+          </button>
+        </div>
+    
+        <!-- Next Button -->
+        <div class="btn-group" role="group">
+          <button 
+            class="btn btn-outline-primary"
+            [disabled]="currentPage === totalPages"
+            (click)="changePage(currentPage + 1)">
+            Next <i class="fas fa-angle-right"></i>
+          </button>
+        </div>
+    
+        <!-- Total Count Badge -->
+        <div class="btn-group" role="group">
+          <button class="btn btn-light disabled">
+            Total: {{ totalCount }}
+          </button>
+        </div>
+    
+      </div>
     </div>
+    
   </div>
 </section>
 

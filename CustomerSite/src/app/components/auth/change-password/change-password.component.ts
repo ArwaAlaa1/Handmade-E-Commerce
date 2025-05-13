@@ -4,6 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validatio
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { log } from 'console';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-change-password',
@@ -88,8 +89,15 @@ export class ChangePasswordComponent implements OnInit {
     this._authService.ChangePassword(changedData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        window.alert(`${response.message}`);
-        this._Router.navigate([`/home`]);
+        Swal.fire({
+          icon: 'success',
+          title: 'Password Changed!',
+          text: response.message, // Use the response message from the server
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#28a745'
+        }).then(() => {
+          this._Router.navigate([`/home`]); // Navigate after the user clicks OK
+        });
       },
       error: (error) => {
         this.isLoading = false;

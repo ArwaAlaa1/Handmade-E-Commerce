@@ -4,6 +4,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validatio
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { CookieService } from 'ngx-cookie-service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-forget-password',
@@ -16,12 +17,12 @@ export class ResetPasswordComponent implements OnInit {
   forgetPasswordForm: FormGroup = new FormGroup(
     {
       newPassword: new FormControl(null, { validators: [Validators.required, Validators.minLength(8), this.passwordStrengthValidator()] }),
-      confirmNewPassword: new FormControl(null, { validators: [Validators.required]}),
+      confirmNewPassword: new FormControl(null, { validators: [Validators.required] }),
     },
     { validators: this.passwordMatchValidator }
   );
 
-  isLoading :boolean = false;
+  isLoading: boolean = false;
   errorMessage: string = '';
   email: string = '';
 
@@ -36,8 +37,8 @@ export class ResetPasswordComponent implements OnInit {
     this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 
-  constructor(private _authService: AuthService, private _CookieService : CookieService,
-    private _Router : Router, private _route: ActivatedRoute
+  constructor(private _authService: AuthService, private _CookieService: CookieService,
+    private _Router: Router, private _route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -84,38 +85,60 @@ export class ResetPasswordComponent implements OnInit {
     };
 
     const pass = this._CookieService.get('pass');
-    if(!pass || pass == 'false')
-    {
+    if (!pass || pass == 'false') {
       this._Router.navigate([`/sendpin`]);
-      window.alert('Send Pin Code, Then CHange your Password');
+      // Replace window.alert with SweetAlert2
+      Swal.fire({
+        icon: 'warning',
+        title: 'Action Required',
+        text: 'Please send a pin code before changing your password.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ffc107' // Yellow for warning
+      }).then(() => {
+        this._Router.navigate([`/sendpin`]);
+      });
       return;
     }
-
-    this._authService.ForgetPassword( this.email, pinData).subscribe({
+    this._authService.ForgetPassword(this.email, pinData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        window.alert('Your Password Changed Successfully, Login Now!');
-        if(!pass){
-          this._CookieService.set('pass', JSON.stringify(false), {
-            expires: 1,
-            path: '/',
-          });
-        }else{
-          this._CookieService.delete('pass', '/');
-          this._CookieService.set('pass', JSON.stringify(false), {
-            expires: 1,
-            path: '/',
-          });
-        }
-        this._Router.navigate([`/login`]);
+        // Replace window.alert with SweetAlert2
+        Swal.fire({
+          icon: 'success',
+          title: 'Password Changed!',
+          text: 'Your password has been changed successfully. Login now!',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#28a745'
+        }).then(() => {
+          if (!pass) {
+            this._CookieService.set('pass', JSON.stringify(false), {
+              expires: 1,
+              path: '/',
+            });
+          } else {
+            this._CookieService.delete('pass', '/');
+            this._CookieService.set('pass', JSON.stringify(false), {
+              expires: 1,
+              path: '/',
+            });
+          }
+          this._Router.navigate([`/login`]);
+        });
       },
       error: (error) => {
         this.isLoading = false;
         if (error.status === 404 || error.status === 400) {
-          this.errorMessage = error.errorMessage;
+          this.errorMessage = error.errorMessage || 'An error occurred.';
+          // Show error with SweetAlert2
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: this.errorMessage,
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#dc3545'
+          });
         }
       }
     });
   }
-
 }

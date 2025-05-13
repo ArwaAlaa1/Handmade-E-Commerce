@@ -63,7 +63,27 @@ declare var bootstrap: any;
     
   }
 
+  smoothScrollToTop(duration: number = 1000): void {
+    const start = window.scrollY;
+    const startTime = performance.now();
 
+    const scrollStep = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const ease = progress < 0.5
+        ? 2 * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+      window.scrollTo(0, start - (start * ease));
+
+      if (progress < 1) {
+        requestAnimationFrame(scrollStep);
+      }
+    };
+
+    requestAnimationFrame(scrollStep);
+  }
 async ngOnInit(): Promise<void> {
   this.commonService.triggerRefresh();
   this.stripe = await loadStripe('pk_test_51RHyXq2cgFmPnY2GeonmKkFjRwF7wksrIPULMfwthiHQ9qgD51r5sfH9J0UNdlzCgiT0tJkGTcJEdyhHKMIEYLLv00krvHhoDs');
@@ -131,6 +151,9 @@ async ngOnInit(): Promise<void> {
             }
 
             this.loadCartDetails();
+            setTimeout(() => {
+              this.smoothScrollToTop(1000);
+            }, 0);
           },
           error: (err) => console.error('Failed to get cart:', err)
         });
@@ -139,6 +162,9 @@ async ngOnInit(): Promise<void> {
        
         this.cartData = { id: '', cartItems: [] };
         this.loadCartDetails();
+        setTimeout(() => {
+          this.smoothScrollToTop(1000);
+        }, 0);
       }
     },
     error: (err) => {
@@ -146,6 +172,8 @@ async ngOnInit(): Promise<void> {
     }
   });
   this.subscriptions.push(userSub);
+
+  
 }
 
 private loadCartDetails(): void {

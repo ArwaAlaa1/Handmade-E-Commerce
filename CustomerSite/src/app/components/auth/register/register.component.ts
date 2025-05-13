@@ -3,6 +3,7 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validatio
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-register',
@@ -74,13 +75,29 @@ export class RegisterComponent {
     this.authService.signup(formValue).subscribe({
       next: () => {
         this.isLoading = false;
-        window.alert('Registration Successful! Please confirm your email before logging in.');
-        this._Router.navigate([`login`]);
-      },
-      error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = error.error.message;
-      }
-    });
-  }
+       // Replace window.alert with SweetAlert2
+      Swal.fire({
+        icon: 'success',
+        title: 'Registration Successful!',
+        text: 'Please confirm your email before logging in.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#28a745'
+      }).then(() => {
+        this._Router.navigate(['login']);
+      });
+    },
+    error: (error) => {
+      this.isLoading = false;
+      this.errorMessage = error.error.message;
+      // Show error with SweetAlert2
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: this.errorMessage,
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#dc3545'
+      });
+    }
+  });
+}
 }

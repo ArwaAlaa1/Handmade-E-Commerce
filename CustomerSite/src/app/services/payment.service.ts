@@ -12,8 +12,7 @@ import { environment } from '../../environments/environment.development';
 })
 export class PaymentService {
   token: string = '';
-  private baseUrl = `${environment.baseURL} + Payment`;
-  isLogin: boolean = false;
+  private baseUrl =  environment.baseURL+ 'Payment';
 
   constructor(
     private http: HttpClient,

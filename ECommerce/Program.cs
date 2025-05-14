@@ -91,7 +91,7 @@ namespace ECommerce
                 options.AddPolicy("AllowAllOrigins",
                     builder =>
                     {
-                        builder.WithOrigins("https://adminhandora.runasp.net", "https://handora-ten.vercel.app")
+                        builder.WithOrigins("https://adminhandora.runasp.net", "https://handora-iota.vercel.app")
                               .AllowAnyMethod()
                               .AllowAnyHeader()
                               .AllowCredentials();

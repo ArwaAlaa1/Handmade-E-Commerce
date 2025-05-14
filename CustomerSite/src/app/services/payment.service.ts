@@ -12,17 +12,17 @@ import { environment } from '../../environments/environment.development';
 })
 export class PaymentService {
   token: string = '';
-  private baseUrl = 'https://localhost:7223/api/Payment';
+  private baseUrl = `${environment.baseURL} + Payment`;
   isLogin: boolean = false;
 
   constructor(
     private http: HttpClient,
-    private _cookie: CookieService, 
+    private _cookie: CookieService,
     private _auth: AuthService
   ) {
     this._auth.userData.subscribe({
-      next: (data: any) => { 
-        if (data && data.token) { 
+      next: (data: any) => {
+        if (data && data.token) {
           this.token = data.token;
         }
       }
@@ -56,13 +56,13 @@ export class PaymentService {
     const params = new HttpParams()
       .set('cardId', cardId)
       .set('shippingCostId', shippingCostId?.toString() ?? '');
-  
+
     console.log('Sending request with query params:', params.toString());
-  
-  
+
+
     return this.http.post<Cart>(
       `${this.baseUrl}/CreateOrUpdate`,
-      null, 
+      null,
       { headers, params }
     );
   }

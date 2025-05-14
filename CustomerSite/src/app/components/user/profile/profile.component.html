@@ -94,15 +94,25 @@
   </div>
 
   <!-- حالة الخطأ -->
-  <div *ngIf="!isLoading && errorMessage" class="alert alert-danger text-center" role="alert">
+  <div
+    *ngIf="!isLoading && errorMessage"
+    class="alert alert-danger text-center"
+    role="alert"
+  >
     <strong>Error!</strong> {{ errorMessage }}
     <div class="mt-2">
-      <button class="btn btn-outline-primary" (click)="retry()">Try Again</button>
+      <button class="btn btn-outline-primary" (click)="retry()">
+        Try Again
+      </button>
     </div>
   </div>
 
   <!-- حالة عدم وجود بيانات المستخدم -->
-  <div *ngIf="!isLoading && !errorMessage && !userData" class="alert alert-warning text-center" role="alert">
+  <div
+    *ngIf="!isLoading && !errorMessage && !userData"
+    class="alert alert-warning text-center"
+    role="alert"
+  >
     <strong>No User Data Found!</strong> Please log in to view your profile.
     <div class="mt-2">
       <a class="btn btn-outline-primary" routerLink="/login">Go to Login</a>
@@ -110,11 +120,18 @@
   </div>
 
   <!-- بيانات المستخدم -->
-  <div *ngIf="!isLoading && !errorMessage && userData" class="card shadow-sm p-4 mb-4 border-0">
+  <div
+    *ngIf="!isLoading && !errorMessage && userData"
+    class="card shadow-sm p-4 mb-4 border-0"
+  >
     <div class="row g-3 align-items-center">
       <div class="col-auto">
         <img
-          [src]="userData.photo ? imageBaseUrl + userData.photo : 'assets/img/ava.jpeg'"
+          [src]="
+            userData.photo
+              ? imageBaseUrl + '/images/' + userData.photo
+              : 'assets/img/ava.jpeg'
+          "
           alt="User Photo"
           class="rounded-circle border shadow-sm img-fluid"
           width="120"
@@ -123,25 +140,40 @@
         />
       </div>
       <div class="col">
-        <h2 class="mb-1 fw-bold" style="color: #6c7fd8">{{ userData.userName || 'User' }}</h2>
+        <h2 class="mb-1 fw-bold" style="color: #6c7fd8">
+          {{ userData.userName || "User" }}
+        </h2>
         <p class="text-muted mb-0">
-          <i class="bi bi-envelope me-1"></i>{{ userData.email || 'No email provided' }}
+          <i class="bi bi-envelope me-1"></i
+          >{{ userData.email || "No email provided" }}
         </p>
       </div>
     </div>
 
     <!-- أزرار الإجراءات -->
     <div class="mt-4 d-flex flex-wrap gap-3 justify-content-center">
-      <a class="btn btn-outline-secondary flex-fill text-center" routerLink="/editprofile">
+      <a
+        class="btn btn-outline-secondary flex-fill text-center"
+        routerLink="/editprofile"
+      >
         <i class="bi bi-person-fill me-1"></i> Update Personal Data
       </a>
-      <a class="btn btn-outline-primary flex-fill text-center" routerLink="/addimage">
+      <a
+        class="btn btn-outline-primary flex-fill text-center"
+        routerLink="/addimage"
+      >
         <i class="bi bi-image me-1"></i> Update Profile Image
       </a>
-      <a class="btn btn-outline-success flex-fill text-center" routerLink="/addAddrrss">
+      <a
+        class="btn btn-outline-success flex-fill text-center"
+        routerLink="/addAddrrss"
+      >
         <i class="bi bi-plus-circle me-1"></i> Add New Address
       </a>
-      <button class="btn btn-outline-danger flex-fill text-center" (click)="logout()">
+      <button
+        class="btn btn-outline-danger flex-fill text-center"
+        (click)="logout()"
+      >
         <i class="bi bi-box-arrow-right me-1"></i> Logout
       </button>
     </div>
@@ -150,37 +182,56 @@
   <!-- قسم العناوين -->
   <div *ngIf="!isLoading && !errorMessage && userData" class="mb-4">
     <h4 class="mb-3 fw-bold" style="color: #6c7fd8">Your Addresses</h4>
-    
+
     <!-- حالة عدم وجود عناوين -->
-    <div *ngIf="!userData.address || userData.address.length === 0" class="alert alert-info text-center" role="alert">
+    <div
+      *ngIf="!userData.address || userData.address.length === 0"
+      class="alert alert-info text-center"
+      role="alert"
+    >
       <strong>No Addresses Found!</strong> Add a new address to get started.
       <div class="mt-2">
-        <a class="btn btn-outline-success" routerLink="/addAddrrss">Add New Address</a>
+        <a class="btn btn-outline-success" routerLink="/addAddrrss"
+          >Add New Address</a
+        >
       </div>
     </div>
 
     <!-- قائمة العناوين -->
-    <div *ngIf="userData.address && userData.address.length > 0" class="row g-4">
+    <div
+      *ngIf="userData.address && userData.address.length > 0"
+      class="row g-4"
+    >
       <div class="col-md-6 col-lg-4" *ngFor="let addr of userData.address">
         <div class="card h-100 shadow-sm border-0">
           <div class="card-body">
-            <h5 class="card-title fw-bold mb-3" style="color: #6c7fd8">{{ addr.fullName || 'Unknown' }}</h5>
+            <h5 class="card-title fw-bold mb-3" style="color: #6c7fd8">
+              {{ addr.fullName || "Unknown" }}
+            </h5>
             <p class="card-text mb-2">
-              <strong style="color: #6c7fd8">Phone:</strong> {{ addr.phoneNumber || 'Not provided' }}
+              <strong style="color: #6c7fd8">Phone:</strong>
+              {{ addr.phoneNumber || "Not provided" }}
             </p>
             <p class="card-text mb-2">
-              <strong style="color: #6c7fd8">Region:</strong> {{ addr.region || 'Not provided' }}
+              <strong style="color: #6c7fd8">Region:</strong>
+              {{ addr.region || "Not provided" }}
             </p>
             <p class="card-text mb-2">
-              <strong style="color: #6c7fd8">City:</strong> {{ addr.city || 'Not provided' }}
+              <strong style="color: #6c7fd8">City:</strong>
+              {{ addr.city || "Not provided" }}
             </p>
             <p class="card-text mb-2">
-              <strong style="color: #6c7fd8">Country:</strong> {{ addr.country || 'Not provided' }}
+              <strong style="color: #6c7fd8">Country:</strong>
+              {{ addr.country || "Not provided" }}
             </p>
             <p class="card-text mb-3">
-              <strong style="color: #6c7fd8">Details:</strong> {{ addr.addressDetails || 'Not provided' }}
+              <strong style="color: #6c7fd8">Details:</strong>
+              {{ addr.addressDetails || "Not provided" }}
             </p>
-            <a class="btn btn-outline-secondary flex-fill w-100" routerLink="/editAddress/{{ addr.id }}">
+            <a
+              class="btn btn-outline-secondary flex-fill w-100"
+              routerLink="/editAddress/{{ addr.id }}"
+            >
               <i class="bi bi-pencil-square me-1"></i> Edit Address
             </a>
           </div>

@@ -12,7 +12,7 @@ import { environment } from '../../environments/environment.development';
 })
 export class PaymentService {
   token: string = '';
-  private baseUrl = 'https://localhost:7223/api/Payment';
+  private baseUrl =  environment.baseURL+ 'Payment';
   isLogin: boolean = false;
 
   constructor(

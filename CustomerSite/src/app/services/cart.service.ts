@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 
 import { CookieService } from 'ngx-cookie-service';
 import { v4 as uuidv4 } from 'uuid';
+import { environment } from '../../environments/environment.development';
 
 
 @Injectable({
@@ -14,7 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class CartService {
 
   token: string = '';
-  private baseUrl = 'https://localhost:7223/api/Cart';
+  private baseUrl = environment.baseURL + 'Cart';
   isLogin: boolean = false;
   constructor(private http: HttpClient,private _cookie:CookieService,private _auth: AuthService) {
     // this.loadUserData();
